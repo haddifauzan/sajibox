@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* Memberitahu Tailwind lokasi HTML untuk di-scan */
-@source "../../pages";
+@source "../../*.html";
 @source "../js";
 
 /* Memindahkan pengaturan dari tailwind.config.js ke sini */
