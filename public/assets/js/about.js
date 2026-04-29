@@ -32,18 +32,9 @@ function aboutPage() {
     },
 
     init() {
-      // Custom Scroll Reveal (Lightweight replacement for AOS)
-      const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
-      const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('aos-animate');
-            revealObserver.unobserve(entry.target);
-          }
-        });
-      }, observerOptions);
-      document.querySelectorAll('[data-aos]').forEach(el => revealObserver.observe(el));
-
+      if (typeof AOS !== 'undefined') {
+        AOS.init({ once: true, duration: 700, offset: 60 });
+      }
       setTimeout(() => { this.isLoading = false; }, 500);
     }
   }
