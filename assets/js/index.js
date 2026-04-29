@@ -107,9 +107,9 @@ function snackbox() {
       { icon:'fa-solid fa-truck', title:'Terima Pesanan', desc:'Snackbox dikirim tepat waktu ke lokasi Anda.' },
     ],
     testimonials: [
-      { quote: 'Snackbox-nya keren banget! Kemasan cantik, rasanya enak, tamu-tamu di acara pernikahan kami semua suka. Pasti pesan lagi!', name: 'Siti Rahayu', role: 'Event Organizer, Bandung', avatar: '../assets/images/face6.jpg' },
-      { quote: 'Respon cepat, pengiriman tepat waktu, dan isinya memuaskan. Sudah 3 kali pesan untuk acara kantor, selalu puas!', name: 'Budi Santoso', role: 'HRD Manager, Bandung', avatar: '../assets/images/face16.jpg' },
-      { quote: 'Paket custom-nya menarik banget. Tim SnackBox sangat membantu dan sabar. Hasilnya melebihi ekspektasi!', name: 'Dewi Lestari', role: 'Wedding Organizer, Cimahi', avatar: '../assets/images/face23.jpg' },
+      { quote: 'Snackbox-nya keren banget! Kemasan cantik, rasanya enak, tamu-tamu di acara pernikahan kami semua suka. Pasti pesan lagi!', name: 'Siti Rahayu', role: 'Event Organizer, Bandung', avatar: 'assets/images/face6.jpg' },
+      { quote: 'Respon cepat, pengiriman tepat waktu, and isinya memuaskan. Sudah 3 kali pesan untuk acara kantor, selalu puas!', name: 'Budi Santoso', role: 'HRD Manager, Bandung', avatar: 'assets/images/face16.jpg' },
+      { quote: 'Paket custom-nya menarik banget. Tim SnackBox sangat membantu dan sabar. Hasilnya melebihi ekspektasi!', name: 'Dewi Lestari', role: 'Wedding Organizer, Cimahi', avatar: 'assets/images/face23.jpg' },
     ],
     faqs: [
       { q: 'Berapa minimum pemesanan?', a: 'Minimum pemesanan adalah 10 box untuk paket reguler. Untuk paket corporate, minimum 50 box dengan harga lebih terjangkau.', open: false },
