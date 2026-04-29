@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npx @tailwindcss/cli -i ./assets/css/input.css -o ./assets/css/style.css",
+    "tw:build": "npx @tailwindcss/cli -i ./assets/css/input.css -o ./assets/css/style.css",
     "watch": "npx @tailwindcss/cli -i ./assets/css/input.css -o ./assets/css/style.css --watch",
     "minify": "npx @tailwindcss/cli -i ./assets/css/input.css -o ./assets/css/style.css --minify",
     "test": "echo \"Error: no test specified\" && exit 1"
