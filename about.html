@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tentang Kami – SajiBox</title>
+  <meta name="description" content="Kenali SajiBox lebih dekat — penyedia snackbox premium terpercaya untuk setiap momen spesial Anda."/>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: 'var(--primary)',
+            'primary-light': 'var(--primary-light)',
+            secondary: 'var(--secondary)',
+            brown: 'var(--brown)',
+            accent: 'var(--accent)',
+            cream: 'var(--cream)',
+            'cream-dark': 'var(--cream-dark)',
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/index.css" />
+</head>
+<body x-data="aboutPage()" @scroll.window="onScroll()" class="bg-cream">
+
+  <!-- ══════════════════════════ TOP NAVBAR ══════════════════════════ -->
+  <nav class="navbar" :class="{ scrolled: scrolled }">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-20">
+      <a href="index.html" class="flex items-center gap-2">
+        <span style="font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:900; color:#C2410C;">Saji</span>
+        <span style="font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:900; background:linear-gradient(135deg,#F59E0B,#C2410C); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">Box</span>
+        <span style="font-size:1.3rem; margin-left:2px;">🍪</span>
+      </a>
+      <ul class="hidden md:flex items-center gap-4 lg:gap-6">
+        <template x-for="item in pageNav" :key="item.label">
+          <li>
+            <a :href="item.href" class="text-sm transition-colors duration-200 whitespace-nowrap"
+               :class="item.active ? 'text-primary font-bold border-b-2 border-primary pb-0.5' : 'text-brown font-semibold hover:text-primary'"
+               x-text="item.label"></a>
+          </li>
+        </template>
+      </ul>
+      <div class="flex items-center gap-4">
+        <a href="index.html#paket" class="hidden md:inline-flex btn-primary text-sm py-2 px-4 lg:py-3 lg:px-6 whitespace-nowrap">
+          Pesan Sekarang <i class="fa-solid fa-arrow-right"></i>
+        </a>
+        <button @click="mobileOpen = !mobileOpen" class="md:hidden p-2 rounded-xl" style="color:#C2410C;">
+          <i class="fa-solid fa-bars text-xl" x-show="!mobileOpen"></i>
+          <i class="fa-solid fa-xmark text-xl" x-show="mobileOpen"></i>
+        </button>
+      </div>
+    </div>
+    <div x-show="mobileOpen" x-transition style="display:none;" class="mobile-menu md:hidden px-6 pb-6 pt-2">
+      <template x-for="item in pageNav" :key="item.label">
+        <a :href="item.href" @click="mobileOpen=false" class="block py-2 text-sm font-semibold"
+           :class="item.active ? 'text-primary' : 'text-brown hover:text-primary'" x-text="item.label"></a>
+      </template>
+      <a href="index.html#paket" class="btn-primary w-full flex items-center justify-center gap-2 mt-5 py-3">Pesan Sekarang <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════ HERO ABOUT ══════════════════════════ -->
+  <section class="relative overflow-hidden pt-32 pb-20" style="background:linear-gradient(180deg,#FFFBF5 0%,#FFF7ED 60%,#FDE68A33 100%);">
+    <div class="blob-1" style="top:-60px; right:-150px; opacity:.5;"></div>
+    <div class="blob-2" style="bottom:-40px; left:-100px; opacity:.4;"></div>
+    <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
+      <div class="badge inline-flex mb-5" data-aos="fade-down">
+        <i class="fa-solid fa-heart"></i> Kenali Kami Lebih Dekat
+      </div>
+      <h1 style="font-family:'Playfair Display',serif; font-size:clamp(2.2rem,5vw,3.6rem); font-weight:900; line-height:1.15; color:#5A3E2B;" class="mb-5" data-aos="fade-up">
+        Tentang <span style="color:#C2410C;">SajiBox</span>
+      </h1>
+      <p class="text-base lg:text-lg leading-relaxed max-w-2xl mx-auto" style="color:#92601A; font-weight:500;" data-aos="fade-up" data-aos-delay="100">
+        Hadir untuk menghadirkan camilan lezat di setiap momen spesial Anda — dari pernikahan hingga acara kantor, kami selalu siap menyajikan yang terbaik.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ BRAND STORY ══════════════════════════ -->
+  <section class="py-24 bg-cream">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="flex flex-col lg:flex-row items-center gap-14">
+        <!-- Image -->
+        <div class="flex-1" data-aos="fade-right">
+          <div class="relative">
+            <div class="blob-1" style="top:-30px; left:-30px; width:220px; height:220px; z-index:0; opacity:.4;"></div>
+            <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&auto=format&fit=crop&q=80"
+                 alt="Tim SajiBox menyiapkan snackbox"
+                 class="relative z-10 rounded-3xl shadow-xl object-cover w-full" style="aspect-ratio:4/3;" />
+            <div style="position:absolute; bottom:20px; right:-10px; background:#FDE68A; border-radius:16px; padding:10px 18px; box-shadow:0 8px 24px #F59E0B44; font-weight:700; font-size:.82rem; color:#92400E; display:flex; align-items:center; gap:6px; z-index:20;">
+              <i class="fa-solid fa-cake-candles text-primary"></i> Sejak 2020
+            </div>
+          </div>
+        </div>
+        <!-- Text -->
+        <div class="flex-1" data-aos="fade-left">
+          <p class="section-tag mb-3">Cerita Kami</p>
+          <h2 style="font-family:'Playfair Display',serif; font-size:clamp(1.8rem,4vw,2.6rem); font-weight:900; color:#5A3E2B;" class="mb-5">
+            Berawal dari <span style="color:#C2410C;">Dapur Kecil</span>
+          </h2>
+          <p class="mb-4 leading-relaxed" style="color:#92601A; font-weight:500;">
+            SajiBox lahir dari semangat sederhana — menyediakan camilan berkualitas yang bisa dinikmati di setiap momen penting. Dimulai dari dapur kecil di rumah, kami mulai menerima pesanan snackbox untuk acara keluarga dan teman-teman terdekat.
+          </p>
+          <p class="mb-4 leading-relaxed" style="color:#92601A; font-weight:500;">
+            Seiring waktu, kepercayaan pelanggan terus tumbuh. Kini, SajiBox telah melayani ribuan pelanggan di berbagai kota, dari acara pernikahan, ulang tahun, seminar, hingga corporate event — dengan komitmen yang sama: 
+            <strong style="color:#8f3900;">kualitas terbaik, pelayanan ramah, dan pengiriman tepat waktu.</strong>
+          </p>
+          <p class="leading-relaxed" style="color:#92601A; font-weight:500;">
+            Kami percaya bahwa camilan bukan sekadar makanan — ia adalah bagian dari kebahagiaan. Dan itulah yang kami sajikan di setiap box.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ VISI & MISI ══════════════════════════ -->
+  <section class="py-24" style="background:linear-gradient(180deg,#FFF7ED 0%,#FFFBF5 100%);">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-14" data-aos="fade-up">
+        <p class="section-tag mb-3">Arah & Tujuan</p>
+        <h2 style="font-family:'Playfair Display',serif; font-size:clamp(1.9rem,4vw,3rem); font-weight:900; color:#5A3E2B;">
+          Visi & <span style="color:#C2410C;">Misi</span> Kami
+        </h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Visi -->
+        <div class="feat-card text-center" data-aos="flip-up">
+          <div class="feat-icon mx-auto" style="background:#FDE68A55;">
+            <i class="fa-solid fa-eye" style="color:#C2410C;"></i>
+          </div>
+          <h3 style="font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; color:#5A3E2B; margin-bottom:12px;">Visi</h3>
+          <p style="color:#92601A; font-weight:500; line-height:1.7;">
+            Menjadi penyedia snackbox terpercaya dan berkualitas nomor satu di Indonesia, yang selalu hadir di setiap momen kebahagiaan pelanggan.
+          </p>
+        </div>
+        <!-- Misi -->
+        <div class="feat-card" data-aos="flip-up" data-aos-delay="100">
+          <div class="feat-icon mx-auto" style="background:#FED7AA55;">
+            <i class="fa-solid fa-bullseye" style="color:#C2410C;"></i>
+          </div>
+          <h3 style="font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; color:#5A3E2B; margin-bottom:12px;" class="text-center">Misi</h3>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3" style="color:#92601A; font-weight:500;">
+              <i class="fa-solid fa-check-circle text-primary mt-1 flex-shrink-0"></i>
+              Menyediakan camilan berkualitas tinggi dengan bahan premium dan higienis.
+            </li>
+            <li class="flex items-start gap-3" style="color:#92601A; font-weight:500;">
+              <i class="fa-solid fa-check-circle text-primary mt-1 flex-shrink-0"></i>
+              Memberikan pelayanan terbaik yang ramah, cepat, dan responsif.
+            </li>
+            <li class="flex items-start gap-3" style="color:#92601A; font-weight:500;">
+              <i class="fa-solid fa-check-circle text-primary mt-1 flex-shrink-0"></i>
+              Memastikan setiap pengiriman tepat waktu tanpa kompromi.
+            </li>
+            <li class="flex items-start gap-3" style="color:#92601A; font-weight:500;">
+              <i class="fa-solid fa-check-circle text-primary mt-1 flex-shrink-0"></i>
+              Terus berinovasi dalam varian rasa dan desain kemasan eksklusif.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ KEUNGGULAN / VALUE ══════════════════════════ -->
+  <section class="py-24 bg-cream">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-14" data-aos="fade-up">
+        <p class="section-tag mb-3">Mengapa SajiBox?</p>
+        <h2 style="font-family:'Playfair Display',serif; font-size:clamp(1.9rem,4vw,3rem); font-weight:900; color:#5A3E2B;">
+          Nilai yang Kami <span style="color:#C2410C;">Pegang</span>
+        </h2>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <template x-for="(v, i) in values" :key="v.title">
+          <div class="feat-card text-center" data-aos="fade-up" :data-aos-delay="i*100">
+            <div class="feat-icon mx-auto" :style="`background:${v.bg};`">
+              <i :class="v.icon" style="color:#C2410C;"></i>
+            </div>
+            <h3 style="font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; color:#5A3E2B; margin-bottom:8px;" x-text="v.title"></h3>
+            <p style="color:#92601A; font-size:.88rem; line-height:1.6; font-weight:500;" x-text="v.desc"></p>
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ STATS STRIP ══════════════════════════ -->
+  <section class="trust-strip py-16">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <template x-for="(s, i) in aboutStats" :key="s.label">
+          <div data-aos="fade-down" :data-aos-delay="i*80">
+            <div style="font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:900; color:#C2410C;" x-text="s.value"></div>
+            <div class="text-sm font-semibold mt-1" style="color:#5A3E2B;" x-text="s.label"></div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ CTA ══════════════════════════ -->
+  <section class="cta-banner py-24 px-6 text-center" data-aos="fade-up">
+    <div class="max-w-3xl mx-auto relative z-10">
+      <h2 style="font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3rem); font-weight:900; color:#fff; line-height:1.15; margin-bottom:20px;">
+        Siap Membuat Acara Anda Lebih Berkesan?
+      </h2>
+      <p style="color:rgba(255,255,255,.85); font-size:1rem; font-weight:500; margin-bottom:36px; max-width:520px; margin-left:auto; margin-right:auto;">
+        Hubungi kami sekarang dan wujudkan snackbox impian Anda. Konsultasi gratis!
+      </p>
+      <a href="index.html#paket" style="display:inline-flex; align-items:center; gap:10px; background:#fff; color:#C2410C; font-weight:800; font-size:1rem; padding:16px 36px; border-radius:100px; box-shadow:0 12px 40px rgba(0,0,0,.2); text-decoration:none; transition:transform .2s;"
+         onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+        Pesan Sekarang <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ FOOTER ══════════════════════════ -->
+  <footer id="kontak" class="footer pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+     <div class="grid md:grid-cols-4 gap-10 pb-12 border-b border-white/10">
+      <div class="md:col-span-1">
+       <div class="flex items-center gap-2.5 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center"><i class="fa-solid fa-basket-shopping text-white text-xl"></i></div>
+        <div class="flex flex-col leading-none"><span class="font-display font-800 text-xl text-white">SajiBox</span> <span class="text-[10px] text-accent font-semibold tracking-widest uppercase">Snack &amp; Catering</span></div>
+       </div>
+       <p class="text-sm leading-relaxed">Solusi snackbox lezat &amp; praktis untuk setiap momen spesial Anda. Fresh setiap hari.</p>
+       <div class="flex gap-3 mt-5">
+        <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition"><i class="fa-brands fa-instagram text-white text-lg"></i></a>
+        <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition"><i class="fa-brands fa-facebook text-white text-lg"></i></a>
+        <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition"><i class="fa-brands fa-tiktok text-white text-lg"></i></a>
+        <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition"><i class="fa-brands fa-youtube text-white text-lg"></i></a>
+       </div>
+      </div>
+      <div>
+       <h4 class="font-display font-700 text-white text-lg mb-4">Menu</h4>
+       <ul class="space-y-2.5 text-sm">
+        <li><a href="index.html" class="hover:text-accent transition">Beranda</a></li>
+        <li><a href="index.html#paket" class="hover:text-accent transition">Paket</a></li>
+        <li><a href="index.html#cara-pesan" class="hover:text-accent transition">Cara Pesan</a></li>
+        <li><a href="index.html#testimoni" class="hover:text-accent transition">Testimoni</a></li>
+        <li><a href="index.html#faq" class="hover:text-accent transition">FAQ</a></li>
+       </ul>
+      </div>
+      <div>
+       <h4 class="font-display font-700 text-white text-lg mb-4">Kontak</h4>
+       <ul class="space-y-2.5 text-sm">
+        <li><i class="fa-solid fa-location-dot mt-0.5 flex-shrink-0 text-accent mr-2"></i> Jl. Abdul Halim No. 82, Cimahi 50220</li>
+        <li><i class="fa-solid fa-phone flex-shrink-0 text-accent mr-2"></i> +62 812-3456-7890</li>
+        <li><i class="fa-solid fa-envelope flex-shrink-0 text-accent mr-2"></i> halo@sajibox.id</li>
+       </ul>
+      </div>
+      <div>
+       <h4 class="font-display font-700 text-white text-lg mb-4">Newsletter</h4>
+       <p class="text-sm mb-3">Dapatkan promo &amp; menu baru langsung di email Anda.</p>
+       <form class="flex flex-col gap-2">
+        <input type="email" required placeholder="email@anda.com" class="bg-white/10 border border-white/20 rounded-full px-4 py-2.5 text-sm text-white placeholder-white/50 focus:outline-none focus:border-accent">
+        <button type="submit" class="btn-primary rounded-full px-4 py-2.5 text-sm font-semibold flex items-center justify-center gap-2"><i class="fa-solid fa-paper-plane"></i> Berlangganan</button>
+       </form>
+      </div>
+     </div>
+     <div class="pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/60">
+      <p>&copy; 2025 SajiBox. Semua hak dilindungi.</p>
+      <div class="flex gap-5"><a href="#" class="hover:text-accent">Kebijakan Privasi</a> <a href="#" class="hover:text-accent">Syarat &amp; Ketentuan</a></div>
+     </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="assets/js/about.js"></script>
+</body>
+</html>

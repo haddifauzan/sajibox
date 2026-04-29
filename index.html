@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SnackBox – Camilan Enak, Pesan Online!</title>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: 'var(--primary)',
+            'primary-light': 'var(--primary-light)',
+            secondary: 'var(--secondary)',
+            brown: 'var(--brown)',
+            accent: 'var(--accent)',
+            cream: 'var(--cream)',
+            'cream-dark': 'var(--cream-dark)',
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/css/index.css" />
+</head>
+<body x-data="snackbox()" @scroll.window="onScroll()" class="bg-cream">
+
+  <!-- ══════════════════════════ LEFT SIDEBAR NAV ══════════════════════════ -->
+  <aside class="hidden xl:flex flex-col justify-center fixed left-0 top-1/2 -translate-y-1/2 z-[200] gap-1 pl-3">
+    <template x-for="item in sideNav" :key="item.id">
+      <button
+        @click="scrollToSection(item.id)"
+        class="text-left text-xs font-semibold py-1.5 pl-3 pr-4 transition-all duration-300 focus:outline-none border-l-[3px] rounded-r whitespace-nowrap"
+        :class="activeSection === item.id
+          ? 'border-primary text-primary border-l-[4px] font-bold'
+          : 'border-brown/20 text-brown/40 hover:border-primary/50 hover:text-brown/70'"
+        x-text="item.label"
+      ></button>
+    </template>
+  </aside>
+
+
+  <!-- ══════════════════════════ TICKER ══════════════════════════ -->
+  <div class="ticker-wrap bg-primary py-2 mt-20 relative z-50">
+    <div class="ticker-content px-10">
+      <span><i class="fa-solid fa-truck-fast mx-2"></i> Gratis Ongkir untuk Pemesanan Minimal 100 Box</span>
+      <span><i class="fa-solid fa-gift mx-2"></i> Kemasan Elegan, Siap Untuk Berbagai Acara</span>
+      <span><i class="fa-solid fa-bolt mx-2"></i> Diproses Cepat, Dikirim Tepat Waktu</span>
+      <span><i class="fa-solid fa-star mx-2"></i> Dipercaya oleh 10.000+ Pelanggan</span>
+      <span><i class="fa-solid fa-cookie mx-2"></i> Menggunakan Bahan Berkualitas Premium</span>
+
+      <span><i class="fa-solid fa-truck-fast mx-2"></i> Gratis Ongkir untuk Pemesanan Minimal 100 Box</span>
+      <span><i class="fa-solid fa-gift mx-2"></i> Kemasan Elegan, Siap Untuk Berbagai Acara</span>
+      <span><i class="fa-solid fa-bolt mx-2"></i> Diproses Cepat, Dikirim Tepat Waktu</span>
+      <span><i class="fa-solid fa-star mx-2"></i> Dipercaya oleh 10.000+ Pelanggan</span>
+      <span><i class="fa-solid fa-cookie mx-2"></i> Menggunakan Bahan Berkualitas Premium</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════ TOP NAVBAR (Multi-page) ══════════════════════════ -->
+  <nav class="navbar" :class="{ scrolled: scrolled }">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-20">
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center gap-2">
+        <span style="font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:900; color:#C2410C;">Saji</span>
+        <span style="font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:900; background:linear-gradient(135deg,#F59E0B,#C2410C); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">Box</span>
+        <span style="font-size:1.3rem; margin-left:2px;">🍪</span>
+      </a>
+
+      <!-- Desktop page nav -->
+      <ul class="hidden md:flex items-center gap-4 lg:gap-6">
+        <template x-for="item in pageNav" :key="item.label">
+          <li>
+            <a :href="item.href"
+               class="text-sm transition-colors duration-200 whitespace-nowrap"
+               :class="item.active
+                 ? 'text-primary font-bold border-b-2 border-primary pb-0.5'
+                 : 'text-brown font-semibold hover:text-primary'"
+               x-text="item.label">
+            </a>
+          </li>
+        </template>
+        
+        <!-- Section Dropdown (Visible on tablet/iPad, hidden on desktop xl) -->
+        <li class="relative xl:hidden" x-data="{ sectionDropdown: false }" @click.away="sectionDropdown = false">
+          <button @click="sectionDropdown = !sectionDropdown" class="text-sm font-semibold text-brown hover:text-primary transition-colors duration-200 flex items-center gap-1.5 whitespace-nowrap">
+            Scroll Menu <i class="fa-solid fa-chevron-down text-[10px]"></i>
+          </button>
+          <div x-show="sectionDropdown" x-transition style="display: none;" class="absolute top-full right-0 mt-6 w-48 bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-brown/10 py-2 z-50 flex flex-col">
+            <template x-for="item in sideNav" :key="item.id">
+              <a :href="'#' + item.id" @click="sectionDropdown = false"
+                 class="px-4 py-2.5 text-sm text-brown hover:bg-cream hover:text-primary transition-colors"
+                 :class="activeSection === item.id ? 'font-bold text-primary bg-cream/50' : ''"
+                 x-text="item.label">
+              </a>
+            </template>
+          </div>
+        </li>
+      </ul>
+
+      <div class="flex items-center gap-4">
+        <a href="#paket" class="hidden md:inline-flex btn-primary text-sm py-2 px-4 lg:py-3 lg:px-6 whitespace-nowrap">
+          Pesan Sekarang
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+
+        <!-- Mobile burger -->
+        <button @click="mobileOpen = !mobileOpen" class="md:hidden p-2 rounded-xl" style="color:#C2410C;">
+          <i class="fa-solid fa-bars text-xl" x-show="!mobileOpen"></i>
+          <i class="fa-solid fa-xmark text-xl" x-show="mobileOpen"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div x-show="mobileOpen" x-transition style="display: none;" class="mobile-menu md:hidden px-6 pb-6 pt-2">
+      <!-- Mobile page links -->
+      <div class="mb-3 pb-3 border-b-2" style="border-color:#ff51009a;">
+        <p class="text-xs font-bold uppercase tracking-widest mb-2" style="color:#C2410C;">Halaman</p>
+        <template x-for="item in pageNav" :key="item.label">
+          <a :href="item.href" @click="mobileOpen=false"
+             class="block py-2 text-sm font-semibold"
+             :class="item.active ? 'text-primary' : 'text-brown hover:text-primary'"
+             x-text="item.label">
+          </a>
+        </template>
+      </div>
+      <!-- Mobile section links -->
+      <p class="text-xs font-bold uppercase tracking-widest mb-2" style="color:#C2410C;">Scroll Menu</p>
+      <template x-for="item in sideNav" :key="item.id">
+        <a :href="'#' + item.id" @click="mobileOpen=false"
+           class="block py-2.5 border-b text-sm font-semibold"
+           :class="activeSection === item.id ? 'text-primary' : 'text-brown'"
+           style="border-color:#FDE68A66;"
+           x-text="item.label">
+        </a>
+      </template>
+      <a href="#paket" class="btn-primary w-full flex items-center justify-center gap-2 mt-5 py-3">Pesan Sekarang <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════ HERO ══════════════════════════ -->
+  <section id="beranda" class="hero-section relative flex items-center overflow-hidden">
+    <!-- decorative blobs -->
+    <div class="blob-1" style="top:60px; right:-120px;"></div>
+    <div class="blob-2" style="bottom:40px; left:-80px;"></div>
+
+    <div class="max-w-7xl mx-auto px-6 py-20 w-full">
+      <div class="flex flex-col lg:flex-row items-center gap-16">
+
+        <!-- Left -->
+        <div class="flex-1 z-10 text-center lg:text-left" data-aos="fade-right">
+          <div class="badge inline-flex mb-5">
+            <span><i class="fa-solid fa-cookie-bite"></i></span>
+            Camilan enak, momen jadi berkesan
+          </div>
+
+          <h1 style="font-family:'Playfair Display',serif; font-size:clamp(2.4rem,5vw,3.8rem); font-weight:900; line-height:1.1; color:#5A3E2B;" class="mb-6">
+            Snackbox
+            <span style="color:#C2410C;">Lezat,</span><br/>
+            Pesan Online,<br/>
+            <span style="background:linear-gradient(90deg,#C2410C,#F59E0B); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">Praktis & Cepat!</span>
+          </h1>
+
+          <p class="text-base lg:text-lg mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0"
+             style="color:#92601A; font-weight:500;">
+            Hadirkan kesan spesial di setiap acara Anda — pernikahan, ulang tahun, arisan, hingga event kantor — dengan snackbox premium kami yang dikemas eksklusif dan dikirim tepat waktu.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <a href="#" class="btn-primary text-base py-4 px-8">
+              Pesan Sekarang
+              <i class="fa-solid fa-arrow-right"></i>
+            </a>
+            <a href="#paket" class="btn-secondary text-base py-4 px-8">
+              Lihat Paket
+              <i class="fa-solid fa-arrow-down"></i>
+            </a>
+          </div>
+
+          <!-- Stats -->
+          <div class="flex items-center gap-8 mt-12 justify-center lg:justify-start">
+            <template x-for="stat in stats" :key="stat.label">
+              <div class="text-center lg:text-left">
+                <div style="font-family:'Playfair Display',serif; font-size:1.7rem; font-weight:900; color:#C2410C;" x-text="stat.value"></div>
+                <div class="text-xs font-600" style="color:#92601A; font-weight:600;" x-text="stat.label"></div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- Right: image -->
+        <div class="flex-1 hero-image-wrap z-10" data-aos="fade-left">
+          <div class="blob-1" style="top:-40px; left:-40px; width:280px; height:280px; z-index:0;"></div>
+          <img
+            src="assets/images/hero-img.png"
+            alt="Snackbox premium"
+            class="hero-img relative z-10"
+          />
+          <!-- Floating chips -->
+          <div style="position:absolute; top:20px; right:20px; background:#fff; border-radius:16px; padding:10px 16px; box-shadow:0 8px 24px #5A3E2B20; font-weight:700; font-size:.82rem; color:#5A3E2B; display:flex; align-items:center; gap:6px; z-index:20;">
+            <i class="fa-solid fa-star text-primary"></i> 4.9 Rating Terbaik
+          </div>
+          <div style="position:absolute; bottom:30px; left:-10px; background:#FDE68A; border-radius:16px; padding:10px 16px; box-shadow:0 8px 24px #F59E0B44; font-weight:700; font-size:.82rem; color:#92400E; display:flex; align-items:center; gap:6px; z-index:20;">
+            <i class="fa-solid fa-palette text-secondary"></i> Custom Desain
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ FEATURES ══════════════════════════ -->
+  <section id="keunggulan" class="py-24 relative" style="background:linear-gradient(180deg,#FFFBF5 0%,#FFF7ED 100%);">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-14" data-aos="fade-up">
+        <p class="section-tag mb-3">Mengapa Memilih Kami?</p>
+        <h2 style="font-family:'Playfair Display',serif; font-size:clamp(1.9rem,4vw,3rem); font-weight:900; color:#5A3E2B;" class="mb-4">
+          Keunggulan <span style="color:#C2410C;">SajiBox</span>
+        </h2>
+        <p class="max-w-xl mx-auto" style="color:#92601A; font-size:1rem; font-weight:500;">
+          Kami hadir untuk menjadikan setiap acara Anda lebih berkesan lewat camilan premium berkualitas tinggi.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <template x-for="(feat, i) in features" :key="feat.title">
+          <div class="feat-card" data-aos="flip-up" :data-aos-delay="i*100">
+            <div class="feat-icon" :style="`background: ${feat.bg};`"><i :class="feat.icon"></i></div>
+            <h3 style="font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:700; color:#5A3E2B; margin-bottom:8px;" x-text="feat.title"></h3>
+            <p style="color:#92601A; font-size:.88rem; line-height:1.6; font-weight:500;" x-text="feat.desc"></p>
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ TRUST STRIP ══════════════════════════ -->
+  <section class="trust-strip py-14">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <template x-for="trust in trusts" :key="trust.label">
+          <div class="trust-item" data-aos="fade-down">
+            <div class="trust-icon"><i :class="trust.icon"></i></div>
+            <div>
+              <div style="font-weight:700; font-size:.95rem; color:#5A3E2B;" x-text="trust.label"></div>
+              <div style="font-size:.8rem; color:#92601A; font-weight:500; margin-top:2px;" x-text="trust.sub"></div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ PRODUCTS ══════════════════════════ -->
+  <section id="paket" class="py-24 bg-cream">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-14" data-aos="fade-up">
+        <p class="section-tag mb-3">Menu Pilihan</p>
+        <h2 style="font-family:'Playfair Display',serif; font-size:clamp(1.9rem,4vw,3rem); font-weight:900; color:#5A3E2B;" class="mb-4">
+          Pilihan Snackbox <span style="color:#C2410C;">Favorit</span>
+        </h2>
+        <p class="max-w-lg mx-auto" style="color:#92601A; font-weight:500;">
+          Dari paket ekonomis hingga premium, temukan snackbox sempurna untuk setiap momen istimewa Anda.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <template x-for="(product, i) in products" :key="product.name">
+          <div class="product-card" data-aos="fade-up" :data-aos-delay="i*100">
+            <div class="product-img-wrap">
+              <img :src="product.img" :alt="product.name"/>
+              <span class="badge-hot" x-show="product.badge" x-text="product.badge"></span>
+            </div>
+            <div style="padding:20px 22px 24px;">
+              <h3 style="font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:700; color:#5A3E2B; margin-bottom:6px;" x-text="product.name"></h3>
+              <p style="font-size:.85rem; color:#92601A; font-weight:500; line-height:1.55; margin-bottom:14px;" x-text="product.desc"></p>
+              <div class="flex items-center justify-between">
+                <div>
+                  <div style="font-size:.73rem; color:#92601A; font-weight:600; text-decoration:line-through;" x-show="product.origPrice" x-text="product.origPrice"></div>
+                  <div style="font-size:1.25rem; font-weight:900; color:#C2410C; font-family:'Playfair Display',serif;" x-text="product.price"></div>
+                </div>
+                <button class="btn-primary py-2 px-5 text-sm">
+                  Lihat Detail
+                  <i class="fa-solid fa-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+      <!-- Lihat Semua Paket -->
+      <div class="text-center mt-12" data-aos="fade-up">
+        <a href="package.html" class="btn-secondary text-base py-4 px-8">
+          Lihat Semua Paket
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ HOW TO ORDER ══════════════════════════ -->
+  <section id="cara-pesan" class="py-24" style="background:#FFF7ED;">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="text-center mb-14" data-aos="fade-up">
+        <p class="section-tag mb-3">Mudah & Cepat</p>
+        <h2 style="font-family:'Playfair Display',serif; font-size:clamp(1.9rem,4vw,3rem); font-weight:900; color:#5A3E2B;">
+          Cara <span style="color:#C2410C;">Pesan</span>
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+        <!-- connector line desktop -->
+        <div class="hidden md:block absolute top-10 left-16 right-16 h-0.5" style="background:linear-gradient(90deg,#FDE68A,#F59E0B,#C2410C); top:40px; z-index:0;"></div>
+
+        <template x-for="(step, i) in steps" :key="step.title">
+          <div class="text-center relative z-10" data-aos="flip-down" :data-aos-delay="i*100">
+            <div style="width:80px; height:80px; border-radius:50%; margin:0 auto 16px; display:flex; align-items:center; justify-content:center; font-size:1.8rem; background:#fff; box-shadow:0 8px 24px #C2410C22; border:3px solid #FDE68A;">
+                 <i :class="step.icon"></i></div>
+            <div style="font-size:.72rem; font-weight:800; letter-spacing:.1em; color:#C2410C; text-transform:uppercase; margin-bottom:6px;" x-text="`Langkah ${i+1}`"></div>
+            <h4 style="font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:#5A3E2B; margin-bottom:6px;" x-text="step.title"></h4>
+            <p style="font-size:.83rem; color:#92601A; font-weight:500; line-height:1.55;" x-text="step.desc"></p>
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ TESTIMONIALS ══════════════════════════ -->
+  <section id="testimoni" class="py-24 bg-cream overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-14" data-aos="fade-up">
+        <p class="section-tag mb-3">Apa Kata Mereka</p>
+        <h2 style="font-family:'Playfair Display',serif; font-size:clamp(1.9rem,4vw,3rem); font-weight:900; color:#5A3E2B;">
+          Testimoni <span style="color:#C2410C;">Pelanggan</span>
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <template x-for="(t, i) in testimonials" :key="t.name">
+          <div class="feat-card" data-aos="fade-up" :data-aos-delay="i*100">
+            <div class="flex gap-1 mb-4">
+              <template x-for="s in 5" :key="s">
+                <span style="color:#F59E0B; font-size:1rem;">★</span>
+              </template>
+            </div>
+            
+            <p style="font-size:.92rem; color:#5A3E2B; line-height:1.7; font-weight:500; font-style:italic; margin-bottom:18px;" x-text="`&quot;${t.quote}&quot;`"></p>
+            
+            <div class="flex items-center gap-3">
+              <div style="width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#FDE68A,#F59E0B); display:flex; align-items:center; justify-content:center; font-size:1.1rem;">         
+                <img style="width:44px; height:44px; border-radius:50%; object-fit:cover;" :src="t.avatar" :alt="t.name">
+              </div>
+              <div>
+                <div style="font-weight:700; font-size:.9rem; color:#5A3E2B;" x-text="t.name"></div>
+                <div style="font-size:.78rem; color:#92601A; font-weight:500;" x-text="t.role"></div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ FAQ ══════════════════════════ -->
+  <section id="faq" class="py-24" style="background:#FFF7ED;">
+    <div class="max-w-3xl mx-auto px-6">
+      <div class="text-center mb-14" data-aos="fade-up">
+        <p class="section-tag mb-3">FAQ</p>
+        <h2 style="font-family:'Playfair Display',serif; font-size:clamp(1.9rem,4vw,3rem); font-weight:900; color:#5A3E2B;">
+          Pertanyaan yang <span style="color:#C2410C;">Sering Ditanyakan</span>
+        </h2>
+      </div>
+
+      <div class="space-y-4">
+        <template x-for="(faq, i) in faqs" :key="i">
+          <div class="feat-card cursor-pointer" data-aos="fade-down" :data-aos-delay="i*50"
+               @click="faq.open = !faq.open">
+            <div class="flex items-center justify-between">
+              <h4 style="font-weight:700; font-size:.95rem; color:#5A3E2B;" x-text="faq.q"></h4>
+              <span style="color:#C2410C; font-size:1.3rem; transition:transform .3s; display:block;"
+                    :style="faq.open ? 'transform:rotate(45deg)' : ''">+</span>
+            </div>
+            <div x-show="faq.open" x-collapse style="margin-top:12px; font-size:.88rem; color:#92601A; font-weight:500; line-height:1.65;" x-text="faq.a"></div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ CTA BANNER ═══════════════════════════ -->
+  <section class="cta-banner py-24 px-6 text-center" data-aos="fade-up">
+    <div class="max-w-3xl mx-auto relative z-10">
+      <div class="badge inline-flex mb-6" style="background: rgba(255,255,255,.25); color:#fff;">
+        <i class="fa-solid fa-gift"></i> Promo Spesial Bulan Ini
+      </div>
+      <h2 style="font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; color:#fff; line-height:1.15; margin-bottom:20px;">
+        Pesan Snackbox Sekarang dan Buat Acara Anda Makin Berkesan!
+      </h2>
+      <p style="color:rgba(255,255,255,.85); font-size:1rem; font-weight:500; margin-bottom:36px; max-width:520px; margin-left:auto; margin-right:auto;">
+        Dapatkan diskon 15% untuk pemesanan pertama Anda. Gunakan kode <strong>SNACK15</strong> saat checkout.
+      </p>
+      <a href="#paket" style="display:inline-flex; align-items:center; gap:10px; background:#fff; color:#C2410C; font-weight:800; font-size:1rem; padding:16px 36px; border-radius:100px; box-shadow:0 12px 40px rgba(0,0,0,.2); text-decoration:none; transition:transform .2s;"
+         onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+        Pesan Sekarang
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ FOOTER ══════════════════════════ -->
+  <footer id="kontak" class="footer pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+     <div class="grid md:grid-cols-4 gap-10 pb-12 border-b border-white/10">
+      <div class="md:col-span-1">
+       <div class="flex items-center gap-2.5 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center"><i class="fa-solid fa-basket-shopping text-white text-xl"></i>
+        </div>
+        <div class="flex flex-col leading-none"><span class="font-display font-800 text-xl text-white">SajiBox</span> <span class="text-[10px] text-accent font-semibold tracking-widest uppercase">Snack &amp; Catering</span>
+        </div>
+       </div>
+       <p class="text-sm leading-relaxed">Solusi snackbox lezat &amp; praktis untuk setiap momen spesial Anda. Fresh setiap hari.</p>
+       <div class="flex gap-3 mt-5">
+        <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition">
+          <i class="fa-brands fa-instagram text-white text-lg"></i>
+        </a> 
+        <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition">
+          <i class="fa-brands fa-facebook text-white text-lg"></i>
+        </a> 
+        <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition">
+          <i class="fa-brands fa-tiktok text-white text-lg"></i>
+        </a> 
+        <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition">
+          <i class="fa-brands fa-youtube text-white text-lg"></i>
+        </a>
+       </div>
+      </div>
+      <div>
+       <h4 class="font-display font-700 text-white text-lg mb-4">Menu</h4>
+       <ul class="space-y-2.5 text-sm">
+        <li><a href="#beranda" class="hover:text-accent transition">Beranda</a></li>
+        <li><a href="#paket" class="hover:text-accent transition">Paket</a></li>
+        <li><a href="#cara-pesan" class="hover:text-accent transition">Cara Pesan</a></li>
+        <li><a href="#testimoni" class="hover:text-accent transition">Testimoni</a></li>
+        <li><a href="#faq" class="hover:text-accent transition">FAQ</a></li>
+       </ul>
+      </div>
+      <div>
+       <h4 class="font-display font-700 text-white text-lg mb-4">Kontak</h4>
+       <ul class="space-y-2.5 text-sm">
+        <li><i class="fa-solid fa-location-dot mt-0.5 flex-shrink-0 text-accent mr-2"></i> <span id="footerAddress">Jl. Abdul Halim No. 82, Cimahi 50220</span></li>
+        <li><i class="fa-solid fa-phone flex-shrink-0 text-accent mr-2"></i> <span id="footerPhone">+62 812-3456-7890</span></li>
+        <li><i class="fa-solid fa-envelope flex-shrink-0 text-accent mr-2"></i> <span id="footerEmail">halo@sajibox.id</span></li>
+       </ul>
+      </div>
+      <div>
+       <h4 class="font-display font-700 text-white text-lg mb-4">Newsletter</h4>
+       <p class="text-sm mb-3">Dapatkan promo &amp; menu baru langsung di email Anda.</p>
+       <form id="newsletterForm" class="flex flex-col gap-2"><label for="newsletterEmail" class="sr-only">Email</label> <input id="newsletterEmail" type="email" required placeholder="email@anda.com" class="bg-white/10 border border-white/20 rounded-full px-4 py-2.5 text-sm text-white placeholder-white/50 focus:outline-none focus:border-accent">
+       <button type="submit" class="btn-primary rounded-full px-4 py-2.5 text-sm font-semibold flex items-center justify-center gap-2"> <i class="fa-solid fa-paper-plane"></i> Berlangganan </button>
+       <p id="newsletterMsg" class="text-xs text-accent hidden">Terima kasih! Email berhasil didaftarkan. 🎉</p>
+       </form>
+      </div>
+     </div>
+     <div class="pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/60">
+      <p>© 2025 SajiBox. Semua hak dilindungi.</p>
+      <div class="flex gap-5"><a href="#" class="hover:text-accent">Kebijakan Privasi</a> <a href="#" class="hover:text-accent">Syarat &amp; Ketentuan</a>
+      </div>
+     </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="assets/js/index.js"></script>
+</body>
+</html>

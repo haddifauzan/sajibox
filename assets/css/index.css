@@ -1,0 +1,214 @@
+:root {
+  --primary: #C2410C;
+  --primary-light: #EA580C;
+  --secondary: #F59E0B;
+  --brown: #5A3E2B;
+  --accent: #FDE68A;
+  --cream: #FFFBF5;
+  --cream-dark: #FEF3C7;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--cream);
+  color: var(--brown);
+  overflow-x: hidden;
+}
+
+.font-display { font-family: 'Playfair Display', serif; }
+
+/* ── Blob decorative shapes ── */
+.blob-1 {
+  position: absolute;
+  width: 420px; height: 420px;
+  background: radial-gradient(circle, #FDE68A88 0%, #F59E0B44 60%, transparent 80%);
+  border-radius: 60% 40% 55% 45% / 45% 55% 40% 60%;
+  filter: blur(40px);
+  animation: morph 9s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+.blob-2 {
+  position: absolute;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, #C2410C44 0%, #EA580C22 60%, transparent 80%);
+  border-radius: 45% 55% 40% 60% / 60% 40% 55% 45%;
+  filter: blur(32px);
+  animation: morph 12s ease-in-out infinite alternate-reverse;
+  pointer-events: none;
+}
+
+@keyframes morph {
+  0%   { 
+    border-radius: 60% 40% 55% 45% / 45% 55% 40% 60%; 
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  33% {
+    border-radius: 45% 55% 40% 60% / 60% 40% 55% 45%; 
+    transform: translate(40px, -50px) rotate(45deg) scale(1.1);
+  }
+  66% {
+    border-radius: 55% 45% 60% 40% / 40% 60% 45% 55%; 
+    transform: translate(-30px, 30px) rotate(-30deg) scale(0.9);
+  }
+  100% { 
+    border-radius: 40% 60% 45% 55% / 55% 45% 60% 40%; 
+    transform: translate(0, 0) rotate(90deg) scale(1);
+  }
+}
+
+/* ── Navbar ── */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(255,251,245,.92);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid #F59E0B33;
+  transition: box-shadow .3s;
+}
+.navbar.scrolled { box-shadow: 0 4px 32px #C2410C18; }
+
+/* ── Hero ── */
+.hero-section { min-height: calc(100vh - 120px); padding-top: 20px; }
+
+.hero-image-wrap {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.hero-img {
+  width: 100%; max-width: 500px;
+  border-radius: 32px;
+  box-shadow: 0 32px 80px #5A3E2B40, 0 8px 24px #C2410C22;
+  animation: float 5s ease-in-out infinite;
+  object-fit: cover; aspect-ratio: 4/3;
+}
+@keyframes float {
+  0%,100% { transform: translateY(0px);   }
+  50%      { transform: translateY(-14px); }
+}
+
+/* ── Badge ── */
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--accent);
+  color: #92400E;
+  font-weight: 700; font-size: .78rem; letter-spacing: .06em;
+  padding: 6px 16px; border-radius: 100px;
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: #fff; font-weight: 700; font-size: .95rem;
+  padding: 14px 28px; border-radius: 100px;
+  box-shadow: 0 8px 28px #C2410C44;
+  transition: transform .2s, box-shadow .2s;
+  text-decoration: none; cursor: pointer; border: none;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 36px #C2410C55; }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent;
+  color: var(--primary); font-weight: 700; font-size: .95rem;
+  padding: 13px 28px; border-radius: 100px;
+  border: 2px solid var(--primary);
+  transition: background .2s, color .2s;
+  text-decoration: none; cursor: pointer;
+}
+.btn-secondary:hover { background: var(--primary); color: #fff; }
+
+/* ── Section titles ── */
+.section-tag {
+  font-size: .78rem; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--primary);
+}
+
+/* ── Feature cards ── */
+.feat-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 32px 24px;
+  box-shadow: 0 4px 24px #5A3E2B0E;
+  border: 1px solid #FDE68A66;
+  transition: transform .25s, box-shadow .25s;
+}
+.feat-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px #5A3E2B18; }
+
+.feat-icon {
+  width: 60px; height: 60px;
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  margin-bottom: 18px;
+}
+
+/* ── Trust strip ── */
+.trust-strip {
+  background: linear-gradient(135deg, #FFF7ED 0%, #FDE68A55 100%);
+  border-top: 1px solid #FDE68A99; border-bottom: 1px solid #FDE68A99;
+}
+.trust-item { display: flex; align-items: center; gap: 14px; }
+.trust-icon {
+  width: 52px; height: 52px; flex-shrink: 0;
+  background: #fff;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 2px 12px #C2410C18;
+}
+
+/* ── Product cards ── */
+.product-card {
+  background: #fff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px #5A3E2B0E;
+  border: 1px solid #FDE68A55;
+  transition: transform .25s, box-shadow .25s;
+}
+.product-card:hover { transform: translateY(-6px); box-shadow: 0 20px 56px #5A3E2B1A; }
+
+.product-img-wrap { position: relative; overflow: hidden; }
+.product-img-wrap img { width: 100%; aspect-ratio: 4/3; object-fit: cover; transition: transform .4s; }
+.product-card:hover .product-img-wrap img { transform: scale(1.06); }
+
+.badge-hot {
+  position: absolute; top: 12px; left: 12px;
+  background: var(--primary);
+  color: #fff; font-size: .72rem; font-weight: 700;
+  padding: 4px 12px; border-radius: 100px;
+}
+
+/* ── CTA Banner ── */
+.cta-banner {
+  background: linear-gradient(130deg, #C2410C 0%, #EA580C 45%, #F59E0B 100%);
+  position: relative; overflow: hidden;
+}
+.cta-banner::before {
+  content: '🍪'; position: absolute; font-size: 8rem;
+  opacity: .08; top: -10px; right: 60px; pointer-events: none;
+}
+.cta-banner::after {
+  content: ''; position: absolute;
+  width: 320px; height: 320px; border-radius: 50%;
+  background: #ffffff12;
+  top: -80px; left: -60px;
+}
+
+/* ── Footer ── */
+.footer { background: var(--brown); color: #FEF3C7; }
+
+/* ── Mobile nav ── */
+.mobile-menu { background: rgba(255,251,245,.98); }
+
+/* ── Ticker ── */
+.ticker-wrap { overflow: hidden; background: var(--primary); }
+.ticker-content {
+  display: flex; gap: 56px; white-space: nowrap;
+  animation: ticker 22s linear infinite;
+  color: #fff; font-weight: 600; font-size: .88rem;
+}
+@keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
