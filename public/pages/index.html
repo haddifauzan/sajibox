@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SnackBox – Camilan Enak, Pesan Online!</title>
+  <title>SajiBox – Camilan Enak, Pesan Online!</title>
+  <link rel="icon" href="../assets/images/box_logo.png" type="image/png">
+  <meta name="description" content="SajiBox menyediakan snackbox premium untuk berbagai acara — dari pernikahan hingga acara kantor, kami selalu siap menyajikan yang terbaik.">
   <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -11,29 +13,45 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: 'var(--primary)',
-            'primary-light': 'var(--primary-light)',
-            secondary: 'var(--secondary)',
-            brown: 'var(--brown)',
-            accent: 'var(--accent)',
-            cream: 'var(--cream)',
-            'cream-dark': 'var(--cream-dark)',
-          }
-        }
-      }
-    }
-  </script>
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"/>
-  <link rel="stylesheet" href="assets/css/index.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'"/>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://images.unsplash.com">
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+  <link rel="preload" as="image" href="../assets/images/hero-img.png" fetchpriority="high">
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/index.css" />
+
 </head>
-<body x-data="snackbox()" @scroll.window="onScroll()" class="bg-cream">
+<body x-data="snackbox()" 
+      @scroll.window="onScroll()" 
+      class="bg-cream transition-all duration-700"
+      :class="{ 'overflow-hidden': isLoading }">
+
+  <!-- ══════════════════════════ PRELOADER ══════════════════════════ -->
+  <div x-show="isLoading" 
+       x-transition:leave="transition ease-in duration-800" 
+       x-transition:leave-start="opacity-100 scale-100" 
+       x-transition:leave-end="opacity-0 scale-110"
+       class="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-[#FFFBF5]">
+    <div class="relative">
+      <!-- Outer Ring Animation -->
+      <div class="w-24 h-24 rounded-full border-4 border-primary/10 border-t-primary animate-spin"></div>
+      <!-- Logo in Center -->
+      <div class="absolute inset-0 flex items-center justify-center">
+        <img src="../assets/images/logo/box_logo.png" alt="SajiBox Logo" class="h-20 w-auto animate-pulse" fetchpriority="high">
+      </div>
+    </div>
+    <div class="mt-8 flex flex-col items-center">
+      <div class="flex items-center gap-2 mb-3">
+        <img src="../assets/images/logo/text_logo_tr.png" alt="SajiBox Logo" class="h-16 md:h-20 w-auto object-contain">
+      </div>
+      <div class="w-40 h-1 bg-brown/5 rounded-full overflow-hidden relative">
+        <div class="absolute inset-0 bg-primary animate-loading-bar"></div>
+      </div>
+      <p class="mt-4 text-[10px] font-bold text-brown/30 uppercase tracking-[0.3em] animate-pulse">Memuat Kebahagiaan...</p>
+    </div>
+  </div>
+
 
   <!-- ══════════════════════════ LEFT SIDEBAR NAV ══════════════════════════ -->
   <aside class="hidden xl:flex flex-col justify-center fixed left-0 top-1/2 -translate-y-1/2 z-[200] gap-1 pl-3">
@@ -71,10 +89,8 @@
   <nav class="navbar" :class="{ scrolled: scrolled }">
     <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-20">
       <!-- Logo -->
-      <a href="index.html" class="flex items-center gap-2">
-        <span style="font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:900; color:#C2410C;">Saji</span>
-        <span style="font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:900; background:linear-gradient(135deg,#F59E0B,#C2410C); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">Box</span>
-        <span style="font-size:1.3rem; margin-left:2px;">🍪</span>
+      <a href="index.html" class="flex items-center">
+        <img src="../assets/images/logo/full_logo_tr.png" alt="SajiBox Logo" class="h-16 md:h-20 w-auto object-contain">
       </a>
 
       <!-- Desktop page nav -->
@@ -109,7 +125,7 @@
       </ul>
 
       <div class="flex items-center gap-4">
-        <a href="#paket" class="hidden md:inline-flex btn-primary text-sm py-2 px-4 lg:py-3 lg:px-6 whitespace-nowrap">
+        <a href="package.html" class="hidden md:inline-flex btn-primary text-sm py-2 px-4 lg:py-3 lg:px-6 whitespace-nowrap">
           Pesan Sekarang
           <i class="fa-solid fa-arrow-right"></i>
         </a>
@@ -145,7 +161,7 @@
            x-text="item.label">
         </a>
       </template>
-      <a href="#paket" class="btn-primary w-full flex items-center justify-center gap-2 mt-5 py-3">Pesan Sekarang <i class="fa-solid fa-arrow-right"></i></a>
+      <a href="package.html" class="btn-primary w-full flex items-center justify-center gap-2 mt-5 py-3">Pesan Sekarang <i class="fa-solid fa-arrow-right"></i></a>
     </div>
   </nav>
 
@@ -203,9 +219,10 @@
         <div class="flex-1 hero-image-wrap z-10" data-aos="fade-left">
           <div class="blob-1" style="top:-40px; left:-40px; width:280px; height:280px; z-index:0;"></div>
           <img
-            src="assets/images/hero-img.png"
+            src="../assets/images/hero-img.png"
             alt="Snackbox premium"
             class="hero-img relative z-10"
+            fetchpriority="high"
           />
           <!-- Floating chips -->
           <div style="position:absolute; top:20px; right:20px; background:#fff; border-radius:16px; padding:10px 16px; box-shadow:0 8px 24px #5A3E2B20; font-weight:700; font-size:.82rem; color:#5A3E2B; display:flex; align-items:center; gap:6px; z-index:20;">
@@ -248,7 +265,7 @@
   <!-- ══════════════════════════ TRUST STRIP ══════════════════════════ -->
   <section class="trust-strip py-14">
     <div class="max-w-7xl mx-auto px-6">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 ">
         <template x-for="trust in trusts" :key="trust.label">
           <div class="trust-item" data-aos="fade-down">
             <div class="trust-icon"><i :class="trust.icon"></i></div>
@@ -279,7 +296,7 @@
         <template x-for="(product, i) in products" :key="product.name">
           <div class="product-card" data-aos="fade-up" :data-aos-delay="i*100">
             <div class="product-img-wrap">
-              <img :src="product.img" :alt="product.name"/>
+              <img :src="product.img" :alt="product.name" loading="lazy"/>
               <span class="badge-hot" x-show="product.badge" x-text="product.badge"></span>
             </div>
             <div style="padding:20px 22px 24px;">
@@ -359,7 +376,7 @@
             
             <div class="flex items-center gap-3">
               <div style="width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#FDE68A,#F59E0B); display:flex; align-items:center; justify-content:center; font-size:1.1rem;">         
-                <img style="width:44px; height:44px; border-radius:50%; object-fit:cover;" :src="t.avatar" :alt="t.name">
+                <img style="width:44px; height:44px; border-radius:50%; object-fit:cover;" :src="t.avatar" :alt="t.name" loading="lazy">
               </div>
               <div>
                 <div style="font-weight:700; font-size:.9rem; color:#5A3E2B;" x-text="t.name"></div>
@@ -399,7 +416,7 @@
   </section>
 
   <!-- ══════════════════════════ CTA BANNER ═══════════════════════════ -->
-  <section class="cta-banner py-24 px-6 text-center" data-aos="fade-up">
+  <section class="cta-banner py-24 px-6 text-center">
     <div class="max-w-3xl mx-auto relative z-10">
       <div class="badge inline-flex mb-6" style="background: rgba(255,255,255,.25); color:#fff;">
         <i class="fa-solid fa-gift"></i> Promo Spesial Bulan Ini
@@ -424,10 +441,7 @@
      <div class="grid md:grid-cols-4 gap-10 pb-12 border-b border-white/10">
       <div class="md:col-span-1">
        <div class="flex items-center gap-2.5 mb-4">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center"><i class="fa-solid fa-basket-shopping text-white text-xl"></i>
-        </div>
-        <div class="flex flex-col leading-none"><span class="font-display font-800 text-xl text-white">SajiBox</span> <span class="text-[10px] text-accent font-semibold tracking-widest uppercase">Snack &amp; Catering</span>
-        </div>
+        <img src="../assets/images/logo/sajibox_logo.png" alt="SajiBox Logo" class="h-14 md:h-18 w-auto object-contain rounded-xl" loading="lazy">
        </div>
        <p class="text-sm leading-relaxed">Solusi snackbox lezat &amp; praktis untuk setiap momen spesial Anda. Fresh setiap hari.</p>
        <div class="flex gap-3 mt-5">
@@ -473,14 +487,14 @@
       </div>
      </div>
      <div class="pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/60">
-      <p>© 2025 SajiBox. Semua hak dilindungi.</p>
+      <p>&copy; 2026 SajiBox. Semua hak dilindungi.</p>
       <div class="flex gap-5"><a href="#" class="hover:text-accent">Kebijakan Privasi</a> <a href="#" class="hover:text-accent">Syarat &amp; Ketentuan</a>
       </div>
      </div>
     </div>
   </footer>
 
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script src="assets/js/index.js"></script>
+
+  <script src="../assets/js/index.js"></script>
 </body>
 </html>

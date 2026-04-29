@@ -2,6 +2,8 @@ function aboutPage() {
   return {
     scrolled: false,
     mobileOpen: false,
+    isLoading: true,
+
 
     pageNav: [
       { label: 'Beranda', href: 'index.html', active: false },
@@ -30,9 +32,19 @@ function aboutPage() {
     },
 
     init() {
-      if (typeof AOS !== 'undefined') {
-        AOS.init({ once: true, duration: 700, offset: 60 });
-      }
+      // Custom Scroll Reveal (Lightweight replacement for AOS)
+      const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('aos-animate');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+      document.querySelectorAll('[data-aos]').forEach(el => revealObserver.observe(el));
+
+      setTimeout(() => { this.isLoading = false; }, 500);
     }
   }
 }

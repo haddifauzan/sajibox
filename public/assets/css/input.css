@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+/* Memberitahu Tailwind lokasi HTML untuk di-scan */
+@source "../../pages";
+@source "../js";
+
+/* Memindahkan pengaturan dari tailwind.config.js ke sini */
+@theme {
+  --color-primary: #C2410C;
+  --color-primary-light: #EA580C;
+  --color-secondary: #F59E0B;
+  --color-brown: #5A3E2B;
+  --color-accent: #FDE68A;
+  --color-cream: #FFFBF5;
+  --color-cream-dark: #FEF3C7;
+  
+  --font-display: "Playfair Display", serif;
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+}

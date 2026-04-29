@@ -2,3 +2,6 @@
 .vscode/
 .idea/
 *.log
+
+.vercel
+.env*.local

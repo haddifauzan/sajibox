@@ -3,6 +3,8 @@ function snackbox() {
     scrolled: false,
     mobileOpen: false,
     activeSection: 'beranda',
+    isLoading: true,
+
 
     // Top navbar: multi-page navigation
     pageNav: [
@@ -38,14 +40,14 @@ function snackbox() {
     ],
     features: [
       { icon:'fa-solid fa-cookie-bite', bg:'#FDE68A55', title:'Aneka Pilihan', desc:'Lebih dari 20 varian snackbox untuk berbagai selera dan kebutuhan acara Anda.' },
-      { icon:'fa-solid fa-bolt', bg:'#FED7AA55', title:'Praktis & Cepat', desc:'Pesan mudah via WhatsApp atau website. Proses cepat tanpa ribet.' },
+      { icon:'fa-solid fa-bolt', bg:'#FED7AA55', title:'Praktis & Cepat', desc:'Pesan mudah via Website atau WhatsApp. Proses cepat tanpa ribet.' },
       { icon:'fa-solid fa-trophy', bg:'#FECACA55', title:'Terpercaya', desc:'Dipercaya lebih dari 10.000 pelanggan dengan rating bintang 5 tertinggi.' },
       { icon:'fa-solid fa-comment-dots', bg:'#D1FAE555', title:'Layanan Ramah', desc:'Tim kami siap membantu Anda 7 hari seminggu dengan ramah dan responsif.' },
     ],
     trusts: [
-      { icon:'fa-solid fa-wheat-awn', label:'Bahan Berkualitas', sub:'100% premium & higienis'     },
-      { icon:'fa-solid fa-gift', label:'Kemasan Eksklusif', sub:'Elegan & tahan banting'       },
-      { icon:'fa-solid fa-stopwatch', label:'Tepat Waktu', sub:'Garansi on-time delivery'     },
+      { icon:'fa-solid fa-wheat-awn', label:'Bahan Berkualitas', sub:'100% premium & higienis' },
+      { icon:'fa-solid fa-gift', label:'Kemasan Eksklusif', sub:'Elegan & tahan banting' },
+      { icon:'fa-solid fa-stopwatch', label:'Tepat Waktu', sub:'Garansi on-time delivery' },
       { icon:'fa-solid fa-face-smile', label:'Layanan Ramah', sub:'Respons < 1 jam' },
     ],
     products: [
@@ -105,9 +107,9 @@ function snackbox() {
       { icon:'fa-solid fa-truck', title:'Terima Pesanan', desc:'Snackbox dikirim tepat waktu ke lokasi Anda.' },
     ],
     testimonials: [
-      { quote: 'Snackbox-nya keren banget! Kemasan cantik, rasanya enak, tamu-tamu di acara pernikahan kami semua suka. Pasti pesan lagi!', name: 'Siti Rahayu', role: 'Event Organizer, Jakarta', avatar: 'assets/images/face6.jpg' },
-      { quote: 'Respon cepat, pengiriman tepat waktu, dan isinya memuaskan. Sudah 3 kali pesan untuk acara kantor, selalu puas!', name: 'Budi Santoso', role: 'HRD Manager, Bandung', avatar: 'assets/images/face16.jpg' },
-      { quote: 'Paket custom-nya menarik banget. Tim SnackBox sangat membantu dan sabar. Hasilnya melebihi ekspektasi!', name: 'Dewi Lestari', role: 'Wedding Organizer, Surabaya', avatar: 'assets/images/face23.jpg' },
+      { quote: 'Snackbox-nya keren banget! Kemasan cantik, rasanya enak, tamu-tamu di acara pernikahan kami semua suka. Pasti pesan lagi!', name: 'Siti Rahayu', role: 'Event Organizer, Bandung', avatar: '../assets/images/face6.jpg' },
+      { quote: 'Respon cepat, pengiriman tepat waktu, dan isinya memuaskan. Sudah 3 kali pesan untuk acara kantor, selalu puas!', name: 'Budi Santoso', role: 'HRD Manager, Bandung', avatar: '../assets/images/face16.jpg' },
+      { quote: 'Paket custom-nya menarik banget. Tim SnackBox sangat membantu dan sabar. Hasilnya melebihi ekspektasi!', name: 'Dewi Lestari', role: 'Wedding Organizer, Cimahi', avatar: '../assets/images/face23.jpg' },
     ],
     faqs: [
       { q: 'Berapa minimum pemesanan?', a: 'Minimum pemesanan adalah 10 box untuk paket reguler. Untuk paket corporate, minimum 50 box dengan harga lebih terjangkau.', open: false },
@@ -136,15 +138,25 @@ function snackbox() {
       this.activeSection = current;
     },
     init() {
-      // Initialize AOS
-      if (typeof AOS !== 'undefined') {
-        AOS.init({
-          once: true,
-          duration: 700,
-          offset: 60,
+      // Custom Scroll Reveal (Lightweight replacement for AOS)
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('aos-animate');
+            revealObserver.unobserve(entry.target);
+          }
         });
-      }
+      }, observerOptions);
+
+      document.querySelectorAll('[data-aos]').forEach(el => revealObserver.observe(el));
+
       setTimeout(() => this.onScroll(), 100);
+      setTimeout(() => { this.isLoading = false; }, 500);
     }
   }
 }

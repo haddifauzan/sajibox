@@ -4,43 +4,60 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tentang Kami – SajiBox</title>
-  <meta name="description" content="Kenali SajiBox lebih dekat — penyedia snackbox premium terpercaya untuk setiap momen spesial Anda."/>
+  <title>SajiBox – Camilan Enak, Pesan Online!</title>
+  <link rel="icon" href="../assets/images/box_logo.png" type="image/png">
+  <meta name="description" content="SajiBox menyediakan snackbox premium untuk berbagai acara — dari pernikahan hingga acara kantor, kami selalu siap menyajikan yang terbaik.">
   <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: 'var(--primary)',
-            'primary-light': 'var(--primary-light)',
-            secondary: 'var(--secondary)',
-            brown: 'var(--brown)',
-            accent: 'var(--accent)',
-            cream: 'var(--cream)',
-            'cream-dark': 'var(--cream-dark)',
-          }
-        }
-      }
-    }
-  </script>
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"/>
-  <link rel="stylesheet" href="assets/css/index.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'"/>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://images.unsplash.com">
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+  <link rel="stylesheet" href="../assets/css/style.css" />
+
+  <link rel="stylesheet" href="../assets/css/index.css" />
 </head>
-<body x-data="aboutPage()" @scroll.window="onScroll()" class="bg-cream">
+<body x-data="aboutPage()" 
+      x-init="init()"
+      @scroll.window="onScroll()" 
+      class="bg-cream transition-all duration-700"
+      :class="{ 'overflow-hidden': isLoading }">
+
+  <!-- ══════════════════════════ PRELOADER ══════════════════════════ -->
+  <div x-show="isLoading" 
+       x-transition:leave="transition ease-in duration-800" 
+       x-transition:leave-start="opacity-100 scale-100" 
+       x-transition:leave-end="opacity-0 scale-110"
+       class="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-[#FFFBF5]">
+    <div class="relative">
+      <!-- Outer Ring Animation -->
+      <div class="w-24 h-24 rounded-full border-4 border-primary/10 border-t-primary animate-spin"></div>
+      <!-- Logo in Center -->
+      <div class="absolute inset-0 flex items-center justify-center">
+        <img src="../assets/images/logo/box_logo.png" alt="SajiBox Logo" class="h-20 w-auto animate-pulse" fetchpriority="high">
+      </div>
+    </div>
+    <div class="mt-8 flex flex-col items-center">
+      <div class="flex items-center gap-2 mb-3">
+        <img src="../assets/images/logo/text_logo_tr.png" alt="SajiBox Logo" class="h-16 md:h-20 w-auto object-contain">
+      </div>
+      <div class="w-40 h-1 bg-brown/5 rounded-full overflow-hidden relative">
+        <div class="absolute inset-0 bg-primary animate-loading-bar"></div>
+      </div>
+      <p class="mt-4 text-[10px] font-bold text-brown/30 uppercase tracking-[0.3em] animate-pulse">Memuat Kebahagiaan...</p>
+    </div>
+  </div>
+
 
   <!-- ══════════════════════════ TOP NAVBAR ══════════════════════════ -->
   <nav class="navbar" :class="{ scrolled: scrolled }">
     <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-20">
-      <a href="index.html" class="flex items-center gap-2">
-        <span style="font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:900; color:#C2410C;">Saji</span>
-        <span style="font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:900; background:linear-gradient(135deg,#F59E0B,#C2410C); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">Box</span>
-        <span style="font-size:1.3rem; margin-left:2px;">🍪</span>
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center">
+        <img src="../assets/images/logo/full_logo_tr.png" alt="SajiBox Logo" class="h-16 md:h-20 w-auto object-contain">
       </a>
       <ul class="hidden md:flex items-center gap-4 lg:gap-6">
         <template x-for="item in pageNav" :key="item.label">
@@ -52,7 +69,7 @@
         </template>
       </ul>
       <div class="flex items-center gap-4">
-        <a href="index.html#paket" class="hidden md:inline-flex btn-primary text-sm py-2 px-4 lg:py-3 lg:px-6 whitespace-nowrap">
+        <a href="package.html" class="max-lg:hidden btn-primary text-sm py-2 px-4 lg:py-3 lg:px-6 whitespace-nowrap">
           Pesan Sekarang <i class="fa-solid fa-arrow-right"></i>
         </a>
         <button @click="mobileOpen = !mobileOpen" class="md:hidden p-2 rounded-xl" style="color:#C2410C;">
@@ -66,7 +83,7 @@
         <a :href="item.href" @click="mobileOpen=false" class="block py-2 text-sm font-semibold"
            :class="item.active ? 'text-primary' : 'text-brown hover:text-primary'" x-text="item.label"></a>
       </template>
-      <a href="index.html#paket" class="btn-primary w-full flex items-center justify-center gap-2 mt-5 py-3">Pesan Sekarang <i class="fa-solid fa-arrow-right"></i></a>
+      <a href="package.html" class="btn-primary w-full flex items-center justify-center gap-2 mt-5 py-3">Pesan Sekarang <i class="fa-solid fa-arrow-right"></i></a>
     </div>
   </nav>
 
@@ -97,7 +114,8 @@
             <div class="blob-1" style="top:-30px; left:-30px; width:220px; height:220px; z-index:0; opacity:.4;"></div>
             <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&auto=format&fit=crop&q=80"
                  alt="Tim SajiBox menyiapkan snackbox"
-                 class="relative z-10 rounded-3xl shadow-xl object-cover w-full" style="aspect-ratio:4/3;" />
+                 class="relative z-10 rounded-3xl shadow-xl object-cover w-full" style="aspect-ratio:4/3;" 
+                 loading="lazy" />
             <div style="position:absolute; bottom:20px; right:-10px; background:#FDE68A; border-radius:16px; padding:10px 18px; box-shadow:0 8px 24px #F59E0B44; font-weight:700; font-size:.82rem; color:#92400E; display:flex; align-items:center; gap:6px; z-index:20;">
               <i class="fa-solid fa-cake-candles text-primary"></i> Sejak 2020
             </div>
@@ -232,52 +250,60 @@
      <div class="grid md:grid-cols-4 gap-10 pb-12 border-b border-white/10">
       <div class="md:col-span-1">
        <div class="flex items-center gap-2.5 mb-4">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center"><i class="fa-solid fa-basket-shopping text-white text-xl"></i></div>
-        <div class="flex flex-col leading-none"><span class="font-display font-800 text-xl text-white">SajiBox</span> <span class="text-[10px] text-accent font-semibold tracking-widest uppercase">Snack &amp; Catering</span></div>
+        <img src="../assets/images/logo/sajibox_logo.png" alt="SajiBox Logo" class="h-14 md:h-18 w-auto object-contain rounded-xl" loading="lazy">
        </div>
        <p class="text-sm leading-relaxed">Solusi snackbox lezat &amp; praktis untuk setiap momen spesial Anda. Fresh setiap hari.</p>
        <div class="flex gap-3 mt-5">
-        <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition"><i class="fa-brands fa-instagram text-white text-lg"></i></a>
-        <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition"><i class="fa-brands fa-facebook text-white text-lg"></i></a>
-        <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition"><i class="fa-brands fa-tiktok text-white text-lg"></i></a>
-        <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition"><i class="fa-brands fa-youtube text-white text-lg"></i></a>
+        <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition">
+          <i class="fa-brands fa-instagram text-white text-lg"></i>
+        </a> 
+        <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition">
+          <i class="fa-brands fa-facebook text-white text-lg"></i>
+        </a> 
+        <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition">
+          <i class="fa-brands fa-tiktok text-white text-lg"></i>
+        </a> 
+        <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition">
+          <i class="fa-brands fa-youtube text-white text-lg"></i>
+        </a>
        </div>
       </div>
       <div>
        <h4 class="font-display font-700 text-white text-lg mb-4">Menu</h4>
        <ul class="space-y-2.5 text-sm">
-        <li><a href="index.html" class="hover:text-accent transition">Beranda</a></li>
-        <li><a href="index.html#paket" class="hover:text-accent transition">Paket</a></li>
-        <li><a href="index.html#cara-pesan" class="hover:text-accent transition">Cara Pesan</a></li>
-        <li><a href="index.html#testimoni" class="hover:text-accent transition">Testimoni</a></li>
-        <li><a href="index.html#faq" class="hover:text-accent transition">FAQ</a></li>
+        <li><a href="#beranda" class="hover:text-accent transition">Beranda</a></li>
+        <li><a href="#paket" class="hover:text-accent transition">Paket</a></li>
+        <li><a href="#cara-pesan" class="hover:text-accent transition">Cara Pesan</a></li>
+        <li><a href="#testimoni" class="hover:text-accent transition">Testimoni</a></li>
+        <li><a href="#faq" class="hover:text-accent transition">FAQ</a></li>
        </ul>
       </div>
       <div>
        <h4 class="font-display font-700 text-white text-lg mb-4">Kontak</h4>
        <ul class="space-y-2.5 text-sm">
-        <li><i class="fa-solid fa-location-dot mt-0.5 flex-shrink-0 text-accent mr-2"></i> Jl. Abdul Halim No. 82, Cimahi 50220</li>
-        <li><i class="fa-solid fa-phone flex-shrink-0 text-accent mr-2"></i> +62 812-3456-7890</li>
-        <li><i class="fa-solid fa-envelope flex-shrink-0 text-accent mr-2"></i> halo@sajibox.id</li>
+        <li><i class="fa-solid fa-location-dot mt-0.5 flex-shrink-0 text-accent mr-2"></i> <span id="footerAddress">Jl. Abdul Halim No. 82, Cimahi 50220</span></li>
+        <li><i class="fa-solid fa-phone flex-shrink-0 text-accent mr-2"></i> <span id="footerPhone">+62 812-3456-7890</span></li>
+        <li><i class="fa-solid fa-envelope flex-shrink-0 text-accent mr-2"></i> <span id="footerEmail">halo@sajibox.id</span></li>
        </ul>
       </div>
       <div>
        <h4 class="font-display font-700 text-white text-lg mb-4">Newsletter</h4>
        <p class="text-sm mb-3">Dapatkan promo &amp; menu baru langsung di email Anda.</p>
-       <form class="flex flex-col gap-2">
-        <input type="email" required placeholder="email@anda.com" class="bg-white/10 border border-white/20 rounded-full px-4 py-2.5 text-sm text-white placeholder-white/50 focus:outline-none focus:border-accent">
-        <button type="submit" class="btn-primary rounded-full px-4 py-2.5 text-sm font-semibold flex items-center justify-center gap-2"><i class="fa-solid fa-paper-plane"></i> Berlangganan</button>
+       <form id="newsletterForm" class="flex flex-col gap-2"><label for="newsletterEmail" class="sr-only">Email</label> <input id="newsletterEmail" type="email" required placeholder="email@anda.com" class="bg-white/10 border border-white/20 rounded-full px-4 py-2.5 text-sm text-white placeholder-white/50 focus:outline-none focus:border-accent">
+       <button type="submit" class="btn-primary rounded-full px-4 py-2.5 text-sm font-semibold flex items-center justify-center gap-2"> <i class="fa-solid fa-paper-plane"></i> Berlangganan </button>
+       <p id="newsletterMsg" class="text-xs text-accent hidden">Terima kasih! Email berhasil didaftarkan. 🎉</p>
        </form>
       </div>
      </div>
      <div class="pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/60">
-      <p>&copy; 2025 SajiBox. Semua hak dilindungi.</p>
-      <div class="flex gap-5"><a href="#" class="hover:text-accent">Kebijakan Privasi</a> <a href="#" class="hover:text-accent">Syarat &amp; Ketentuan</a></div>
+      <p>&copy; 2026 SajiBox. Semua hak dilindungi.</p>
+      <div class="flex gap-5"><a href="#" class="hover:text-accent">Kebijakan Privasi</a> <a href="#" class="hover:text-accent">Syarat &amp; Ketentuan</a>
+      </div>
      </div>
     </div>
   </footer>
 
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script src="assets/js/about.js"></script>
+
+  <script src="../assets/js/about.js"></script>
 </body>
 </html>
