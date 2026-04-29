@@ -6,7 +6,7 @@ function aboutPage() {
 
 
     pageNav: [
-      { label: 'Beranda', href: 'index.html', active: false },
+      { label: 'Beranda', href: '/pages', active: false },
       { label: 'List Paket', href: 'package.html', active: false },
       { label: 'Custom Pesanan', href: 'custom.html', active: false },
       { label: 'Tracking', href: 'tracking.html', active: false },

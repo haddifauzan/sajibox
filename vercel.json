@@ -4,14 +4,14 @@
   "rewrites": [
     {
       "source": "/",
-      "destination": "/public/index.html"
+      "destination": "/public/pages/index.html"
     },
     {
       "source": "/assets/(.*)",
       "destination": "/public/assets/$1"
     },
     {
-      "source": "/(.*)",
+      "source": "/(?!assets/|pages/)(.*)",
       "destination": "/public/pages/$1.html"
     }
   ]
