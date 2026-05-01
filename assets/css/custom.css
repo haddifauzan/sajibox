@@ -81,11 +81,10 @@
 
 /* ── Sticky Summary ── */
 .sticky-summary {
-    position: sticky; top: 100px;
     background: #fff; border-radius: 28px;
     border: 1px solid #FDE68A99;
     box-shadow: 0 20px 50px rgba(90, 62, 43, 0.08);
-    padding: 32px; overflow: hidden;
+    padding: 32px;
 }
 
 /* ── Capacity bar ── */
@@ -190,6 +189,21 @@
 .step-section {
     margin-top: 20px;
     margin-bottom: 48px;
+}
+
+/* ── Custom Scrollbar for Summary ── */
+.sticky-summary::-webkit-scrollbar {
+    width: 4px;
+}
+.sticky-summary::-webkit-scrollbar-track {
+    background: transparent;
+}
+.sticky-summary::-webkit-scrollbar-thumb {
+    background: #E5D5C5;
+    border-radius: 10px;
+}
+.sticky-summary::-webkit-scrollbar-thumb:hover {
+    background: #C2410C44;
 }
 
 .step-section:last-child {
