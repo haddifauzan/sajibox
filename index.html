@@ -25,7 +25,8 @@
 <body x-data="snackbox()" 
       @scroll.window="onScroll()" 
       class="bg-cream transition-all duration-700"
-      :class="{ 'overflow-hidden': isLoading }">
+      :class="{ 'overflow-hidden': isLoading }"
+      style="scrollbar-gutter: stable;">
 
   <!-- ══════════════════════════ PRELOADER ══════════════════════════ -->
   <div x-show="isLoading" 

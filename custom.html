@@ -20,7 +20,8 @@
       x-init="init()"
       @scroll.window="onScroll()" 
       class="bg-cream transition-all duration-700"
-      :class="{ 'overflow-hidden': isLoading }">
+      :class="{ 'overflow-hidden': isLoading }"
+      style="scrollbar-gutter: stable;">
 
   <!-- ══════════════ PRELOADER ══════════════ -->
   <div x-show="isLoading" 
@@ -203,7 +204,8 @@
                   <input type="number" 
                          x-model.number="boxQty" 
                          min="1"
-                         @input="if(boxQty < 1 || isNaN(boxQty)) boxQty = 1"
+                         @blur="if(!boxQty || boxQty < 1) boxQty = 1"
+                         @change="if(!boxQty || boxQty < 1) boxQty = 1"
                          class="font-black text-sm w-8 text-brown text-center bg-transparent border-none outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
                   <button class="qty-btn" @click="increaseBoxQty()">
                     <i class="fa-solid fa-plus text-[10px]"></i>
@@ -435,7 +437,7 @@
                 <i class="fa-solid fa-arrow-left"></i> Kembali
               </button>
               <button class="nav-btn-next" @click="checkout()" style="background:linear-gradient(135deg,#16A34A,#15803D); box-shadow:0 6px 20px #16A34A44;">
-                <i class="fa-solid fa-cart-shopping text-sm"></i> Pesan Sekarang
+                <i class="fa-solid fa-cart-shopping text-sm"></i> Checkout Pesanan
               </button>
             </div>
           </div>
@@ -464,7 +466,7 @@
                 Ringkasan Pesanan
               </h3>
               <!-- Close button only on mobile -->
-              <button @click="summaryOpen = false" class="lg:hidden w-8 h-8 flex items-center justify-center rounded-full bg-brown/5 text-brown/40">
+              <button @click="summaryOpen = false" class="lg:hidden w-8 h-8 flex items-center justify-center rounded-full bg-brown/5 text-brown/40 cursor-pointer">
                 <i class="fa-solid fa-xmark"></i>
               </button>
             </div>
@@ -601,7 +603,7 @@
                       class="nav-btn-next w-full justify-center py-4 text-sm"
                       @click="checkout()"
                       style="background:linear-gradient(135deg,#10B981,#059669);">
-                <i class="fa-solid fa-cart-shopping text-sm mr-2"></i> Pesan Sekarang
+                <i class="fa-solid fa-cart-shopping text-sm mr-2"></i> Checkout Pesanan
               </button>
 
               <!-- Reset Button -->
