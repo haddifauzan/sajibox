@@ -153,7 +153,7 @@ function checkoutPage() {
         totalPrice: this.order.totalPrice || 0
       };
 
-      const scriptURL = "https://script.google.com/macros/s/AKfycbyZKmVYzlGzuIyZDf8bWOsgK3VO5b9--MinoWPazTlnfjiHCk1w3b6wrPhv-S11dToF/exec";
+      const scriptURL = "https://script.google.com/macros/s/AKfycbyMNbyuuN5Ux1yjdGpg8TGrJI9j8I6QbhpzOdCV91z7yP8gM3dN8BX8H9j-yFKlG9ve/exec";
 
       fetch(scriptURL, {
         method: "POST",
