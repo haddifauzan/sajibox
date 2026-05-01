@@ -1,0 +1,201 @@
+/* ── Step Wizard ── */
+.step-bar { display: flex; align-items: center; gap: 0; }
+.step-node {
+    display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1;
+    cursor: pointer; position: relative;
+}
+.step-circle {
+    width: 44px; height: 44px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: .95rem;
+    border: 2px solid #E5D5C5;
+    background: #fff;
+    color: #B09080;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative; z-index: 1;
+}
+.step-node.active .step-circle {
+    background: #C2410C; border-color: #C2410C; color: #fff;
+    box-shadow: 0 8px 20px rgba(194, 65, 12, 0.25);
+    transform: scale(1.1);
+}
+.step-node.done .step-circle {
+    background: #10B981; border-color: #10B981; color: #fff;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.2);
+}
+.step-label { font-size: .75rem; font-weight: 800; color: #B09080; white-space: nowrap; margin-top: 4px; transition: color 0.3s; }
+.step-node.active .step-label { color: #C2410C; }
+.step-node.done .step-label  { color: #10B981; }
+.step-connector {
+    flex: 1; height: 3px; background: #E5D5C5; max-width: 60px;
+    transition: all 0.4s;
+    border-radius: 10px;
+}
+.step-connector.done { background: #10B981; }
+
+/* ── Cards ── */
+.option-card {
+    border: 2px solid #E5D5C5;
+    border-radius: 20px;
+    background: #fff;
+    cursor: pointer;
+    padding: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.option-card:hover { 
+    border-color: #F59E0B; 
+    box-shadow: 0 12px 30px rgba(245, 158, 11, 0.15); 
+    transform: translateY(-4px); 
+}
+.option-card.selected { 
+    border-color: #C2410C; 
+    box-shadow: 0 12px 30px rgba(194, 65, 12, 0.15); 
+    background: #FFF7ED;
+}
+.check-badge {
+    width: 28px; height: 28px;
+    background: #C2410C; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: .8rem;
+    opacity: 0; transform: scale(0.5);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(194, 65, 12, 0.3);
+}
+.option-card.selected .check-badge { opacity: 1; transform: scale(1); }
+
+/* ── Qty Counter ── */
+.qty-btn {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 1.5px solid #E5D5C5; background: #fff;
+    cursor: pointer; font-size: .9rem; font-weight: 700;
+    color: #C2410C; transition: all .15s;
+}
+.qty-btn:hover:not(:disabled) { background: #C2410C; color: #fff; border-color: #C2410C; }
+.qty-btn:disabled { opacity: .35; cursor: not-allowed; }
+
+/* ── Sticky Summary ── */
+.sticky-summary {
+    position: sticky; top: 100px;
+    background: #fff; border-radius: 28px;
+    border: 1px solid #FDE68A99;
+    box-shadow: 0 20px 50px rgba(90, 62, 43, 0.08);
+    padding: 32px; overflow: hidden;
+}
+
+/* ── Capacity bar ── */
+.cap-bar-track {
+    height: 10px; background: #F3E8D5; border-radius: 100px; overflow: hidden;
+    margin: 8px 0;
+}
+.cap-bar-fill {
+    height: 100%; border-radius: 100px;
+    background: linear-gradient(90deg, #C2410C, #F59E0B);
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.cap-bar-fill.full { background: #EF4444; }
+.cap-bar-fill.valid { background: #16A34A; }
+
+/* ── Food category pill ── */
+.cat-pill {
+    padding: 6px 16px; border-radius: 100px;
+    font-size: .78rem; font-weight: 700; cursor: pointer;
+    border: 1.5px solid #E5D5C5; color: #92601A; background: #fff;
+    transition: all .15s;
+}
+.cat-pill.active { background: #C2410C; color: #fff; border-color: #C2410C; }
+
+/* ── Design image ── */
+.design-img {
+    width: 100%; aspect-ratio: 1/1;
+    object-fit: cover;
+    background: #F3E8D5;
+}
+.design-img-placeholder {
+    width: 100%; aspect-ratio: 1/1;
+    background: linear-gradient(135deg, #FDE68A55, #C2410C22);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem;
+}
+
+/* ── Review list ── */
+.review-row {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding: 12px 0; border-bottom: 1px dashed #F3E8D5;
+}
+.review-row:last-child { border-bottom: none; }
+
+/* ── Nav btn ── */
+.nav-btn-prev {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 24px; border-radius: 100px;
+    border: 2px solid #C2410C; color: #C2410C;
+    font-weight: 700; font-size: .9rem; cursor: pointer;
+    background: transparent; transition: all .2s;
+}
+.nav-btn-prev:hover { background: #FFF7ED; }
+.nav-btn-next {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 28px; border-radius: 100px;
+    background: linear-gradient(135deg, #C2410C, #EA580C);
+    color: #fff; font-weight: 700; font-size: .9rem; cursor: pointer;
+    border: none; box-shadow: 0 6px 20px #C2410C44;
+    transition: all .2s;
+}
+.nav-btn-next:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 28px #C2410C55; }
+.nav-btn-next:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+@media (max-width: 640px) {
+    .nav-btn-prev, .nav-btn-next {
+        padding: 8px 16px;
+        font-size: 0.75rem;
+        gap: 6px;
+    }
+}
+
+/* ── Card ucapan ── */
+.card-textarea {
+    width: 100%; padding: 14px 16px;
+    border: 2px solid #E5D5C5; border-radius: 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: .9rem; color: #5A3E2B;
+    resize: none; outline: none;
+    transition: border-color .2s;
+    background: #FFFBF5;
+}
+.card-textarea:focus { border-color: #C2410C; }
+
+/* ── Scroll into view after step header ── */
+#step-content { scroll-margin-top: 100px; }
+
+/* ── Layout Helpers ── */
+.horizontal-scroll {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+@media (min-width: 768px) {
+    .horizontal-scroll {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px;
+    }
+}
+
+.step-section {
+    margin-top: 20px;
+    margin-bottom: 48px;
+}
+
+.step-section:last-child {
+    margin-bottom: 0;
+}
+
+.section-header {
+    margin-bottom: 24px;
+}

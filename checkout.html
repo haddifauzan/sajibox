@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout – SajiBox</title>
+  <link rel="icon" href="assets/images/logo/box_logo.png" type="image/png">
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'"/>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/index.css" />
+  <link rel="stylesheet" href="assets/css/checkout.css" />
+</head>
+
+<body x-data="checkoutPage()" 
+      x-init="init()"
+      class="bg-cream transition-all duration-700"
+      :class="{ 'overflow-hidden': isLoading }">
+
+  <!-- ══════════════ PRELOADER ══════════════ -->
+  <div x-show="isLoading" 
+       x-transition:leave="transition ease-in duration-800" 
+       x-transition:leave-start="opacity-100 scale-100" 
+       x-transition:leave-end="opacity-0 scale-110"
+       class="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-[#FFFBF5]">
+    <div class="relative">
+      <div class="w-24 h-24 rounded-full border-4 border-primary/10 border-t-primary animate-spin"></div>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <img src="assets/images/logo/box_logo.png" alt="SajiBox" class="h-20 w-auto animate-pulse rounded-full">
+      </div>
+    </div>
+    <div class="mt-8 flex flex-col items-center">
+      <img src="assets/images/logo/text_logo_tr.png" alt="SajiBox" class="h-16 w-auto object-contain mb-3">
+      <div class="w-40 h-1 bg-brown/5 rounded-full overflow-hidden relative">
+        <div class="absolute inset-0 bg-primary animate-loading-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ NAVBAR ══════════════ -->
+  <nav class="navbar scrolled">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-20">
+      <a href="index.html" class="flex items-center">
+        <img src="assets/images/logo/full_logo_tr.png" alt="SajiBox Logo" class="h-16 md:h-20 w-auto object-contain">
+      </a>
+      <ul class="hidden md:flex items-center gap-4 lg:gap-6">
+        <li><a href="index.html" class="text-sm font-semibold text-brown hover:text-primary transition-colors duration-200">Beranda</a></li>
+      </ul>
+      <div class="flex items-center gap-4">
+        <a href="package.html" class="max-lg:hidden btn-primary text-sm py-2 px-4 lg:py-3 lg:px-6 whitespace-nowrap">
+          Pesan Paketan <i class="fa-solid fa-arrow-right ml-2"></i>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ══════════════ MAIN CONTENT ══════════════ -->
+  <section class="py-24 pt-32" style="background:#FFFBF5; min-h: 80vh;">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+
+      <div class="mb-8 text-center">
+        <h1 style="font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,2.8rem); font-weight:900; color:#5A3E2B; line-height:1.15;" class="mb-3">
+          Checkout <span style="color:#C2410C;">Pesanan</span>
+        </h1>
+        <p style="color:#92601A; font-weight:500;">Periksa kembali detail pesanan Anda sebelum melakukan pembayaran.</p>
+      </div>
+
+      <!-- Jika tidak ada order -->
+      <template x-if="!order && !isLoading">
+        <div class="text-center py-16 bg-white rounded-3xl border" style="border-color:#FDE68A99;">
+          <i class="fa-solid fa-basket-shopping text-6xl mb-4 text-primary/30"></i>
+          <h2 style="font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:#5A3E2B;">Pesanan Kosong</h2>
+          <p style="color:#92601A; font-weight:500; margin-bottom:20px;">Anda belum memiliki pesanan untuk dicheckout.</p>
+          <button @click="window.location.href='custom.html'" class="nav-btn-next">Mulai Pesan <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </template>
+
+      <!-- Jika ada order -->
+      <template x-if="order && !isLoading">
+        <div>
+          <div class="rounded-2xl overflow-hidden shadow-lg" style="border:1px solid #FDE68A99; background:#fff;">
+            
+            <div class="p-5" style="background:#FFF7ED; border-bottom:1px solid #FDE68A99;">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-receipt text-primary"></i>
+                <span class="font-bold text-sm uppercase tracking-wider" style="color:#5A3E2B;">Tipe Pesanan: <span x-text="order.type === 'custom' ? 'Custom Snackbox' : 'Paket Jadi'" class="text-primary"></span></span>
+              </div>
+            </div>
+
+            <!-- Box (Hanya Custom) -->
+            <template x-if="order.type === 'custom' && order.box">
+              <div class="p-5 border-b" style="border-color:#F3E8D5;">
+                <div class="flex items-center gap-2 mb-3">
+                  <i class="fa-solid fa-box text-primary"></i>
+                  <span class="font-bold text-sm uppercase tracking-wider" style="color:#C2410C;">Ukuran Box</span>
+                </div>
+                <div class="review-row">
+                  <div>
+                    <span style="color:#5A3E2B; font-weight:600;" x-text="order.box.name"></span>
+                    <p class="text-xs mt-0.5" style="color:#B09080;" x-text="formatPrice(order.box.price) + ' × ' + order.boxQty + ' box'"></p>
+                  </div>
+                  <span class="font-bold" style="color:#C2410C;" x-text="formatPrice(order.box.price * order.boxQty)"></span>
+                </div>
+              </div>
+            </template>
+
+            <!-- Paket Detail (Hanya Package) -->
+            <template x-if="order.type === 'package' && order.package">
+              <div class="p-5 border-b" style="border-color:#F3E8D5;">
+                <div class="flex items-center gap-2 mb-3">
+                  <i class="fa-solid fa-gift text-primary"></i>
+                  <span class="font-bold text-sm uppercase tracking-wider" style="color:#C2410C;">Paket Pilihan</span>
+                </div>
+                <div class="review-row">
+                  <div>
+                    <span style="color:#5A3E2B; font-weight:600;" x-text="order.package.name"></span>
+                    <p class="text-xs mt-0.5" style="color:#B09080;" x-text="formatPrice(order.package.price) + ' × ' + order.boxQty + ' box'"></p>
+                  </div>
+                  <span class="font-bold" style="color:#C2410C;" x-text="formatPrice(order.package.price * order.boxQty)"></span>
+                </div>
+              </div>
+            </template>
+
+            <!-- Foods (Hanya Custom) -->
+            <template x-if="order.type === 'custom' && order.foods">
+              <div class="p-5 border-b" style="border-color:#F3E8D5;">
+                <div class="flex items-center gap-2 mb-3">
+                  <i class="fa-solid fa-utensils text-primary"></i>
+                  <span class="font-bold text-sm uppercase tracking-wider" style="color:#C2410C;">Isi Makanan</span>
+                </div>
+                <template x-for="food in order.foods" :key="food.name">
+                  <div class="review-row">
+                    <span style="color:#5A3E2B;">
+                      <span x-text="food.name"></span>
+                      <span class="ml-2 text-xs font-bold px-2 py-0.5 rounded-full" style="background:#FDE68A55; color:#92400E;" x-text="'×' + (food.qty * order.boxQty)"></span>
+                    </span>
+                    <span class="font-bold text-sm" style="color:#5A3E2B;" x-text="formatPrice(food.price * food.qty * order.boxQty)"></span>
+                  </div>
+                </template>
+                <div class="review-row mt-2 pt-2 border-t border-dashed border-brown/10">
+                  <span class="text-m font-bold text-brown/50">Total Makanan</span>
+                  <span class="text-m font-black text-primary" x-text="formatPrice(order.foods.reduce((sum, f) => sum + (f.price * f.qty), 0) * order.boxQty)"></span>
+                </div>
+              </div>
+            </template>
+
+            <!-- Design -->
+            <template x-if="order.design">
+              <div class="p-5 border-b" style="border-color:#F3E8D5;">
+                <div class="flex items-center gap-2 mb-3">
+                  <i class="fa-solid fa-palette text-primary"></i>
+                  <span class="font-bold text-sm uppercase tracking-wider" style="color:#C2410C;">Desain Box</span>
+                </div>
+                <div class="review-row">
+                  <div>
+                    <span style="color:#5A3E2B; font-weight:600;" x-text="order.design.name"></span>
+                    <p class="text-xs mt-0.5" style="color:#B09080;" x-text="formatPrice(order.design.price) + ' × ' + order.boxQty + ' box'"></p>
+                  </div>
+                  <span class="font-bold" style="color:#C2410C;"
+                        x-text="order.design.price > 0 ? formatPrice(order.design.price * order.boxQty) : 'Gratis'"></span>
+                </div>
+              </div>
+            </template>
+
+            <!-- Card -->
+            <template x-if="order.card">
+              <div class="p-5 border-b" style="border-color:#F3E8D5;">
+                <div class="flex items-center gap-2 mb-3">
+                  <i class="fa-solid fa-envelope-open-text text-primary"></i>
+                  <span class="font-bold text-sm uppercase tracking-wider" style="color:#C2410C;">Kartu Ucapan</span>
+                </div>
+                <div class="review-row">
+                  <div>
+                    <p style="color:#5A3E2B; font-weight:600;" x-text="!order.card.name ? 'Tanpa kartu' : order.card.name"></p>
+                    <p x-show="order.card.price > 0" class="text-xs mt-0.5" style="color:#B09080;" x-text="formatPrice(order.card.price) + ' × ' + order.boxQty + ' box'"></p>
+                    <p x-show="order.card.message" class="text-sm mt-1 italic" style="color:#92601A;">"<span x-text="order.card.message"></span>"</p>
+                  </div>
+                  <span class="font-bold" style="color:#C2410C;"
+                        x-text="order.card.price > 0 ? formatPrice(order.card.price * order.boxQty) : 'Gratis'"></span>
+                </div>
+              </div>
+            </template>
+
+            <!-- Jumlah Box -->
+            <div class="p-5 border-b">
+              <div class="flex justify-between items-center">
+                <div>
+                  <span class="font-bold" style="color:#5A3E2B;">Jumlah Box</span>
+                  <p class="text-xs mt-0.5" style="color:#B09080;" x-text="'@ ' + formatPrice(order.pricePerBox || 0) + ' / box'"></p>
+                </div>
+                <span style="color:#5A3E2B; font-weight:bold;" x-text="(order.boxQty || 1) + ' Box'"></span>
+              </div>
+            </div>
+
+            <!-- Total -->
+            <div class="p-5" style="background-color: #fffdf3;">
+              <div class="flex justify-between items-center">
+                <div>
+                  <p class="font-bold text-lg" style="color:#5A3E2B;">Total Harga</p>
+                  <p class="text-xs" style="color:#B09080;">Belum termasuk ongkos kirim</p>
+                </div>
+                <div>
+                  <div style="font-family:'Plus Jakarta Sans', sans-serif; font-size:1.6rem; font-weight:900; color:#C2410C;" x-text="formatPrice(order.totalPrice)"></div>
+                  <p x-show="order.boxQty > 1" class="text-[10px] text-right" style="color:#B09080;" x-text="'(' + (order.boxQty || 1) + ' box × ' + formatPrice(order.pricePerBox || 0) + ')'"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between mt-8">
+            <button class="nav-btn-prev" @click="backToShop()">
+              <i class="fa-solid fa-arrow-left"></i> Kembali Custom
+            </button>
+            <button class="nav-btn-next" @click="processCheckout()" style="background:linear-gradient(135deg,#16A34A,#15803D); box-shadow:0 6px 20px #16A34A44;">
+              Bayar Sekarang <i class="fa-solid fa-credit-card ml-1"></i>
+            </button>
+          </div>
+        </div>
+      </template>
+
+    </div>
+  </section>
+
+  <!-- ══════════════ FOOTER ══════════════ -->
+  <footer id="kontak" class="footer pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="grid md:grid-cols-4 gap-10 pb-12 border-b border-white/10">
+        <div class="md:col-span-1">
+          <div class="flex items-center gap-2.5 mb-4">
+            <img src="assets/images/logo/sajibox_logo.png" alt="SajiBox" class="h-14 w-auto object-contain rounded-xl" loading="lazy">
+          </div>
+          <p class="text-sm leading-relaxed">Solusi snackbox lezat &amp; praktis untuk setiap momen spesial Anda.</p>
+          <div class="flex gap-3 mt-5">
+            <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition"><i class="fa-brands fa-instagram text-white text-lg"></i></a>
+            <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition"><i class="fa-brands fa-facebook text-white text-lg"></i></a>
+            <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition"><i class="fa-brands fa-tiktok text-white text-lg"></i></a>
+          </div>
+        </div>
+        <div>
+          <h4 class="font-display font-700 text-white text-lg mb-4">Menu</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="index.html" class="hover:text-accent transition">Beranda</a></li>
+            <li><a href="package.html" class="hover:text-accent transition">Paket</a></li>
+            <li><a href="custom.html" class="hover:text-accent transition">Custom</a></li>
+            <li><a href="index.html#faq" class="hover:text-accent transition">FAQ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-display font-700 text-white text-lg mb-4">Kontak</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><i class="fa-solid fa-location-dot text-accent mr-2"></i>Jl. Abdul Halim No. 82, Cimahi 50220</li>
+            <li><i class="fa-solid fa-phone text-accent mr-2"></i>+62 813-3924-4834</li>
+            <li><i class="fa-solid fa-envelope text-accent mr-2"></i>sajibox@gmail.com</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-display font-700 text-white text-lg mb-4">Newsletter</h4>
+          <p class="text-sm mb-3">Dapatkan promo &amp; menu baru langsung di email Anda.</p>
+          <div class="flex flex-col gap-2">
+            <input type="email" placeholder="email@anda.com" class="bg-white/10 border border-white/20 rounded-full px-4 py-2.5 text-sm text-white placeholder-white/50 focus:outline-none focus:border-accent">
+            <button class="btn-primary rounded-full px-4 py-2.5 text-sm font-semibold flex items-center justify-center gap-2"><i class="fa-solid fa-paper-plane"></i> Berlangganan</button>
+          </div>
+        </div>
+      </div>
+      <div class="pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/60">
+        <p>&copy; 2026 SajiBox. Semua hak dilindungi.</p>
+        <div class="flex gap-5">
+          <a href="#" class="hover:text-accent">Kebijakan Privasi</a>
+          <a href="#" class="hover:text-accent">Syarat &amp; Ketentuan</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Page logic -->
+  <script src="assets/js/checkout.js"></script>
+</body>
+</html>

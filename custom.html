@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Custom Pesanan – SajiBox</title>
+  <link rel="icon" href="assets/images/logo/box_logo.png" type="image/png">
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'"/>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/index.css" />
+  <link rel="stylesheet" href="assets/css/custom.css" />
+</head>
+
+<body x-data="customPage()" 
+      x-init="init()"
+      @scroll.window="onScroll()" 
+      class="bg-cream transition-all duration-700"
+      :class="{ 'overflow-hidden': isLoading }">
+
+  <!-- ══════════════ PRELOADER ══════════════ -->
+  <div x-show="isLoading" 
+       x-transition:leave="transition ease-in duration-800" 
+       x-transition:leave-start="opacity-100 scale-100" 
+       x-transition:leave-end="opacity-0 scale-110"
+       class="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-[#FFFBF5]">
+    <div class="relative">
+      <div class="w-24 h-24 rounded-full border-4 border-primary/10 border-t-primary animate-spin"></div>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <img src="assets/images/logo/box_logo.png" alt="SajiBox" class="h-20 w-auto animate-pulse rounded-full">
+      </div>
+    </div>
+    <div class="mt-8 flex flex-col items-center">
+      <img src="assets/images/logo/text_logo_tr.png" alt="SajiBox" class="h-16 w-auto object-contain mb-3">
+      <div class="w-40 h-1 bg-brown/5 rounded-full overflow-hidden relative">
+        <div class="absolute inset-0 bg-primary animate-loading-bar"></div>
+      </div>
+      <p class="mt-4 text-[10px] font-bold text-brown/30 uppercase tracking-[0.3em] animate-pulse">Memuat Kebahagiaan...</p>
+    </div>
+  </div>
+
+  <!-- ══════════════ NAVBAR ══════════════ -->
+  <nav class="navbar z-[999]" :class="{ scrolled: scrolled }">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-20">
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center">
+        <img src="assets/images/logo/full_logo_tr.png" alt="SajiBox Logo" class="h-16 md:h-20 w-auto object-contain">
+      </a>
+
+      <!-- Desktop page nav -->
+      <ul class="hidden md:flex items-center gap-4 lg:gap-6">
+        <template x-for="item in pageNav" :key="item.label">
+          <li>
+            <a :href="item.href"
+               class="text-sm transition-colors duration-200 whitespace-nowrap"
+               :class="item.active
+                 ? 'text-primary font-bold border-b-2 border-primary pb-0.5'
+                 : 'text-brown font-semibold hover:text-primary'"
+               x-text="item.label">
+            </a>
+          </li>
+        </template>
+      </ul>
+
+      <div class="flex items-center gap-4">
+        <a href="package.html" class="hidden md:inline-flex btn-primary text-sm py-2 px-4 lg:py-3 lg:px-6 whitespace-nowrap">
+          Pesan Paketan
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+
+        <!-- Mobile burger -->
+        <button @click="mobileOpen = !mobileOpen" class="md:hidden p-2 rounded-xl" style="color:#C2410C;">
+          <i class="fa-solid fa-bars text-xl" x-show="!mobileOpen"></i>
+          <i class="fa-solid fa-xmark text-xl" x-show="mobileOpen"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div x-show="mobileOpen" x-transition style="display: none;" class="mobile-menu md:hidden px-6 pb-6 pt-2">
+      <!-- Mobile page links -->
+      <div class="mb-3 pb-3">
+        <p class="text-xs font-bold uppercase tracking-widest mb-2" style="color:#C2410C;">Halaman</p>
+        <template x-for="item in pageNav" :key="item.label">
+          <a :href="item.href" @click="mobileOpen=false"
+             class="block py-2 text-sm font-semibold"
+             :class="item.active ? 'text-primary' : 'text-brown hover:text-primary'"
+             x-text="item.label">
+          </a>
+        </template>
+      </div>
+      <a href="package.html" class="btn-primary w-full flex items-center justify-center gap-2 mt-5 py-3">Pesan Paketan <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </nav>
+
+  <!-- ══════════════ HERO ══════════════ -->
+  <section class="relative overflow-hidden pt-32 pb-8" style="background:linear-gradient(180deg,#FFFBF5 0%,#FFF7ED 60%,#FDE68A33 100%);">
+    <div class="blob-1" style="top:-60px; right:-150px; opacity:.4;"></div>
+    <div class="blob-2" style="bottom:-40px; left:-100px; opacity:.3;"></div>
+    <div class="max-w-3xl mx-auto px-6 text-center relative z-10">
+      <div class="badge inline-flex mb-5">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> Buat Pesanan Sesuai Keinginan
+      </div>
+      <h1 style="font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; color:#5A3E2B; line-height:1.15;" class="mb-4">
+        Custom <span style="color:#C2410C;">Snackbox</span>
+      </h1>
+      <p style="color:#92601A; font-weight:500;" class="text-base lg:text-lg leading-relaxed">
+        Pilih ukuran box, isian makanan, desain kemasan, hingga kartu ucapan — semua sesuai selera Anda.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════════ MAIN CONTENT ══════════════ -->
+  <section class="py-16" style="background:#FFFBF5;">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <!-- Step Progress Bar -->
+      <div class="max-w-2xl mx-auto mb-10 px-4">
+        <div class="step-bar">
+          <template x-for="(step, i) in [1,2,3,4]" :key="step">
+            <template x-if="true">
+              <div style="display:contents;">
+                <!-- Connector before node (skip for step 1) -->
+                <template x-if="i > 0">
+                  <div class="step-connector" :class="{ done: currentStep > i }"></div>
+                </template>
+                <!-- Node -->
+                <div class="step-node"
+                     :class="{ active: currentStep === step, done: currentStep > step }"
+                     @click="goToStep(step)">
+                  <div class="step-circle">
+                    <template x-if="currentStep > step">
+                      <i class="fa-solid fa-check text-xs"></i>
+                    </template>
+                    <template x-if="currentStep <= step">
+                      <span x-text="step"></span>
+                    </template>
+                  </div>
+                  <span class="step-label hidden sm:block" x-text="stepTitle(step)"></span>
+                </div>
+              </div>
+            </template>
+          </template>
+        </div>
+      </div>
+
+      <!-- Grid: Main + Sidebar -->
+      <div class="flex flex-col lg:flex-row justify-center gap-10 items-start px-4">
+        <!-- ── LEFT: Step Content ── -->
+        <div class="w-full lg:w-[65%] max-w-[850px]" id="step-content">
+          <!-- ░░ STEP 1: PILIH UKURAN BOX ░░ -->
+          <div x-show="currentStep === 1" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+            <div class="step-section">
+              <div class="section-header">
+                <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:800; color:#5A3E2B;">Pilih Ukuran Box</h2>
+                <p style="color:#92601A;">Setiap ukuran memiliki kapasitas dan harga dasar berbeda.</p>
+              </div>
+
+              <div class="horizontal-scroll">
+                <template x-for="box in boxes" :key="box.id">
+                  <div class="option-card p-4 text-center relative group"
+                       :class="{ selected: selectedBox?.id === box.id }"
+                       @click="selectBox(box)">
+                    <div class="absolute top-3 right-3 z-10">
+                      <div class="check-badge"><i class="fa-solid fa-check"></i></div>
+                    </div>
+                    <div class="relative mb-3 overflow-hidden rounded-xl group/img">
+                      <img :src="box.image" :alt="box.name" class="w-full h-28 sm:h-36 object-cover transition-transform duration-500 group-hover:scale-110">
+                      <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity cursor-zoom-in"
+                           @click.stop="openLightbox(box.image, box.name)">
+                        <i class="fa-solid fa-magnifying-glass-plus text-white text-xl translate-y-2 group-hover/img:translate-y-0 transition-transform"></i>
+                      </div>
+                    </div>
+                    <h3 style="font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:800; color:#5A3E2B;" x-text="box.name"></h3>
+                    <div class="flex flex-wrap justify-center gap-2 my-2">
+                      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider" style="background:#FDE68A55; color:#92400E;">
+                        <i class="fa-solid fa-box-open"></i>
+                        <span x-text="box.capacity"></span>
+                      </span>
+                    </div>
+                    <p class="text-[0.75rem] leading-relaxed mb-4 text-brown/70 flex-grow" x-text="box.description"></p>
+                    <div class="mt-auto border-t border-brown/5 pt-3">
+                      <div style="font-weight:900; font-size:1.1rem; color:#C2410C;" x-text="formatPrice(box.price)"></div>
+                      <div class="text-[10px] font-bold tracking-widest mt-1" style="color:#B09080;">Harga Dasar / Box</div>
+                    </div>
+                  </div>
+                </template>
+              </div>
+
+              <!-- Jumlah Box Stepper -->
+              <div x-show="selectedBox" x-transition class="mt-6 flex items-center justify-between gap-4 shadow-sm" style="background:#FFFFFF; border:1.5px solid #E5D5C5; padding: 16px; border-radius: 16px;">
+                <div>
+                  <p class="font-bold text-sm" style="color:#5A3E2B;"><i class="fa-solid fa-boxes-stacked mr-2" style="color:#C2410C;"></i>Jumlah Box yang Dipesan</p>
+                  <p class="text-xs mt-0.5" style="color:#92601A;" x-text="'Total box: ' + formatPrice(boxPrice * boxQty)"></p>
+                </div>
+                <div class="flex items-center gap-2 bg-white rounded-full p-1 shadow-sm" style="border:1.5px solid #E5D5C5;">
+                  <button class="qty-btn" @click="decreaseBoxQty()" :disabled="boxQty <= 1">
+                    <i class="fa-solid fa-minus text-[10px]"></i>
+                  </button>
+                  <input type="number" 
+                         x-model.number="boxQty" 
+                         min="1"
+                         @input="if(boxQty < 1 || isNaN(boxQty)) boxQty = 1"
+                         class="font-black text-sm w-8 text-brown text-center bg-transparent border-none outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                  <button class="qty-btn" @click="increaseBoxQty()">
+                    <i class="fa-solid fa-plus text-[10px]"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end mt-8">
+              <button class="nav-btn-next" :disabled="!selectedBox" @click="nextStep()">
+                Lanjut: Pilih Makanan <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- ░░ STEP 2: PILIH MAKANAN ░░ -->
+          <div x-show="currentStep === 2" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+            <div class="step-section">
+              <div class="section-header">
+                <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:800; color:#5A3E2B;">Pilih Isi Makanan</h2>
+                <p style="color:#92601A;">Pilih minimal <strong x-text="minCapacity"></strong> hingga maksimal <strong x-text="currentCapacity"></strong> item untuk box Anda.</p>
+              </div>
+
+              <!-- Capacity Bar -->
+              <div class="p-4 rounded-2xl mb-8" style="background:#ffffff; border:1px solid #FDE68A99;">
+              <div class="flex justify-between items-center mb-2">
+                <div class="flex items-center gap-2">
+                  <i class="fa-solid fa-layer-group text-sm" style="color:#C2410C;"></i>
+                  <span class="text-sm font-bold" style="color:#5A3E2B;">
+                    Kapasitas: <span x-text="totalItemCount"></span> / <span x-text="currentCapacity"></span> item
+                  </span>
+                </div>
+                <span class="text-xs font-bold px-3 py-1 rounded-full"
+                      :class="isCapacityValid ? 'bg-green-100 text-green-700' : (totalItemCount >= minCapacity ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700')"
+                      x-text="isCapacityValid ? '✓ Sudah pas!' : (totalItemCount < minCapacity ? 'Kurang item' : 'Box penuh')">
+                </span>
+              </div>
+              <div class="cap-bar-track">
+                <div class="cap-bar-fill"
+                     :style="`width:${Math.min(capacityPercent,100)}%`"
+                     :class="{ 'full': totalItemCount >= currentCapacity, 'valid': isCapacityValid }"></div>
+              </div>
+              <div class="flex justify-between text-xs mt-1" style="color:#B09080;">
+                <span>Min: <span x-text="minCapacity"></span></span>
+                <span>Maks: <span x-text="currentCapacity"></span></span>
+              </div>
+            </div>
+
+            <!-- Category Filters -->
+            <div class="flex flex-wrap gap-3 mb-8">
+              <template x-for="cat in foodCategories" :key="cat">
+                <button class="cat-pill" 
+                        :class="{ 'active': activeCat === cat }"
+                        @click="activeCat = cat"
+                        x-text="cat">
+                </button>
+              </template>
+            </div>
+
+            <!-- Food Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+              <template x-for="food in getFoodsByCategory(activeCat)" :key="food.id">
+                <div class="option-card relative group flex flex-col"
+                     :class="{ selected: getFoodQty(food.id) > 0 }">
+                  <div class="absolute top-2 right-2 z-10 pointer-events-none">
+                    <div class="check-badge">
+                      <span class="text-xs font-black" x-text="getFoodQty(food.id)"></span>
+                    </div>
+                  </div>
+                  
+                  <div class="relative mb-2.5 overflow-hidden rounded-xl aspect-square bg-brown/5 group/img">
+                    <img :src="food.image" :alt="food.name" 
+                         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                         onerror="this.src='assets/images/placeholder-food.png'; this.classList.add('opacity-40')">
+                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity cursor-zoom-in"
+                         @click.stop="openLightbox(food.image, food.name)">
+                      <i class="fa-solid fa-magnifying-glass-plus text-white text-xl translate-y-2 group-hover/img:translate-y-0 transition-transform"></i>
+                    </div>
+                  </div>
+
+                  <h5 class="font-bold text-xs sm:text-sm mb-1 leading-tight text-brown" x-text="food.name"></h5>
+                  <p class="text-[9px] sm:text-[10px] font-black tracking-widest uppercase text-primary mb-3" x-text="formatPrice(food.price) + ' / pcs'"></p>
+                  
+                  <div class="mt-auto flex items-center justify-between bg-brown/5 rounded-full p-1">
+                    <button class="qty-btn" @click="removeFood(food)" :disabled="getFoodQty(food.id) === 0">
+                      <i class="fa-solid fa-minus text-[10px]"></i>
+                    </button>
+                    <span class="font-black text-xs sm:text-sm text-brown" x-text="getFoodQty(food.id)"></span>
+                    <button class="qty-btn" @click="addFood(food)" :disabled="!canAddFood(food.id)">
+                      <i class="fa-solid fa-plus text-[10px]"></i>
+                    </button>
+                  </div>
+                </div>
+              </template>
+            </div>
+            </div> <!-- Close step-section -->
+
+            <div class="flex justify-between mt-8">
+              <button class="nav-btn-prev" @click="prevStep()">
+                <i class="fa-solid fa-arrow-left"></i> Kembali
+              </button>
+              <button class="nav-btn-next" :disabled="!isCapacityValid" @click="nextStep()">
+                Lanjut: Desain Box <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- ░░ STEP 3: DESAIN BOX ░░ -->
+          <div x-show="currentStep === 3" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+            <div class="step-section">
+              <div class="section-header">
+                <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:800; color:#5A3E2B;">Pilih Desain Box</h2>
+                <p style="color:#92601A;">Kemasan yang cantik membuat kesan pertama makin berkesan.</p>
+              </div>
+
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              <template x-for="design in designs" :key="design.id">
+                <div class="option-card p-3 group flex flex-col"
+                     :class="{ selected: selectedDesign?.id === design.id }"
+                     @click="selectDesign(design)">
+                  <div class="relative overflow-hidden rounded-xl aspect-square bg-brown/5 mb-3 group/img">
+                    <img :src="design.image" :alt="design.name" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity cursor-zoom-in"
+                         @click.stop="openLightbox(design.image, design.name)">
+                      <i class="fa-solid fa-magnifying-glass-plus text-white text-xl translate-y-2 group-hover/img:translate-y-0 transition-transform"></i>
+                    </div>
+                    <div class="design-img-placeholder w-full h-full flex items-center justify-center text-3xl" style="display:none;">📦</div>
+                    <div class="absolute top-2 right-2 z-10 pointer-events-none">
+                      <div class="check-badge">
+                        <i class="fa-solid fa-check text-[10px]"></i>
+                      </div>
+                    </div>
+                    <div class="absolute bottom-2 left-2">
+                      <span class="text-[9px] font-black px-2 py-1 rounded-md shadow-sm tracking-wider uppercase"
+                            :style="design.price > 0 ? 'background:#C2410C;color:#fff;' : 'background:#10B981;color:#fff;'"
+                            x-text="design.price > 0 ? '+' + formatPrice(design.price) : 'Gratis'">
+                      </span>
+                    </div>
+                  </div>
+                  <div class="flex-grow flex flex-col px-1">
+                    <h5 class="font-bold text-s sm:text-xs text-brown mb-1" x-text="design.name"></h5>
+                    <p class="text-xs m:text-xs text-brown/60 leading-tight" x-text="design.description"></p>
+                  </div>
+                </div>
+              </template>
+            </div>
+            </div> <!-- Close step-section -->
+
+            <div class="flex justify-between mt-12">
+              <button class="nav-btn-prev" @click="prevStep()">
+                <i class="fa-solid fa-arrow-left"></i> Kembali
+              </button>
+              <button class="nav-btn-next" :disabled="!selectedDesign" @click="nextStep()">
+                Lanjut: Kartu Ucapan <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- ░░ STEP 4: KARTU UCAPAN ░░ -->
+          <div x-show="currentStep === 4" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+            <div class="step-section">
+              <div class="section-header">
+                <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:800; color:#5A3E2B;">Kartu Ucapan <span class="text-base font-medium" style="color:#B09080;">(Opsional)</span></h2>
+                <p style="color:#92601A;">Tambahkan pesan spesial dari hati untuk orang terkasih.</p>
+              </div>
+
+              <!-- Card Options -->
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8">
+              <template x-for="card in cards" :key="card.id">
+                <div class="option-card p-3 group flex flex-col"
+                     :class="{ selected: selectedCard?.id === card.id }"
+                     @click="selectCard(card)">
+                  <div class="relative rounded-xl overflow-hidden aspect-video mb-3">
+                    <div class="absolute top-2 right-2 z-10 pointer-events-none">
+                      <div class="check-badge">
+                        <i class="fa-solid fa-check text-[10px]"></i>
+                      </div>
+                    </div>
+                    <template x-if="card.id === 'card-none'">
+                      <div class="w-full h-full flex items-center justify-center bg-brown/5 group-hover:bg-brown/10 transition-colors" style="padding: 8px;">
+                        <i class="fa-solid fa-ban text-2xl text-brown/20 "></i>
+                      </div>
+                    </template>
+                    <template x-if="card.id !== 'card-none'">
+                      <div class="w-full h-full relative group/img">
+                        <img :src="card.image" :alt="card.name"
+                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity cursor-zoom-in"
+                             @click.stop="openLightbox(card.image, card.name)">
+                          <i class="fa-solid fa-magnifying-glass-plus text-white text-xl translate-y-2 group-hover/img:translate-y-0 transition-transform"></i>
+                        </div>
+                        <div class="w-full h-full flex items-center justify-center bg-brown/5" style="display:none;">
+                          <i class="fa-solid fa-envelope text-2xl text-primary/20"></i>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                  <div class="text-center flex-grow flex flex-col px-1 justify-end">
+                    <h5 class="font-bold text-s sm:text-s text-brown mb-1" x-text="card.name"></h5>
+                    <p class="text-[9px] sm:text-[10px] font-black tracking-widest uppercase"
+                       :style="card.price > 0 ? 'color:#C2410C;' : 'color:#10B981;'"
+                       x-text="card.price > 0 ? '+' + formatPrice(card.price) : 'Gratis'"></p>
+                  </div>
+                </div>
+              </template>
+            </div>
+
+            <!-- Message Input (shown only when card is selected) -->
+            <div x-show="selectedCard && selectedCard.id !== 'card-none'"
+                 x-transition class="shadow-sm" style="background:#FFFFFF; border:1.5px solid #E5D5C5; padding: 16px; border-radius: 16px;">
+              <label class="block font-bold text-sm mb-2" style="color:#5A3E2B;">
+                <i class="fa-solid fa-pen-nib mr-2" style="color:#C2410C;"></i>Pesan Ucapan
+              </label>
+              <textarea x-model="cardMessage" maxlength="100" rows="3"
+                placeholder="Tuliskan pesan ucapan Anda di sini..." class="card-textarea"></textarea>
+              <div class="flex justify-between mt-1.5">
+                <p class="text-xs" style="color:#B09080;">Maksimal 100 karakter</p>
+                <p class="text-xs font-bold" :style="cardMessageCount >= 90 ? 'color:#C2410C;' : 'color:#B09080;'">
+                  <span x-text="cardMessageCount"></span>/100
+                </p>
+              </div>
+            </div>
+            </div>
+
+            <div class="flex justify-between mt-12">
+              <button class="nav-btn-prev" @click="prevStep()">
+                <i class="fa-solid fa-arrow-left"></i> Kembali
+              </button>
+              <button class="nav-btn-next" @click="checkout()" style="background:linear-gradient(135deg,#16A34A,#15803D); box-shadow:0 6px 20px #16A34A44;">
+                <i class="fa-solid fa-cart-shopping text-sm"></i> Pesan Sekarang
+              </button>
+            </div>
+          </div>
+
+        </div><!-- end left -->
+
+        <!-- ── RIGHT: Sticky Summary ── -->
+        <div x-show="!isLoading" :class="summaryOpen ? 'fixed inset-0 z-[2000] flex items-end lg:static lg:z-10 lg:block lg:w-[35%] lg:max-w-[400px]' : 'hidden lg:block lg:w-[35%] lg:max-w-[400px]'">
+          <!-- Mobile Overlay -->
+          <div x-show="summaryOpen" 
+               x-transition:enter="transition ease-out duration-300"
+               x-transition:enter-start="opacity-0"
+               x-transition:enter-end="opacity-100"
+               x-transition:leave="transition ease-in duration-200"
+               class="fixed inset-0 bg-black/60 backdrop-blur-sm lg:hidden"
+               @click="summaryOpen = false"></div>
+
+          <div class="sticky-summary lg:sticky lg:top-28 w-full relative z-[50]"
+               :class="summaryOpen ? 'bg-white rounded-t-3xl p-4 max-h-[92vh] overflow-y-auto shadow-2xl z-[2001]' : ''">
+            
+            <div class="flex items-center justify-between mb-5 lg:mb-6">
+              <h3 style="font-family:'Playfair Display',serif; font-weight:900; font-size:1.2rem; color:#5A3E2B;" class="flex items-center gap-3">
+                <span class="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                  <i class="fa-solid fa-receipt text-sm"></i>
+                </span>
+                Ringkasan Pesanan
+              </h3>
+              <!-- Close button only on mobile -->
+              <button @click="summaryOpen = false" class="lg:hidden w-8 h-8 flex items-center justify-center rounded-full bg-brown/5 text-brown/40">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+
+            <div class="space-y-4">
+
+              <!-- ── ROW: Box & Qty ── -->
+              <div class="p-3 rounded-xl" :class="currentStep === 1 ? 'bg-primary/5 ring-1 ring-primary/20' : 'bg-brown/[0.03]'">
+                <div class="flex items-center gap-2 mb-2">
+                  <i class="fa-solid fa-box text-xs" :style="currentStep === 1 ? 'color:#C2410C' : 'color:#B09080'"></i>
+                  <span class="text-[10px] font-black uppercase tracking-widest" :style="currentStep === 1 ? 'color:#C2410C' : 'color:#B09080'">Box & Jumlah</span>
+                </div>
+                <template x-if="!selectedBox">
+                  <p class="text-xs text-brown/30 italic">Belum dipilih...</p>
+                </template>
+                <template x-if="selectedBox">
+                  <div>
+                    <div class="flex justify-between items-center">
+                      <span class="font-bold text-sm text-brown" x-text="selectedBox.name"></span>
+                      <span class="text-[10px] font-bold text-primary bg-primary/5 px-2 py-0.5 rounded-md" x-text="selectedBox.capacity"></span>
+                    </div>
+                    <div class="flex justify-between items-center mt-1">
+                      <div class="flex items-center gap-1">
+                        <span class="text-xs text-brown/50" x-text="formatPrice(boxPrice) + ' × ' + boxQty"></span>
+                      </div>
+                      <span class="text-sm font-black text-primary" x-text="formatPrice(boxPrice * boxQty)"></span>
+                    </div>
+                  </div>
+                </template>
+              </div>
+
+              <!-- ── ROW: Makanan ── -->
+              <div class="p-3 rounded-xl" :class="currentStep === 2 ? 'bg-primary/5 ring-1 ring-primary/20' : 'bg-brown/[0.03]'">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-utensils text-xs" :style="currentStep === 2 ? 'color:#C2410C' : 'color:#B09080'"></i>
+                    <span class="text-[10px] font-black uppercase tracking-widest" :style="currentStep === 2 ? 'color:#C2410C' : 'color:#B09080'">Isi Makanan</span>
+                  </div>
+                  <span class="text-[9px] font-bold text-brown/50 bg-brown/5 px-2 py-0.5 rounded-md" x-text="totalItemCount + ' / ' + (currentCapacity || '?') + ' item'"></span>
+                </div>
+                <template x-if="selectedFoodsList.length === 0">
+                  <p class="text-xs text-brown/40 italic">Belum dipilih...</p>
+                </template>
+                <div class="space-y-1">
+                  <template x-for="food in selectedFoodsList.slice(0, 4)" :key="food.id">
+                    <div class="flex justify-between text-xs">
+                      <span class="text-brown/70" x-text="food.name + ' ×' + food.qty"></span>
+                      <span class="font-bold text-brown/80" x-text="formatPrice(food.price * food.qty)"></span>
+                    </div>
+                  </template>
+                  <template x-if="selectedFoodsList.length > 4">
+                    <p class="text-[10px] font-bold text-primary" x-text="'+' + (selectedFoodsList.length - 4) + ' item lainnya'"></p>
+                  </template>
+                </div>
+                <div x-show="selectedFoodsList.length > 0" class="flex justify-between items-center mt-2 pt-2 border-t border-brown/5">
+                  <span class="text-[10px] text-black/60">Subtotal makanan</span>
+                  <span class="text-xs font-black text-primary" x-text="formatPrice(foodsPrice)"></span>
+                </div>
+              </div>
+
+              <!-- ── ROW: Desain ── -->
+              <div class="p-3 rounded-xl" :class="currentStep === 3 ? 'bg-primary/5 ring-1 ring-primary/20' : 'bg-brown/[0.03]'">
+                <div class="flex items-center gap-2 mb-2">
+                  <i class="fa-solid fa-palette text-xs" :style="currentStep === 3 ? 'color:#C2410C' : 'color:#B09080'"></i>
+                  <span class="text-[10px] font-black uppercase tracking-widest" :style="currentStep === 3 ? 'color:#C2410C' : 'color:#B09080'">Desain Box</span>
+                </div>
+                <template x-if="!selectedDesign">
+                  <p class="text-xs text-brown/60 italic">Belum dipilih...</p>
+                </template>
+                <template x-if="selectedDesign">
+                  <div class="flex justify-between items-center">
+                    <span class="font-bold text-sm text-brown" x-text="selectedDesign.name"></span>
+                    <span class="text-sm font-black text-primary" x-text="designPrice > 0 ? '+' + formatPrice(designPrice) : 'Gratis'"></span>
+                  </div>
+                </template>
+              </div>
+
+              <!-- ── ROW: Kartu ── -->
+              <div class="p-3 rounded-xl" :class="currentStep === 4 ? 'bg-primary/5 ring-1 ring-primary/20' : 'bg-brown/[0.03]'">
+                <div class="flex items-center gap-2 mb-2">
+                  <i class="fa-solid fa-envelope-open-text text-xs" :style="currentStep === 4 ? 'color:#C2410C' : 'color:#B09080'"></i>
+                  <span class="text-[10px] font-black uppercase tracking-widest" :style="currentStep === 4 ? 'color:#C2410C' : 'color:#B09080'">Kartu Ucapan</span>
+                </div>
+                <template x-if="!selectedCard">
+                  <p class="text-xs text-brown/60 italic">Belum dipilih...</p>
+                </template>
+                <template x-if="selectedCard">
+                  <div>
+                    <div class="flex justify-between items-center">
+                      <span class="font-bold text-sm text-brown" x-text="selectedCard.id !== 'card-none' ? selectedCard.name : 'Tanpa kartu'"></span>
+                      <span class="text-sm font-black text-primary" x-text="cardPrice > 0 ? '+' + formatPrice(cardPrice) : 'Gratis'"></span>
+                    </div>
+                    <p x-show="cardMessage" class="text-[10px] italic mt-1 text-brown/60" style="word-break:break-word;" x-text='"&quot;" + cardMessage + "&quot;"'></p>
+                  </div>
+                </template>
+              </div>
+
+            </div>
+
+            <!-- Capacity Bar -->
+            <div x-show="selectedBox" class="mt-4 px-1">
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-[9px] font-black uppercase tracking-widest text-brown/60">Kapasitas Box</span>
+                <span class="text-[9px] font-black" :class="isCapacityValid ? 'text-emerald-500' : 'text-primary'" x-text="totalItemCount + '/' + currentCapacity"></span>
+              </div>
+              <div class="cap-bar-track">
+                <div class="cap-bar-fill"
+                     :style="`width:${Math.min(capacityPercent,100)}%`"
+                     :class="{ 'full': totalItemCount >= currentCapacity, 'valid': isCapacityValid }"></div>
+              </div>
+            </div>
+
+            <!-- Total -->
+            <div class="mt-5 pt-5 border-t-2 border-dashed border-brown/10">
+              <div class="flex justify-between items-end mb-0.5">
+                <span class="text-[11px] font-black uppercase tracking-widest text-brown/50">Total Estimasi</span>
+                <span class="text-[9px] font-bold text-brown/60 italic" x-text="boxQty > 1 ? '(' + boxQty + ' box)' : 'Belum ongkir'"></span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span style="font-family:'Plus Jakarta Sans',serif; font-size:1.7rem; font-weight:900; color:#C2410C;" x-text="formatPrice(totalPrice)"></span>
+              </div>
+              <p x-show="boxQty > 1" class="text-[10px] text-brown/40 mt-1" x-text="formatPrice(pricePerBox) + ' / box'"></p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mt-5 space-y-3">
+              <button x-show="currentStep < 4"
+                      class="nav-btn-next w-full justify-center py-4 text-sm shadow-lg shadow-primary/20"
+                      :disabled="!canProceedStep(currentStep)"
+                      @click="nextStep()">
+                Lanjutkan <i class="fa-solid fa-arrow-right text-xs ml-2"></i>
+              </button>
+              <button x-show="currentStep === 4"
+                      class="nav-btn-next w-full justify-center py-4 text-sm"
+                      @click="checkout()"
+                      style="background:linear-gradient(135deg,#10B981,#059669);">
+                <i class="fa-solid fa-cart-shopping text-sm mr-2"></i> Pesan Sekarang
+              </button>
+
+              <!-- Reset Button -->
+              <button @click="showResetModal = true" 
+                      class="w-full py-2 text-[10px] font-black uppercase tracking-widest text-red-500 hover:text-red-700 transition-colors flex items-center justify-center gap-2 mt-2 cursor-pointer">
+                <i class="fa-solid fa-rotate-left"></i> Reset Pesanan
+              </button>
+            </div>
+          </div>
+        </div>
+      </div><!-- end grid -->
+    </div><!-- end max-w -->
+  </section>
+
+  <!-- ░░ FLOATING SUMMARY BUTTON (Mobile Only) ░░ -->
+  <div x-show="!isLoading" class="lg:hidden fixed bottom-6 right-6 z-40">
+    <button @click="summaryOpen = true" 
+            class="w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center relative group active:scale-95 transition-transform"
+            style="background: linear-gradient(135deg, #C2410C, #EA580C);">
+      <i class="fa-solid fa-receipt text-xl"></i>
+      <!-- Item count badge -->
+      <div x-show="totalItemCount > 0" 
+           class="absolute -top-1 -right-1 w-6 h-6 bg-emerald-500 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white shadow-sm"
+           x-text="totalItemCount"></div>
+    </button>
+  </div>
+
+  <!-- ░░ LIGHTBOX MODAL ░░ -->
+  <template x-teleport="body">
+    <div x-show="showLightbox" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md"
+         style="display: none;"
+         @keydown.escape.window="closeLightbox()">
+      
+      <!-- Close Button -->
+      <button @click="closeLightbox()" class="absolute top-6 right-6 text-white/70 hover:text-white transition-colors p-2 text-3xl z-[2001]">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="relative max-w-4xl w-full flex flex-col items-center" @click.away="closeLightbox()">
+        <div class="bg-white p-2 rounded-2xl shadow-2xl overflow-hidden relative" @click.stop>
+          <img :src="lightboxImg" :alt="lightboxTitle" class="max-h-[80vh] max-w-full w-auto object-contain rounded-xl">
+        </div>
+        <div class="mt-4 text-center">
+          <h3 class="text-white font-bold text-xl" x-text="lightboxTitle"></h3>
+          <p class="text-white/40 text-sm mt-1 uppercase tracking-widest font-bold">Klik di luar gambar untuk menutup</p>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- ░░ RESET CONFIRMATION MODAL ░░ -->
+  <template x-teleport="body">
+    <div x-show="showResetModal" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+         style="display: none;">
+      
+      <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center transform transition-all"
+           @click.away="showResetModal = false">
+        <div class="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3 class="font-display font-900 text-2xl text-brown mb-3">Reset Pesanan?</h3>
+        <p class="text-brown/60 text-sm leading-relaxed mb-8">Semua progres dan pilihan kustomisasi Anda akan dihapus permanen. Anda yakin ingin mengulang dari awal?</p>
+        
+        <div class="flex flex-col gap-3">
+          <button @click="confirmReset()" 
+                  class="w-full py-4 bg-red-500 hover:bg-red-600 text-white rounded-2xl font-bold transition-all shadow-lg shadow-red-500/20">
+            Ya, Reset Pesanan
+          </button>
+          <button @click="showResetModal = false" 
+                  class="w-full py-4 bg-brown/5 hover:bg-brown/10 text-brown font-bold rounded-2xl transition-all">
+            Batalkan
+          </button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- ══════════════ FOOTER ══════════════ -->
+  <footer id="kontak" class="footer pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="grid md:grid-cols-4 gap-10 pb-12 border-b border-white/10">
+        <div class="md:col-span-1">
+          <div class="flex items-center gap-2.5 mb-4">
+            <img src="assets/images/logo/sajibox_logo.png" alt="SajiBox" class="h-14 w-auto object-contain rounded-xl" loading="lazy">
+          </div>
+          <p class="text-sm leading-relaxed">Solusi snackbox lezat &amp; praktis untuk setiap momen spesial Anda.</p>
+          <div class="flex gap-3 mt-5">
+            <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition"><i class="fa-brands fa-instagram text-white text-lg"></i></a>
+            <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition"><i class="fa-brands fa-facebook text-white text-lg"></i></a>
+            <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition"><i class="fa-brands fa-tiktok text-white text-lg"></i></a>
+          </div>
+        </div>
+        <div>
+          <h4 class="font-display font-700 text-white text-lg mb-4">Menu</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="index.html" class="hover:text-accent transition">Beranda</a></li>
+            <li><a href="package.html" class="hover:text-accent transition">Paket</a></li>
+            <li><a href="custom.html" class="hover:text-accent transition">Custom</a></li>
+            <li><a href="index.html#faq" class="hover:text-accent transition">FAQ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-display font-700 text-white text-lg mb-4">Kontak</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><i class="fa-solid fa-location-dot text-accent mr-2"></i>Jl. Abdul Halim No. 82, Cimahi 50220</li>
+            <li><i class="fa-solid fa-phone text-accent mr-2"></i>+62 813-3924-4834</li>
+            <li><i class="fa-solid fa-envelope text-accent mr-2"></i>sajibox@gmail.com</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-display font-700 text-white text-lg mb-4">Newsletter</h4>
+          <p class="text-sm mb-3">Dapatkan promo &amp; menu baru langsung di email Anda.</p>
+          <div class="flex flex-col gap-2">
+            <input type="email" placeholder="email@anda.com" class="bg-white/10 border border-white/20 rounded-full px-4 py-2.5 text-sm text-white placeholder-white/50 focus:outline-none focus:border-accent">
+            <button class="btn-primary rounded-full px-4 py-2.5 text-sm font-semibold flex items-center justify-center gap-2"><i class="fa-solid fa-paper-plane"></i> Berlangganan</button>
+          </div>
+        </div>
+      </div>
+      <div class="pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/60">
+        <p>&copy; 2026 SajiBox. Semua hak dilindungi.</p>
+        <div class="flex gap-5">
+          <a href="#" class="hover:text-accent">Kebijakan Privasi</a>
+          <a href="#" class="hover:text-accent">Syarat &amp; Ketentuan</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Data files -->
+  <script src="assets/data/box.js"></script>
+  <script src="assets/data/food.js"></script>
+  <script src="assets/data/cards.js"></script>
+  <!-- Page logic -->
+  <script src="assets/js/custom.js"></script>
+</body>
+</html>
