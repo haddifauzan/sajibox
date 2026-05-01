@@ -82,14 +82,14 @@ const FOODS_DATA = [
     name: "Arem-Arem Ayam",
     category: "Kue Basah",
     price: 3000,
-    image: "assets/images/makanan/Arem-Arem Ayam.jpg"
+    image: "assets/images/makanan/Arem-arem Ayam.jpg"
   },
   {
     id: "f13",
     name: "Onde-Onde",
     category: "Kue Basah",
     price: 500,
-    image: "assets/images/makanan/Onde-Onde.jpg"
+    image: "assets/images/makanan/Onde-onde.jpg"
   },
   {
     id: "f14",
