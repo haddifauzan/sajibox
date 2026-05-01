@@ -478,8 +478,8 @@
   .max-h-\[80vh\] {
     max-height: 80vh;
   }
-  .max-h-\[92vh\] {
-    max-height: 92vh;
+  .max-h-\[100vh\] {
+    max-height: 100vh;
   }
   .w-6 {
     width: calc(var(--spacing) * 6);
@@ -999,9 +999,6 @@
   }
   .pt-32 {
     padding-top: calc(var(--spacing) * 32);
-  }
-  .pr-1 {
-    padding-right: calc(var(--spacing) * 1);
   }
   .pr-4 {
     padding-right: calc(var(--spacing) * 4);
@@ -1653,9 +1650,9 @@
       display: none;
     }
   }
-  .lg\:max-h-\[calc\(100vh-130px\)\] {
+  .lg\:h-\[92vh\] {
     @media (width >= 64rem) {
-      max-height: calc(100vh - 130px);
+      height: 92vh;
     }
   }
   .lg\:w-\[35\%\] {
@@ -1698,9 +1695,9 @@
       gap: calc(var(--spacing) * 6);
     }
   }
-  .lg\:overflow-y-auto {
+  .lg\:overflow-hidden {
     @media (width >= 64rem) {
-      overflow-y: auto;
+      overflow: hidden;
     }
   }
   .lg\:px-6 {
