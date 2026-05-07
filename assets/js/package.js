@@ -113,6 +113,7 @@ function packageDetailPage() {
     pkg: null,
     boxQty: 1,
     notFound: false,
+    summaryOpen: false,
 
     // ── Design & Card ──
     designs: [],
@@ -252,6 +253,10 @@ function packageDetailPage() {
         this.currentStep = step;
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
+    },
+
+    get isAllStepsComplete() {
+      return this.isStepComplete(2) && this.isStepComplete(3);
     },
 
     isStepComplete(step) {

@@ -20,7 +20,7 @@
       x-init="init()"
       @scroll.window="onScroll()" 
       class="bg-cream transition-all duration-700"
-      :class="{ 'overflow-hidden': isLoading }"
+      :class="{ 'overflow-hidden': isLoading || summaryOpen }"
       style="scrollbar-gutter: stable;">
 
   <!-- ══════════════ PRELOADER ══════════════ -->
@@ -440,7 +440,11 @@
               <button class="nav-btn-prev" @click="prevStep()">
                 <i class="fa-solid fa-arrow-left"></i> Kembali
               </button>
-              <button class="nav-btn-next" @click="checkout()" style="background:linear-gradient(135deg,#16A34A,#15803D); box-shadow:0 6px 20px #16A34A44;">
+              <button class="nav-btn-next" 
+                      :disabled="!isStepComplete(currentStep)"
+                      :class="{ 'opacity-50 cursor-not-allowed grayscale-[0.5]': !isStepComplete(currentStep) }"
+                      @click="checkout()" 
+                      style="background:linear-gradient(135deg,#16A34A,#15803D); box-shadow:0 6px 20px #16A34A44;">
                 <i class="fa-solid fa-cart-shopping text-sm"></i> Checkout Pesanan
               </button>
             </div>
@@ -449,7 +453,7 @@
         </div><!-- end left -->
 
         <!-- ── RIGHT: Sticky Summary ── -->
-        <div x-show="!isLoading" :class="summaryOpen ? 'fixed inset-0 z-[2000] flex items-end lg:static lg:z-10 lg:block lg:w-[35%] lg:max-w-[400px]' : 'hidden lg:block lg:w-[35%] lg:max-w-[400px]'">
+        <div x-show="!isLoading" :class="summaryOpen ? 'fixed inset-0 z-[2000] flex flex-col justify-end lg:static lg:z-10 lg:block lg:w-[35%] lg:max-w-[400px]' : 'hidden lg:block lg:w-[35%] lg:max-w-[400px]'">
           <!-- Mobile Overlay -->
           <div x-show="summaryOpen" 
                x-transition:enter="transition ease-out duration-300"
@@ -459,8 +463,8 @@
                class="fixed inset-0 bg-black/60 backdrop-blur-sm lg:hidden"
                @click="summaryOpen = false"></div>
 
-          <div class="sticky-summary lg:sticky lg:top-28 w-full relative z-[50] lg:h-[92vh] lg:overflow-hidden"
-               :class="summaryOpen ? 'bg-white rounded-t-3xl p-4 max-h-[100vh] overflow-y-auto shadow-2xl z-[2001]' : ''">
+            <div class="sticky-summary lg:sticky lg:top-28 w-full relative z-[50] lg:h-[92vh] lg:overflow-hidden"
+                 :class="summaryOpen ? 'bg-white rounded-t-3xl p-6 pb-12 max-h-[92vh] overflow-y-auto shadow-[0_-10px_40px_rgba(0,0,0,0.3)] z-[2001]' : ''">
             
             <div class="flex items-center justify-between mb-5 lg:mb-6">
               <h3 style="font-family:'Playfair Display',serif; font-weight:900; font-size:1.2rem; color:#5A3E2B;" class="flex items-center gap-3">
@@ -604,11 +608,13 @@
               <button x-show="currentStep < 4"
                       class="nav-btn-next w-full justify-center py-4 text-sm shadow-lg shadow-primary/20"
                       :disabled="!canProceedStep(currentStep)"
-                      @click="nextStep()">
+                      @click="nextStep(); summaryOpen = false">
                 Lanjutkan <i class="fa-solid fa-arrow-right text-xs ml-2"></i>
               </button>
               <button x-show="currentStep === 4"
                       class="nav-btn-next w-full justify-center py-4 text-sm"
+                      :disabled="!isStepComplete(currentStep)"
+                      :class="{ 'opacity-50 cursor-not-allowed grayscale-[0.5]': !isStepComplete(currentStep) }"
                       @click="checkout()"
                       style="background:linear-gradient(135deg,#10B981,#059669);">
                 <i class="fa-solid fa-cart-shopping text-sm mr-2"></i> Checkout Pesanan
