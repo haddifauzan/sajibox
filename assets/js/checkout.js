@@ -232,10 +232,10 @@ function checkoutPage() {
         totalPrice: this.order.totalPrice || 0
       };
 
-      let scriptURL = "https://script.google.com/macros/s/AKfycbyMNbyuuN5Ux1yjdGpg8TGrJI9j8I6QbhpzOdCV91z7yP8gM3dN8BX8H9j-yFKlG9ve/exec";
+      let scriptURL = "https://script.google.com/macros/s/AKfycbwyb1JpPdgbt1XzA4KaL0NZ4CpLXJOKvIJP_4nfmuCdn-lE_UlEV_ZvtdU5eoPrZRw/exec";
 
       if (this.order && this.order.type === 'package') {
-        scriptURL = "https://script.google.com/macros/s/AKfycbyFOsAH5tF7pS7z79NFCFL-yXzp6lPvd1zw4bY-I_Ez_SRGEqGg1Ra_weRD2Yad1ErImA/exec";
+        scriptURL = "https://script.google.com/macros/s/AKfycbyFYQchOW-TKPgXD-UxLCG2XXXQ3syZOonT1Dj7xEo6RBZBjUHu1XFtWS9ZGItwkhtSLQ/exec";
         payload.packageQty = this.order.boxQty;
       }
 

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lacak Pesanan – SajiBox</title>
+  <link rel="icon" href="assets/images/logo/box_logo.png" type="image/png">
+  <meta name="description" content="Lacak status pesanan snackbox SajiBox Anda secara real-time.">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/index.css" />
+
+  <script src="assets/js/tracking.js"></script>
+</head>
+
+<body x-data="trackingPage()" 
+      x-init="init()"
+      @scroll.window="onScroll()" 
+      class="bg-[#FFFBF5] transition-all duration-700"
+      :class="{ 'overflow-hidden': isLoading }"
+      style="scrollbar-gutter: stable; font-family: 'Plus Jakarta Sans', sans-serif;">
+
+  <!-- ══════════════ PRELOADER ══════════════ -->
+  <div x-show="isLoading" 
+       x-transition:leave="transition ease-in duration-800" 
+       x-transition:leave-start="opacity-100 scale-100" 
+       x-transition:leave-end="opacity-0 scale-110"
+       class="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-[#FFFBF5]">
+    <div class="relative">
+      <div class="w-24 h-24 rounded-full border-4 border-primary/10 border-t-primary animate-spin"></div>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <img src="assets/images/logo/box_logo.png" alt="SajiBox" class="h-20 w-auto animate-pulse rounded-full">
+      </div>
+    </div>
+    <div class="mt-8 flex flex-col items-center">
+      <img src="assets/images/logo/text_logo_tr.png" alt="SajiBox" class="h-16 w-auto object-contain mb-3">
+      <div class="w-40 h-1 bg-brown/5 rounded-full overflow-hidden relative">
+        <div class="absolute inset-0 bg-primary animate-loading-bar"></div>
+      </div>
+      <p class="mt-4 text-[10px] font-bold text-brown/30 uppercase tracking-[0.3em] animate-pulse">Memuat Tracking...</p>
+    </div>
+  </div>
+
+  <!-- ══════════════ NAVBAR ══════════════ -->
+  <nav class="navbar z-[999] fixed w-full top-0 transition-all duration-300" :class="{ 'bg-white shadow-md py-2': scrolled, 'bg-transparent py-4': !scrolled }">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-16 md:h-20">
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center">
+        <img src="assets/images/logo/full_logo_tr.png" alt="SajiBox Logo" class="h-12 md:h-16 w-auto object-contain">
+      </a>
+
+      <!-- Desktop page nav -->
+      <ul class="hidden md:flex items-center gap-4 lg:gap-6">
+        <template x-for="item in pageNav" :key="item.label">
+          <li>
+            <a :href="item.href"
+               class="text-sm transition-colors duration-200 whitespace-nowrap"
+               :class="item.active
+                 ? 'text-primary font-bold border-b-2 border-primary pb-0.5'
+                 : 'text-brown font-semibold hover:text-primary'"
+               x-text="item.label">
+            </a>
+          </li>
+        </template>
+      </ul>
+
+      <div class="flex items-center gap-4">
+        <a href="custom.html" class="hidden md:inline-flex btn-primary text-sm py-2 px-4 lg:py-3 lg:px-6 whitespace-nowrap">
+          Custom Pesanan
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+
+        <!-- Mobile burger -->
+        <button @click="mobileOpen = !mobileOpen" class="md:hidden p-2 rounded-xl text-primary transition-colors">
+          <i class="fa-solid fa-bars text-xl" x-show="!mobileOpen"></i>
+          <i class="fa-solid fa-xmark text-xl" x-show="mobileOpen"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div x-show="mobileOpen" x-transition x-cloak class="md:hidden px-6 pb-6 pt-2 bg-white absolute w-full shadow-lg">
+      <div class="mb-3 pb-3 border-b border-brown/5">
+        <p class="text-[10px] font-bold uppercase tracking-widest mb-2 text-primary">Halaman</p>
+        <template x-for="item in pageNav" :key="item.label">
+          <a :href="item.href" @click="mobileOpen=false"
+             class="block py-3 text-sm font-semibold transition-colors"
+             :class="item.active ? 'text-primary' : 'text-brown hover:text-primary'"
+             x-text="item.label">
+          </a>
+        </template>
+      </div>
+      <a href="custom.html" class="btn-primary w-full flex items-center justify-center gap-2 mt-4 py-3">Custom Pesanan <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </nav>
+
+  <!-- ══════════════ HERO & SEARCH SECTION ══════════════ -->
+  <section class="pt-32 md:pt-40 pb-16 relative overflow-hidden" style="background:linear-gradient(180deg,#FFFBF5 0%,#FFF7ED 100%);">
+    <div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 bg-orange-200/20 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
+    
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 relative z-10 text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-[10px] sm:text-xs font-black uppercase tracking-widest mb-6">
+        <i class="fa-solid fa-truck-fast"></i> Tracking SajiBox
+      </div>
+      
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-brown font-display leading-tight mb-4">
+        Lacak Pesanan Anda
+      </h1>
+      <p class="text-sm sm:text-base text-brown/60 font-medium mb-10 max-w-xl mx-auto leading-relaxed">
+        Pantau status pesanan snackbox Anda secara realtime. Masukkan nomor pesanan yang Anda dapatkan saat checkout.
+      </p>
+
+      <!-- Search Form -->
+      <div class="bg-white p-4 sm:p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-brown/5 flex flex-col sm:flex-row gap-3 items-center max-w-2xl mx-auto transform transition-all duration-300 hover:shadow-[0_15px_40px_rgb(0,0,0,0.08)]">
+        <div class="relative flex-1 w-full">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <i class="fa-solid fa-magnifying-glass text-brown/40"></i>
+          </div>
+          <input type="text" x-model="searchQuery" @keyup.enter="fetchTracking()"
+                 placeholder="Contoh: SBXC-123456" 
+                 class="w-full bg-cream/50 border-2 border-transparent focus:border-primary/20 focus:bg-white rounded-2xl py-3 sm:py-4 pl-11 pr-4 text-brown font-bold text-sm sm:text-base outline-none transition-all placeholder:text-brown/30 placeholder:font-medium"
+                 :disabled="isSearching">
+        </div>
+        <button @click="fetchTracking()" :disabled="isSearching || !searchQuery.trim()"
+                class="w-full sm:w-auto flex-shrink-0 bg-primary hover:bg-primary/90 text-white font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-2xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer">
+          <template x-if="isSearching">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+          </template>
+          <template x-if="!isSearching">
+            <span>Cek Pesanan</span>
+          </template>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════ CONTENT AREA ══════════════ -->
+  <section class="py-12 bg-[#FFFBF5] min-h-[400px] relative">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+
+      <!-- ── LOADING STATE ── -->
+      <div x-show="isSearching" x-transition class="flex flex-col items-center justify-center py-20">
+        <div class="w-16 h-16 relative mb-6">
+          <div class="absolute inset-0 rounded-full border-4 border-brown/10 border-t-primary animate-spin"></div>
+        </div>
+        <p class="text-brown font-bold text-lg">Mencari Data Pesanan...</p>
+        <p class="text-brown/50 text-sm mt-2">Mohon tunggu sebentar.</p>
+      </div>
+
+      <!-- ── INITIAL EMPTY STATE ── -->
+      <div x-show="!hasSearched && !isSearching" x-transition class="text-center py-16 sm:py-24 max-w-md mx-auto">
+        <div class="w-24 h-24 sm:w-32 sm:h-32 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-6 text-primary/30">
+          <i class="fa-solid fa-box-open text-4xl sm:text-5xl"></i>
+        </div>
+        <h3 class="text-xl sm:text-2xl font-black text-brown font-display mb-3">Belum Ada Pencarian</h3>
+        <p class="text-brown/50 text-sm leading-relaxed">Masukkan ID Pesanan (Order ID) Anda di kolom pencarian di atas untuk melihat rincian dan status pengiriman.</p>
+      </div>
+
+      <!-- ── NOT FOUND STATE ── -->
+      <div x-show="hasSearched && notFound && !isSearching" x-transition class="text-center py-16 sm:py-24 max-w-md mx-auto">
+        <div class="w-24 h-24 sm:w-32 sm:h-32 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6 text-red-400 relative">
+          <i class="fa-solid fa-magnifying-glass text-4xl sm:text-5xl"></i>
+          <div class="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 bg-white rounded-full p-1 border-2 border-red-50">
+            <i class="fa-solid fa-xmark text-red-500 text-sm"></i>
+          </div>
+        </div>
+        <h3 class="text-xl sm:text-2xl font-black text-brown font-display mb-3">Pesanan Tidak Ditemukan</h3>
+        <p class="text-brown/50 text-sm leading-relaxed mb-6">Pastikan nomor pesanan yang Anda masukkan benar. Jika Anda baru saja memesan, mohon tunggu beberapa saat hingga data masuk ke sistem.</p>
+        <button @click="resetSearch()" class="text-primary font-bold text-sm hover:underline">
+          <i class="fa-solid fa-arrow-rotate-left mr-1"></i> Coba Ulangi Pencarian
+        </button>
+      </div>
+
+      <!-- ── ORDER RESULT STATE ── -->
+      <div x-show="hasSearched && orderData && !isSearching" x-transition class="space-y-6 sm:space-y-8 pb-16">
+        
+        <!-- Header Card -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-brown/5 flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+          <div class="relative z-10">
+            <p class="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-brown/40 mb-2">Order ID</p>
+            <h2 class="text-2xl sm:text-3xl font-black text-brown" x-text="orderData?.orderId"></h2>
+            <p class="text-xs text-brown/50 mt-2 font-medium"><i class="fa-regular fa-calendar mr-1"></i> Dipesan tanggal: <span x-text="orderData?.orderDate"></span></p>
+          </div>
+          <div class="relative z-10 flex-shrink-0">
+            <div class="px-4 py-2 rounded-xl border text-sm font-bold flex items-center gap-2 uppercase tracking-wide"
+                 :class="getStatusColor(orderData?.trackingStatus)">
+              <i class="fa-solid fa-circle text-[8px]"></i>
+              <span x-text="orderData?.trackingStatus"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline Progress -->
+        <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-brown/5 overflow-x-auto">
+          <h3 class="text-sm font-black text-brown uppercase tracking-widest mb-8 flex items-center gap-2">
+            <i class="fa-solid fa-route text-primary"></i> Status Pengiriman
+          </h3>
+
+          <!-- Cancelled State -->
+          <template x-if="orderData?.trackingStatus?.toLowerCase() === 'dibatalkan'">
+            <div class="flex items-center gap-4 p-4 rounded-2xl bg-red-50 border border-red-100">
+              <div class="w-12 h-12 rounded-full bg-red-100 text-red-500 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-ban text-xl"></i>
+              </div>
+              <div>
+                <p class="font-bold text-red-700">Pesanan Dibatalkan</p>
+                <p class="text-xs text-red-500 mt-1">Pesanan ini telah dibatalkan. Silakan hubungi admin untuk info lebih lanjut.</p>
+              </div>
+            </div>
+          </template>
+
+          <!-- Normal Timeline -->
+          <template x-if="orderData?.trackingStatus?.toLowerCase() !== 'dibatalkan'">
+            <div class="max-w-3xl mx-auto px-2 sm:px-10 mt-6 mb-12">
+              <div class="flex items-center justify-between relative">
+                
+                <!-- Step 1: Dipesan -->
+                <div class="relative flex flex-col items-center group">
+                  <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border-4 transition-all duration-500 z-10"
+                       :class="getTimelineIndex(orderData?.trackingStatus) >= 0 ? 'bg-primary border-white text-white shadow-[0_0_0_4px_rgba(194,65,12,0.1)]' : 'bg-cream border-white text-brown/30'">
+                    <i class="fa-solid fa-clipboard-list text-xs sm:text-sm"></i>
+                  </div>
+                  <span class="absolute top-14 sm:top-16 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider whitespace-nowrap text-center transition-colors duration-300"
+                        :class="getTimelineIndex(orderData?.trackingStatus) >= 0 ? 'text-primary' : 'text-brown/40'">Dipesan</span>
+                </div>
+
+                <!-- Connector 1 -->
+                <div class="flex-1 h-1 mx-2 sm:mx-4 bg-brown/5 rounded-full relative overflow-hidden">
+                  <div class="absolute inset-0 bg-primary transition-transform duration-700 ease-in-out origin-left"
+                       :style="'transform: scaleX(' + (getTimelineIndex(orderData?.trackingStatus) >= 1 ? 1 : 0) + ')'"></div>
+                </div>
+
+                <!-- Step 2: Diproses -->
+                <div class="relative flex flex-col items-center group">
+                  <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border-4 transition-all duration-500 z-10"
+                       :class="getTimelineIndex(orderData?.trackingStatus) >= 1 ? 'bg-primary border-white text-white shadow-[0_0_0_4px_rgba(194,65,12,0.1)]' : 'bg-cream border-white text-brown/30'">
+                    <i class="fa-solid fa-fire-burner text-xs sm:text-sm"></i>
+                  </div>
+                  <span class="absolute top-14 sm:top-16 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider whitespace-nowrap text-center transition-colors duration-300"
+                        :class="getTimelineIndex(orderData?.trackingStatus) >= 1 ? 'text-primary' : 'text-brown/40'">Diproses</span>
+                </div>
+
+                <!-- Connector 2 -->
+                <div class="flex-1 h-1 mx-2 sm:mx-4 bg-brown/5 rounded-full relative overflow-hidden">
+                  <div class="absolute inset-0 bg-primary transition-transform duration-700 ease-in-out origin-left"
+                       :style="'transform: scaleX(' + (getTimelineIndex(orderData?.trackingStatus) >= 2 ? 1 : 0) + ')'"></div>
+                </div>
+
+                <!-- Step 3: Dikirim -->
+                <div class="relative flex flex-col items-center group">
+                  <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border-4 transition-all duration-500 z-10"
+                       :class="getTimelineIndex(orderData?.trackingStatus) >= 2 ? 'bg-primary border-white text-white shadow-[0_0_0_4px_rgba(194,65,12,0.1)]' : 'bg-cream border-white text-brown/30'">
+                    <i class="fa-solid fa-truck-fast text-xs sm:text-sm"></i>
+                  </div>
+                  <span class="absolute top-14 sm:top-16 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider whitespace-nowrap text-center transition-colors duration-300"
+                        :class="getTimelineIndex(orderData?.trackingStatus) >= 2 ? 'text-primary' : 'text-brown/40'">Dikirim</span>
+                </div>
+
+                <!-- Connector 3 -->
+                <div class="flex-1 h-1 mx-2 sm:mx-4 bg-brown/5 rounded-full relative overflow-hidden">
+                  <div class="absolute inset-0 bg-green-500 transition-transform duration-700 ease-in-out origin-left"
+                       :style="'transform: scaleX(' + (getTimelineIndex(orderData?.trackingStatus) >= 3 ? 1 : 0) + ')'"></div>
+                </div>
+
+                <!-- Step 4: Selesai -->
+                <div class="relative flex flex-col items-center group">
+                  <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border-4 transition-all duration-500 z-10"
+                       :class="getTimelineIndex(orderData?.trackingStatus) >= 3 ? 'bg-green-500 border-white text-white shadow-[0_0_0_4px_rgba(16,185,129,0.1)]' : 'bg-cream border-white text-brown/30'">
+                    <i class="fa-solid fa-check-double text-xs sm:text-sm"></i>
+                  </div>
+                  <span class="absolute top-14 sm:top-16 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider whitespace-nowrap text-center transition-colors duration-300"
+                        :class="getTimelineIndex(orderData?.trackingStatus) >= 3 ? 'text-green-600' : 'text-brown/40'">Selesai</span>
+                </div>
+
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <!-- Order Information Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+          
+          <!-- Left Column: Customer & Delivery Info -->
+          <div class="space-y-6 sm:space-y-8">
+            <!-- Customer Details -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-brown/5">
+              <h3 class="text-sm font-black text-brown uppercase tracking-widest mb-5 flex items-center gap-2">
+                <i class="fa-solid fa-user text-primary/60"></i> Info Pemesan
+              </h3>
+              <div class="space-y-4">
+                <div>
+                  <p class="text-[10px] uppercase font-bold text-brown/40 tracking-wider mb-1">Nama Penerima</p>
+                  <p class="text-sm font-bold text-brown" x-text="orderData?.customer?.name"></p>
+                </div>
+                <div>
+                  <p class="text-[10px] uppercase font-bold text-brown/40 tracking-wider mb-1">No. WhatsApp</p>
+                  <p class="text-sm font-bold text-brown" x-text="orderData?.customer?.phone"></p>
+                </div>
+                <div>
+                  <p class="text-[10px] uppercase font-bold text-brown/40 tracking-wider mb-1">Alamat Pengiriman</p>
+                  <p class="text-sm font-bold text-brown leading-relaxed" x-text="orderData?.customer?.address"></p>
+                </div>
+                <template x-if="orderData?.customer?.note">
+                  <div>
+                    <p class="text-[10px] uppercase font-bold text-brown/40 tracking-wider mb-1">Catatan</p>
+                    <p class="text-xs font-medium text-brown/70 italic bg-cream/50 p-3 rounded-xl border border-brown/5" x-text="orderData?.customer?.note"></p>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+            <!-- Delivery Details -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-brown/5">
+              <h3 class="text-sm font-black text-brown uppercase tracking-widest mb-5 flex items-center gap-2">
+                <i class="fa-regular fa-clock text-primary/60"></i> Waktu Pengiriman
+              </h3>
+              <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                <div class="flex-1 bg-primary/5 p-4 rounded-2xl border border-primary/20">
+                  <p class="text-[10px] uppercase font-bold text-primary/60 tracking-wider mb-1">Tanggal</p>
+                  <p class="text-sm font-bold text-primary" x-text="orderData?.delivery?.date"></p>
+                </div>
+                <div class="flex-1 bg-blue-50 border-blue-200 p-4 rounded-2xl border">
+                  <p class="text-[10px] uppercase font-bold text-blue-400 tracking-wider mb-1">Jam Tiba</p>
+                  <p class="text-sm font-bold text-blue-700" x-text="orderData?.delivery?.time"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Order Details -->
+          <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-brown/5 flex flex-col h-full">
+            <h3 class="text-sm font-black text-brown uppercase tracking-widest mb-5 flex items-center gap-2">
+              <i class="fa-solid fa-box-open text-primary/60"></i> Rincian Pesanan
+            </h3>
+            
+            <div class="flex items-center justify-between mb-6 pb-6 border-b border-dashed border-brown/10">
+              <div>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest mb-2"
+                      :class="orderData?.type === 'custom' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'">
+                  <i class="fa-solid fa-tag text-[8px]"></i>
+                  <span x-text="orderData?.type === 'custom' ? 'Custom Box' : 'Paket Menu'"></span>
+                </span>
+                <h4 class="text-lg font-black text-brown font-display" x-text="orderData?.packageName"></h4>
+              </div>
+              <div class="text-right">
+                <p class="text-[10px] uppercase font-bold text-brown/40 tracking-wider mb-1">Jumlah</p>
+                <p class="text-2xl font-black text-primary" x-text="orderData?.qty + ' Box'"></p>
+              </div>
+            </div>
+
+            <!-- Items Details -->
+            <div class="space-y-6 flex-grow">
+              <!-- Foods -->
+              <div>
+                <p class="text-[10px] uppercase font-bold text-brown/40 tracking-wider mb-3">Isi Makanan</p>
+                <div class="space-y-2">
+                  <template x-for="food in orderData?.foods" :key="food">
+                    <div class="flex items-center gap-3 p-2.5 rounded-xl bg-cream/50 border border-brown/5">
+                      <div class="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                        <i class="fa-solid fa-utensils text-[10px]"></i>
+                      </div>
+                      <span class="text-xs font-bold text-brown line-clamp-1" x-text="food"></span>
+                    </div>
+                  </template>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Design -->
+                <div x-show="orderData?.design">
+                  <p class="text-[10px] uppercase font-bold text-brown/40 tracking-wider mb-2">Desain Box</p>
+                  <p class="text-xs font-bold text-brown bg-brown/5 p-3 rounded-xl border border-brown/10" x-text="orderData?.design"></p>
+                </div>
+
+                <!-- Greeting Card -->
+                <div x-show="orderData?.card">
+                  <p class="text-[10px] uppercase font-bold text-brown/40 tracking-wider mb-2">Kartu Ucapan</p>
+                  <p class="text-xs font-bold text-brown bg-brown/5 p-3 rounded-xl border border-brown/10 mb-2" x-text="orderData?.card?.name"></p>
+                  <p class="text-[10px] italic text-brown/60 leading-relaxed line-clamp-3" x-text="'&quot;' + orderData?.card?.message + '&quot;'"></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Total Price -->
+            <div class="mt-8 pt-6 border-t-2 border-dashed border-brown/10 flex items-end justify-between">
+              <div>
+                <p class="text-[10px] sm:text-[12px] uppercase font-black tracking-widest text-brown/40 mb-1">Total Biaya</p>
+              </div>
+              <div class="text-right">
+                <span class="text-2xl sm:text-3xl font-black text-primary leading-none" x-text="formatPrice(orderData?.total)"></span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- ══════════════ FOOTER ══════════════ -->
+  <footer id="kontak" class="footer pt-16 pb-8" style="margin-bottom:0;">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="grid md:grid-cols-4 gap-10 pb-12 border-b border-white/10">
+        <div class="md:col-span-1">
+          <div class="flex items-center gap-2.5 mb-4">
+            <img src="assets/images/logo/sajibox_logo.png" alt="SajiBox" class="h-14 w-auto object-contain rounded-xl" loading="lazy">
+          </div>
+          <p class="text-sm leading-relaxed">Solusi snackbox lezat & praktis untuk setiap momen spesial Anda.</p>
+          <div class="flex gap-3 mt-5">
+            <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition"><i class="fa-brands fa-instagram text-white text-lg"></i></a>
+            <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition"><i class="fa-brands fa-facebook text-white text-lg"></i></a>
+            <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition"><i class="fa-brands fa-tiktok text-white text-lg"></i></a>
+          </div>
+        </div>
+        <div>
+          <h4 class="font-display font-700 text-white text-lg mb-4">Menu</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="index.html" class="hover:text-accent transition">Beranda</a></li>
+            <li><a href="package.html" class="hover:text-accent transition">Paket</a></li>
+            <li><a href="custom.html" class="hover:text-accent transition">Custom</a></li>
+            <li><a href="tracking.html" class="hover:text-accent transition">Tracking</a></li>
+            <li><a href="index.html#faq" class="hover:text-accent transition">FAQ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-display font-700 text-white text-lg mb-4">Kontak</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><i class="fa-solid fa-location-dot text-accent mr-2"></i>Jl. Abdul Halim No. 82, Cimahi 50220</li>
+            <li><i class="fa-solid fa-phone text-accent mr-2"></i>+62 813-3924-4834</li>
+            <li><i class="fa-solid fa-envelope text-accent mr-2"></i>sajibox@gmail.com</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-display font-700 text-white text-lg mb-4">Newsletter</h4>
+          <p class="text-sm mb-3">Dapatkan promo & menu baru langsung di email Anda.</p>
+          <div class="flex flex-col gap-2">
+            <input type="email" placeholder="Email Anda" class="w-full px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-accent text-sm" style="color:white;"/>
+            <button class="btn-primary w-full py-2.5 text-sm">Berlangganan</button>
+          </div>
+        </div>
+      </div>
+      <div class="text-center pt-8 text-sm opacity-80 flex flex-col md:flex-row justify-between items-center">
+        <p>&copy; 2026 SajiBox. All rights reserved.</p>
+        <p class="mt-2 md:mt-0 font-display italic">Delivering Happiness in a Box.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
