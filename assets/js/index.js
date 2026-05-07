@@ -39,16 +39,16 @@ function snackbox() {
       { value: '4.9★', label: 'Rating Google' },
     ],
     features: [
-      { icon:'fa-solid fa-cookie-bite', bg:'#FDE68A55', title:'Aneka Pilihan', desc:'Lebih dari 20 varian snackbox untuk berbagai selera dan kebutuhan acara Anda.' },
-      { icon:'fa-solid fa-bolt', bg:'#FED7AA55', title:'Praktis & Cepat', desc:'Pesan mudah via Website atau WhatsApp. Proses cepat tanpa ribet.' },
-      { icon:'fa-solid fa-trophy', bg:'#FECACA55', title:'Terpercaya', desc:'Dipercaya lebih dari 10.000 pelanggan dengan rating bintang 5 tertinggi.' },
-      { icon:'fa-solid fa-comment-dots', bg:'#D1FAE555', title:'Layanan Ramah', desc:'Tim kami siap membantu Anda 7 hari seminggu dengan ramah dan responsif.' },
+      { icon:'fa-solid fa-wand-magic-sparkles', bg:'#FDE68A55', title:'Bebas Custom', desc:'Atur isian snack, desain kemasan, hingga kartu ucapan sesuka Anda.' },
+      { icon:'fa-solid fa-truck-fast', bg:'#FED7AA55', title:'Pantau Pesanan', desc:'Lacak status pembuatan hingga pengiriman secara real-time via website.' },
+      { icon:'fa-solid fa-cookie-bite', bg:'#FECACA55', title:'Varian Lengkap', desc:'Tersedia puluhan pilihan paket snackbox untuk berbagai kebutuhan acara.' },
+      { icon:'fa-solid fa-face-smile-beam', bg:'#D1FAE555', title:'Layanan Ramah', desc:'Konsultasi gratis 7 hari seminggu dengan tim kami yang responsif.' },
     ],
     trusts: [
-      { icon:'fa-solid fa-wheat-awn', label:'Bahan Berkualitas', sub:'100% premium & higienis' },
-      { icon:'fa-solid fa-gift', label:'Kemasan Eksklusif', sub:'Elegan & tahan banting' },
+      { icon:'fa-solid fa-wheat-awn', label:'Bahan Premium', sub:'100% higienis & lezat' },
       { icon:'fa-solid fa-stopwatch', label:'Tepat Waktu', sub:'Garansi on-time delivery' },
-      { icon:'fa-solid fa-face-smile', label:'Layanan Ramah', sub:'Respons < 1 jam' },
+      { icon:'fa-solid fa-box-open', label:'Kemasan Eksklusif', sub:'Elegan & box kokoh' },
+      { icon:'fa-solid fa-headset', label:'Layanan Personal', sub:'Respons cepat & ramah' },
     ],
     products: [],
     
@@ -103,7 +103,7 @@ function snackbox() {
       if (typeof PACKAGE_DATA !== 'undefined') {
         this.products = PACKAGE_DATA.slice(0, 5).map(p => ({
           code: p.code,
-          img: p.image || 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=600&auto=format&fit=crop&q=80',
+          img: p.image || 'assets/images/no-image.png',
           name: p.name,
           desc: p.description,
           price: this.formatPrice(p.price),
@@ -113,11 +113,11 @@ function snackbox() {
         // Add Custom Card
         this.products.push({
           code: 'CUSTOM',
-          img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80',
+          img: 'assets/images/custom-pesanan.png',
           name: 'Custom Order',
           desc: 'Buat snackbox sesuai keinginan Anda — isi, kemasan, dan desain bisa disesuaikan.',
           price: 'Harga Custom',
-          badge: '✨ Custom',
+          badge: 'Custom',
           isCustom: true
         });
       }

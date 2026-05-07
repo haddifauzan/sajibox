@@ -196,11 +196,11 @@
           <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
             <a href="#" class="btn-primary text-base py-4 px-8">
               Pesan Sekarang
-              <i class="fa-solid fa-arrow-right"></i>
+              <i class="fa-solid fa-arrow-right ml-1"></i>
             </a>
             <a href="#paket" class="btn-secondary text-base py-4 px-8">
               Lihat Paket
-              <i class="fa-solid fa-arrow-down"></i>
+              <i class="fa-solid fa-arrow-down ml-1"></i>
             </a>
           </div>
 
@@ -292,24 +292,23 @@
         </p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8">
         <template x-for="(product, i) in products" :key="product.name">
-          <div class="product-card" data-aos="fade-up" :data-aos-delay="i*100">
+          <div class="product-card flex flex-col h-full" data-aos="fade-up" :data-aos-delay="i*100">
             <div class="product-img-wrap">
               <img :src="product.img" :alt="product.name" loading="lazy"/>
               <span class="badge-hot" x-show="product.badge" x-text="product.badge"></span>
             </div>
-            <div style="padding:20px 22px 24px;" class="flex flex-col flex-grow">
-              <h3 style="font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:700; color:#5A3E2B; margin-bottom:6px;" x-text="product.name"></h3>
-              <p style="font-size:.85rem; color:#92601A; font-weight:500; line-height:1.55; margin-bottom:14px;" class="line-clamp-2" x-text="product.desc"></p>
-              <div class="mt-auto flex items-center justify-between">
-                <div>
-                  <div style="font-size:1.25rem; font-weight:900; color:#C2410C; font-family:'Playfair Display',serif;" x-text="product.price"></div>
-                </div>
-                <button class="btn-primary py-2 px-5 text-sm" 
+            <div class="p-3 sm:p-6 flex flex-col flex-grow">
+              <h3 class="font-display text-sm sm:text-lg font-bold text-brown mb-1 sm:mb-2 line-clamp-1" x-text="product.name"></h3>
+              <p class="text-[10px] sm:text-sm text-brown/70 font-medium leading-relaxed mb-3 line-clamp-2" x-text="product.desc"></p>
+              <div class="mt-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
+                <div class="text-sm sm:text-xl font-black text-primary" x-text="product.price"></div>
+                <button class="btn-primary py-1 sm:py-2 px-1.5 sm:px-5 text-[7px] sm:text-sm flex items-center justify-center gap-1 sm:gap-2" 
                         @click="product.isCustom ? window.location.href='custom.html' : viewDetail(product.code)">
-                  <span x-text="product.isCustom ? 'Coba Sekarang' : 'Lihat Detail'"></span>
-                  <i class="fa-solid fa-arrow-right"></i>
+                  <span class="sm:hidden" x-text="product.isCustom ? 'Coba' : 'Detail'"></span>
+                  <span class="hidden sm:inline" x-text="product.isCustom ? 'Coba Sekarang' : 'Lihat Detail'"></span>
+                  <i class="fa-solid fa-arrow-right text-[6px] sm:text-xs"></i>
                 </button>
               </div>
             </div>

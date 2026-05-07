@@ -103,7 +103,7 @@ body {
   align-items: center; gap: 8px;
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
   color: #fff; font-weight: 700; font-size: .95rem;
-  padding: 14px 28px; border-radius: 100px;
+  border-radius: 100px;
   box-shadow: 0 8px 28px #C2410C44;
   transition: transform .2s, box-shadow .2s;
   text-decoration: none; cursor: pointer; border: none;
