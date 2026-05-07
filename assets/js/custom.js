@@ -111,12 +111,34 @@ function customPage() {
     },
 
     // ── Step validation ───────────────────────────────────
+    isStepComplete(step) {
+      if (step === 1) return !!this.selectedBox;
+      if (step === 2) return this.isCapacityValid;
+      if (step === 3) return !!this.selectedDesign;
+      if (step === 4) {
+        if (!this.selectedCard) return false;
+        if (this.selectedCard.id === 'card-none') return true;
+        return this.cardMessage.trim().length > 0;
+      }
+      return false;
+    },
+
     canProceedStep(step) {
       if (step === 1) return !!this.selectedBox;
       if (step === 2) return this.isCapacityValid;
       if (step === 3) return !!this.selectedDesign;
-      if (step === 4) return true;
+      if (step === 4) return true; // Step 4 (last) is technically always proceedable to checkout if previous are done
       return false;
+    },
+
+    isStepClickable(step) {
+      // Always can go back
+      if (step <= this.currentStep) return true;
+      // To go to step N, all steps from 1 to N-1 must be complete
+      for (let s = 1; s < step; s++) {
+        if (!this.isStepComplete(s)) return false;
+      }
+      return true;
     },
 
     // ── Init ─────────────────────────────────────────────
@@ -195,8 +217,9 @@ function customPage() {
 
     // ── Step navigation ───────────────────────────────────
     goToStep(step) {
-      if (step > this.currentStep && !this.canProceedStep(this.currentStep)) return;
-      if (step < 1 || step > this.totalSteps) return;
+      if (step === this.currentStep) return;
+      if (!this.isStepClickable(step)) return;
+      
       this.currentStep = step;
       this.$nextTick(() => {
         document.getElementById('step-content')?.scrollIntoView({ behavior: 'smooth', block: 'start' });

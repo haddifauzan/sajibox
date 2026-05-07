@@ -50,56 +50,17 @@ function snackbox() {
       { icon:'fa-solid fa-stopwatch', label:'Tepat Waktu', sub:'Garansi on-time delivery' },
       { icon:'fa-solid fa-face-smile', label:'Layanan Ramah', sub:'Respons < 1 jam' },
     ],
-    products: [
-      {
-        img: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=600&auto=format&fit=crop&q=80',
-        name: 'Paket Mini Delight',
-        desc: 'Cocok untuk gathering kecil. Isi 5 pcs camilan pilihan dalam kemasan cantik.',
-        price: 'Rp 45.000',
-        origPrice: 'Rp 55.000',
-        badge: '🔥 Best Seller',
-      },
-      {
-        img: 'https://images.unsplash.com/photo-1611270629569-8b357cb88da9?w=600&auto=format&fit=crop&q=80',
-        name: 'Paket Standard Festive',
-        desc: 'Pilihan sempurna untuk ulang tahun dan arisan. Isi 10 pcs premium snack.',
-        price: 'Rp 85.000',
-        origPrice: null,
-        badge: '⭐ Populer',
-      },
-      {
-        img: 'https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=600&auto=format&fit=crop&q=80',
-        name: 'Paket Premium Royal',
-        desc: 'Kemasan mewah eksklusif dengan 15 pcs artisan snack pilihan terbaik.',
-        price: 'Rp 150.000',
-        origPrice: 'Rp 180.000',
-        badge: '👑 Premium',
-      },
-      {
-        img: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=600&auto=format&fit=crop&q=80',
-        name: 'Paket Wedding Bliss',
-        desc: 'Spesial untuk pernikahan & resepsi. Desain khusus & nama pasangan tersedia.',
-        price: 'Rp 125.000',
-        origPrice: null,
-        badge: '💍 Wedding',
-      },
-      {
-        img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&auto=format&fit=crop&q=80',
-        name: 'Paket Corporate',
-        desc: 'Ideal untuk meeting, seminar, atau apresiasi karyawan. Minimal 50 box.',
-        price: 'Mulai Rp 65.000',
-        origPrice: null,
-        badge: '🏢 Corporate',
-      },
-      {
-        img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80',
-        name: 'Custom Order',
-        desc: 'Buat snackbox sesuai keinginan Anda — isi, kemasan, dan desain bisa disesuaikan.',
-        price: 'Harga Custom',
-        origPrice: null,
-        badge: '✨ Custom',
-      },
-    ],
+    products: [],
+    
+    // Formatting
+    formatPrice(val) {
+      if (!val) return 'Rp 0';
+      return 'Rp ' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    },
+
+    viewDetail(code) {
+      window.location.href = `package_detail.html?code=${code}`;
+    },
     steps: [
       { icon:'fa-solid fa-mobile-screen', title:'Pilih Paket', desc:'Pilih paket snackbox yang sesuai kebutuhan Anda.' },
       { icon:'fa-solid fa-comment-dots', title:'Hubungi Kami', desc:'Konfirmasi pesanan via WhatsApp setelah checkout pesanan.' },
@@ -138,6 +99,29 @@ function snackbox() {
       this.activeSection = current;
     },
     init() {
+      // Initialize products from PACKAGE_DATA (limit to 5 + 1 custom)
+      if (typeof PACKAGE_DATA !== 'undefined') {
+        this.products = PACKAGE_DATA.slice(0, 5).map(p => ({
+          code: p.code,
+          img: p.image || 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=600&auto=format&fit=crop&q=80',
+          name: p.name,
+          desc: p.description,
+          price: this.formatPrice(p.price),
+          badge: p.category
+        }));
+
+        // Add Custom Card
+        this.products.push({
+          code: 'CUSTOM',
+          img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80',
+          name: 'Custom Order',
+          desc: 'Buat snackbox sesuai keinginan Anda — isi, kemasan, dan desain bisa disesuaikan.',
+          price: 'Harga Custom',
+          badge: '✨ Custom',
+          isCustom: true
+        });
+      }
+
       // Initialize AOS
       if (typeof AOS !== 'undefined') {
         AOS.init({

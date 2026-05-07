@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>List Paketan – SajiBox</title>
+  <link rel="icon" href="assets/images/logo/box_logo.png" type="image/png">
+  <meta name="description" content="Pilih paket snackbox favorit Anda dari berbagai tema — Rapat, Tradisi, Manis-Gurih, Hantaran, hingga Sehat. Pesan online sekarang di SajiBox!">
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'"/>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/index.css" />
+</head>
+
+<body x-data="packagePage()" 
+      x-init="init()"
+      @scroll.window="onScroll()" 
+      class="bg-cream transition-all duration-700"
+      :class="{ 'overflow-hidden': isLoading }"
+      style="scrollbar-gutter: stable;">
+
+  <!-- ══════════════ PRELOADER ══════════════ -->
+  <div x-show="isLoading" 
+       x-transition:leave="transition ease-in duration-800" 
+       x-transition:leave-start="opacity-100 scale-100" 
+       x-transition:leave-end="opacity-0 scale-110"
+       class="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-[#FFFBF5]">
+    <div class="relative">
+      <div class="w-24 h-24 rounded-full border-4 border-primary/10 border-t-primary animate-spin"></div>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <img src="assets/images/logo/box_logo.png" alt="SajiBox" class="h-20 w-auto animate-pulse rounded-full">
+      </div>
+    </div>
+    <div class="mt-8 flex flex-col items-center">
+      <img src="assets/images/logo/text_logo_tr.png" alt="SajiBox" class="h-16 w-auto object-contain mb-3">
+      <div class="w-40 h-1 bg-brown/5 rounded-full overflow-hidden relative">
+        <div class="absolute inset-0 bg-primary animate-loading-bar"></div>
+      </div>
+      <p class="mt-4 text-[10px] font-bold text-brown/30 uppercase tracking-[0.3em] animate-pulse">Memuat Paket...</p>
+    </div>
+  </div>
+
+  <!-- ══════════════ NAVBAR ══════════════ -->
+  <nav class="navbar z-[999]" :class="{ scrolled: scrolled }">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-20">
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center">
+        <img src="assets/images/logo/full_logo_tr.png" alt="SajiBox Logo" class="h-16 md:h-20 w-auto object-contain">
+      </a>
+
+      <!-- Desktop page nav -->
+      <ul class="hidden md:flex items-center gap-4 lg:gap-6">
+        <template x-for="item in pageNav" :key="item.label">
+          <li>
+            <a :href="item.href"
+               class="text-sm transition-colors duration-200 whitespace-nowrap"
+               :class="item.active
+                 ? 'text-primary font-bold border-b-2 border-primary pb-0.5'
+                 : 'text-brown font-semibold hover:text-primary'"
+               x-text="item.label">
+            </a>
+          </li>
+        </template>
+      </ul>
+
+      <div class="flex items-center gap-4">
+        <a href="custom.html" class="hidden md:inline-flex btn-primary text-sm py-2 px-4 lg:py-3 lg:px-6 whitespace-nowrap">
+          Custom Pesanan
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+
+        <!-- Mobile burger -->
+        <button @click="mobileOpen = !mobileOpen" class="md:hidden p-2 rounded-xl" style="color:#C2410C;">
+          <i class="fa-solid fa-bars text-xl" x-show="!mobileOpen"></i>
+          <i class="fa-solid fa-xmark text-xl" x-show="mobileOpen"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div x-show="mobileOpen" x-transition style="display: none;" class="mobile-menu md:hidden px-6 pb-6 pt-2">
+      <div class="mb-3 pb-3">
+        <p class="text-xs font-bold uppercase tracking-widest mb-2" style="color:#C2410C;">Halaman</p>
+        <template x-for="item in pageNav" :key="item.label">
+          <a :href="item.href" @click="mobileOpen=false"
+             class="block py-2 text-sm font-semibold"
+             :class="item.active ? 'text-primary' : 'text-brown hover:text-primary'"
+             x-text="item.label">
+          </a>
+        </template>
+      </div>
+      <a href="custom.html" class="btn-primary w-full flex items-center justify-center gap-2 mt-5 py-3">Custom Pesanan <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </nav>
+
+  <!-- ══════════════ HERO ══════════════ -->
+  <section class="relative overflow-hidden pt-32 pb-12" style="background:linear-gradient(180deg,#FFFBF5 0%,#FFF7ED 60%,#FDE68A33 100%);">
+    <div class="blob-1" style="top:-60px; right:-150px; opacity:.4;"></div>
+    <div class="blob-2" style="bottom:-40px; left:-100px; opacity:.3;"></div>
+    <div class="max-w-3xl mx-auto px-6 text-center relative z-10">
+      <div class="badge inline-flex mb-5">
+        <i class="fa-solid fa-boxes-stacked"></i> Pilih Paket Siap Pesan
+      </div>
+      <h1 style="font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; color:#5A3E2B; line-height:1.15;" class="mb-4">
+        List <span style="color:#C2410C;">Paketan</span>
+      </h1>
+      <p style="color:#92601A; font-weight:500;" class="text-base lg:text-lg leading-relaxed max-w-xl mx-auto">
+        Paket snackbox siap pesan dengan tema beragam — dari rapat kantor, acara tradisi, hingga hampers spesial. Tinggal pilih, langsung checkout!
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════════ MAIN CONTENT ══════════════ -->
+  <section class="py-16 bg-[#FFFBF5]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+
+      <!-- Category Filters -->
+      <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mb-8 sm:mb-12">
+        <template x-for="cat in categories" :key="cat">
+          <button class="px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-full text-[10px] sm:text-sm font-bold transition-all duration-300 flex items-center gap-1 sm:gap-2 shadow-sm border cursor-pointer hover:shadow-md"
+                  :class="activeCategory === cat 
+                    ? 'bg-primary text-white border-primary shadow-primary/20' 
+                    : 'bg-white text-brown border-brown/10 hover:border-primary/30 hover:text-primary'"
+                  @click="filterPackages(cat)">
+            <i :class="categoryIcons[cat]" class="text-[8px] sm:text-xs"></i>
+            <span x-text="cat"></span>
+          </button>
+        </template>
+      </div>
+
+      <!-- Package Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+        <template x-for="(pkg, index) in filteredPackages" :key="pkg.code">
+          <div class="group bg-white rounded-2xl sm:rounded-[2rem] overflow-hidden border border-brown/5 shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1 flex flex-col"
+               :style="'animation: slideUp 0.5s ease-out both; animation-delay:' + (index * 0.08) + 's'">
+            
+            <!-- Image Section -->
+            <div class="relative aspect-[4/3] overflow-hidden bg-brown/5">
+              <template x-if="pkg.image">
+                <img :src="pkg.image" :alt="pkg.name" loading="lazy"
+                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+              </template>
+              <div class="absolute inset-0 flex items-center justify-center text-primary/20" 
+                   :style="!pkg.image ? 'display:flex' : 'display:none'">
+                <i class="fa-solid fa-box-open text-3xl sm:text-5xl"></i>
+              </div>
+
+              <!-- Badges Overlay -->
+              <div class="absolute top-2 left-2 sm:top-4 sm:left-4 bg-white/90 backdrop-blur px-2 py-0.5 sm:px-3 sm:py-1 rounded-lg text-[8px] sm:text-[10px] font-black tracking-wider text-primary shadow-sm" x-text="pkg.code"></div>
+              
+              <div class="absolute top-2 right-2 sm:top-4 sm:right-4 text-white text-[8px] sm:text-[10px] font-black px-2 py-1 sm:px-3 sm:py-1.5 rounded-full flex items-center shadow-lg"
+                   :style="'background:' + boxColor(pkg.box).bg + '; box-shadow:0 4px 12px ' + boxColor(pkg.box).shadow">
+                <i class="fa-solid fa-cube mr-1 sm:mr-1.5 opacity-80"></i>
+                <span x-text="pkg.box"></span>
+              </div>
+            </div>
+
+            <!-- Body Section -->
+            <div class="p-3 sm:p-6 flex flex-col flex-grow">
+              <div class="flex items-center gap-1.5 mb-2 text-[8px] sm:text-[10px] font-bold text-brown/40 uppercase tracking-widest bg-brown/5 self-start px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full">
+                <i :class="categoryIcons[pkg.category]" class="text-[7px] sm:text-[8px]"></i>
+                <span x-text="pkg.category"></span>
+              </div>
+
+              <h3 class="text-sm sm:text-xl font-black text-brown mb-1 sm:mb-2 font-display group-hover:text-primary transition-colors line-clamp-2 sm:line-clamp-none" x-text="pkg.name"></h3>
+              
+              <!-- Items Tags -->
+              <div class="flex flex-wrap gap-1 sm:gap-1.5 mb-3 sm:mb-4">
+                <template x-for="item in previewItems(pkg)" :key="item">
+                  <span class="text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg bg-[#FFF7ED] text-brown/70 flex items-center gap-1 border border-primary/5">
+                    <i class="fa-solid fa-cookie-bite text-[7px] sm:text-[8px] text-primary"></i>
+                    <span class="line-clamp-1" x-text="item"></span>
+                  </span>
+                </template>
+                <template x-if="remainingItemsCount(pkg) > 0">
+                  <span class="text-[8px] sm:text-[10px] font-black px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg bg-primary/10 text-primary" x-text="'+' + remainingItemsCount(pkg)"></span>
+                </template>
+              </div>
+
+              <!-- Pricing & Action -->
+              <div class="mt-auto pt-3 sm:pt-4 border-t border-brown/5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div class="flex flex-col">
+                  <span class="text-[8px] sm:text-[9px] font-bold text-brown/30 uppercase tracking-tighter">Mulai dari</span>
+                  <span class="text-sm sm:text-lg font-black text-primary leading-none" x-text="formatPrice(pkg.price)"></span>
+                </div>
+                
+                <button @click="viewDetail(pkg)" class="bg-primary text-white p-2 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-full text-[10px] sm:text-xs font-black shadow-lg shadow-primary/20 flex items-center justify-center gap-2 group-hover:bg-primary-dark transition-all cursor-pointer">
+                  <span class="hidden sm:inline">Lihat Detail</span>
+                  <i class="fa-solid fa-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <!-- Empty State -->
+        <template x-if="filteredPackages.length === 0">
+          <div class="col-span-full py-20 flex flex-col items-center justify-center text-center">
+            <div class="w-24 h-24 rounded-full bg-primary/5 flex items-center justify-center text-primary/20 mb-6">
+              <i class="fa-solid fa-box-open text-4xl"></i>
+            </div>
+            <h3 class="text-2xl font-black text-brown mb-2 font-display">Belum Ada Paket</h3>
+            <p class="text-brown/50 font-medium">Paket untuk kategori ini belum tersedia. Coba pilih kategori lain.</p>
+          </div>
+        </template>
+      </div>
+
+      <!-- CTA Custom Section -->
+      <div class="mt-20">
+        <div class="max-w-4xl mx-auto p-12 rounded-[3rem] bg-gradient-to-br from-[#FFF7ED] to-primary/5 border-2 border-dashed border-primary/20 text-center relative overflow-hidden group">
+          <div class="absolute -top-10 -right-10 text-9xl text-primary/5 opacity-20 pointer-events-none transition-transform duration-1000 group-hover:rotate-12 group-hover:scale-110">✨</div>
+          <h3 class="text-3xl font-black text-brown mb-3 font-display">Tidak Menemukan yang Cocok?</h3>
+          <p class="text-brown/60 font-medium mb-8 max-w-md mx-auto leading-relaxed">
+            Tenang! Anda bisa membuat snackbox impian sendiri — pilih box, atur isi makanan, sampai desain kartu ucapan sesuka hati.
+          </p>
+          <a href="custom.html" class="inline-flex items-center gap-3 bg-primary text-white font-black px-10 py-4 rounded-2xl shadow-xl shadow-primary/20 hover:bg-primary-dark hover:-translate-y-1 transition-all active:translate-y-0">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            Buat Custom Pesanan Sekarang
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ══════════════ FOOTER ══════════════ -->
+  <footer id="kontak" class="footer pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="grid md:grid-cols-4 gap-10 pb-12 border-b border-white/10">
+        <div class="md:col-span-1">
+          <div class="flex items-center gap-2.5 mb-4">
+            <img src="assets/images/logo/sajibox_logo.png" alt="SajiBox" class="h-14 w-auto object-contain rounded-xl" loading="lazy">
+          </div>
+          <p class="text-sm leading-relaxed">Solusi snackbox lezat &amp; praktis untuk setiap momen spesial Anda.</p>
+          <div class="flex gap-3 mt-5">
+            <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition"><i class="fa-brands fa-instagram text-white text-lg"></i></a>
+            <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition"><i class="fa-brands fa-facebook text-white text-lg"></i></a>
+            <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-primary flex items-center justify-center transition"><i class="fa-brands fa-tiktok text-white text-lg"></i></a>
+          </div>
+        </div>
+        <div>
+          <h4 class="font-display font-700 text-white text-lg mb-4">Menu</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="index.html" class="hover:text-accent transition">Beranda</a></li>
+            <li><a href="package.html" class="hover:text-accent transition">Paket</a></li>
+            <li><a href="custom.html" class="hover:text-accent transition">Custom</a></li>
+            <li><a href="index.html#faq" class="hover:text-accent transition">FAQ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-display font-700 text-white text-lg mb-4">Kontak</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><i class="fa-solid fa-location-dot text-accent mr-2"></i>Jl. Abdul Halim No. 82, Cimahi 50220</li>
+            <li><i class="fa-solid fa-phone text-accent mr-2"></i>+62 813-3924-4834</li>
+            <li><i class="fa-solid fa-envelope text-accent mr-2"></i>sajibox@gmail.com</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-display font-700 text-white text-lg mb-4">Newsletter</h4>
+          <p class="text-sm mb-3">Dapatkan promo &amp; menu baru langsung di email Anda.</p>
+          <div class="flex flex-col gap-2">
+            <input type="email" placeholder="email@anda.com" class="bg-white/10 border border-white/20 rounded-full px-4 py-2.5 text-sm text-white placeholder-white/50 focus:outline-none focus:border-accent">
+            <button class="btn-primary rounded-full px-4 py-2.5 text-sm font-semibold flex items-center justify-center gap-2"><i class="fa-solid fa-paper-plane"></i> Berlangganan</button>
+          </div>
+        </div>
+      </div>
+      <div class="pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/60">
+        <p>&copy; 2026 SajiBox. Semua hak dilindungi.</p>
+        <div class="flex gap-5">
+          <a href="#" class="hover:text-accent">Kebijakan Privasi</a>
+          <a href="#" class="hover:text-accent">Syarat &amp; Ketentuan</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="assets/data/data_package.js"></script>
+  <script src="assets/js/package.js"></script>
+</body>
+</html>

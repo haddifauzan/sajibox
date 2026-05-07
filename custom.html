@@ -126,17 +126,21 @@
               <div style="display:contents;">
                 <!-- Connector before node (skip for step 1) -->
                 <template x-if="i > 0">
-                  <div class="step-connector" :class="{ done: currentStep > i }"></div>
+                  <div class="step-connector" :class="{ done: isStepComplete(i) }"></div>
                 </template>
                 <!-- Node -->
                 <div class="step-node"
-                     :class="{ active: currentStep === step, done: currentStep > step }"
+                     :class="{ 
+                        active: currentStep === step, 
+                        done: isStepComplete(step) && currentStep !== step,
+                        'opacity-50 cursor-not-allowed': !isStepClickable(step)
+                     }"
                      @click="goToStep(step)">
                   <div class="step-circle">
-                    <template x-if="currentStep > step">
+                    <template x-if="isStepComplete(step)">
                       <i class="fa-solid fa-check text-xs"></i>
                     </template>
-                    <template x-if="currentStep <= step">
+                    <template x-if="!isStepComplete(step)">
                       <span x-text="step"></span>
                     </template>
                   </div>
@@ -215,7 +219,7 @@
             </div>
 
             <div class="flex justify-end mt-8">
-              <button class="nav-btn-next" :disabled="!selectedBox" @click="nextStep()">
+              <button class="nav-btn-next" :disabled="!canProceedStep(1)" @click="nextStep()">
                 Lanjut: Pilih Makanan <i class="fa-solid fa-arrow-right"></i>
               </button>
             </div>
@@ -307,7 +311,7 @@
               <button class="nav-btn-prev" @click="prevStep()">
                 <i class="fa-solid fa-arrow-left"></i> Kembali
               </button>
-              <button class="nav-btn-next" :disabled="!isCapacityValid" @click="nextStep()">
+              <button class="nav-btn-next" :disabled="!canProceedStep(2)" @click="nextStep()">
                 Lanjut: Desain Box <i class="fa-solid fa-arrow-right"></i>
               </button>
             </div>
@@ -359,7 +363,7 @@
               <button class="nav-btn-prev" @click="prevStep()">
                 <i class="fa-solid fa-arrow-left"></i> Kembali
               </button>
-              <button class="nav-btn-next" :disabled="!selectedDesign" @click="nextStep()">
+              <button class="nav-btn-next" :disabled="!canProceedStep(3)" @click="nextStep()">
                 Lanjut: Kartu Ucapan <i class="fa-solid fa-arrow-right"></i>
               </button>
             </div>
@@ -537,9 +541,12 @@
                   <p class="text-xs text-brown/60 italic">Belum dipilih...</p>
                 </template>
                 <template x-if="selectedDesign">
-                  <div class="flex justify-between items-center">
-                    <span class="font-bold text-sm text-brown" x-text="selectedDesign.name"></span>
-                    <span class="text-sm font-black text-primary" x-text="designPrice > 0 ? '+' + formatPrice(designPrice) : 'Gratis'"></span>
+                  <div>
+                    <div class="flex justify-between items-center">
+                      <span class="font-bold text-sm text-brown" x-text="selectedDesign.name"></span>
+                      <span class="text-sm font-black text-primary" x-text="designPrice > 0 ? '+' + formatPrice(designPrice * boxQty) : 'Gratis'"></span>
+                    </div>
+                    <p class="text-[10px] text-brown/50 mt-1 font-bold" x-show="designPrice > 0" x-text="'+' + formatPrice(designPrice) + ' × ' + boxQty"></p>
                   </div>
                 </template>
               </div>
@@ -557,8 +564,9 @@
                   <div>
                     <div class="flex justify-between items-center">
                       <span class="font-bold text-sm text-brown" x-text="selectedCard.id !== 'card-none' ? selectedCard.name : 'Tanpa kartu'"></span>
-                      <span class="text-sm font-black text-primary" x-text="cardPrice > 0 ? '+' + formatPrice(cardPrice) : 'Gratis'"></span>
+                      <span class="text-sm font-black text-primary" x-text="cardPrice > 0 ? '+' + formatPrice(cardPrice * boxQty) : 'Gratis'"></span>
                     </div>
+                    <p class="text-[10px] text-brown/50 mt-1 font-bold" x-show="cardPrice > 0" x-text="'+' + formatPrice(cardPrice) + ' × ' + boxQty"></p>
                     <p x-show="cardMessage" class="text-[10px] italic mt-1 text-brown/60" style="word-break:break-word;" x-text='"&quot;" + cardMessage + "&quot;"'></p>
                   </div>
                 </template>

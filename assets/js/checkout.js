@@ -1,6 +1,9 @@
 // assets/js/checkout.js
 
 function checkoutPage() {
+  let mapObj = null;
+  let markerObj = null;
+
   return {
     isLoading: true,
     order: null,
@@ -12,6 +15,8 @@ function checkoutPage() {
     customerNote: '',
     deliveryDate: '',
     deliveryTime: '',
+    addressLat: null,
+    addressLng: null,
 
     // Modal State
     showConfirmModal: false,
@@ -43,15 +48,75 @@ function checkoutPage() {
           this.customerNote = info.note || '';
           this.deliveryDate = info.deliveryDate || '';
           this.deliveryTime = info.deliveryTime || '';
+          this.addressLat = info.lat || null;
+          this.addressLng = info.lng || null;
         } catch (e) {}
       }
 
       // Generate Order ID if not exists
-      this.orderId = 'SBX-' + Date.now().toString().slice(-6) + Math.floor(Math.random() * 100).toString().padStart(2, '0');
+      const prefix = (this.order && this.order.type === 'package') ? 'SBXP' : 'SBXC';
+      this.orderId = prefix + '-' + Date.now().toString().slice(-6) + Math.floor(Math.random() * 100).toString().padStart(2, '0');
 
       this.validateDeliveryTime();
 
-      setTimeout(() => { this.isLoading = false; }, 500);
+      setTimeout(() => { 
+        this.isLoading = false; 
+        this.$nextTick(() => {
+          this.initMap();
+        });
+      }, 500);
+    },
+
+    initMap() {
+      if (typeof L === 'undefined') return;
+      const mapEl = document.getElementById('address-map');
+      if (!mapEl) return;
+      if (mapObj) return; // Already initialized
+
+      try {
+        // Default to Cimahi center
+        const defaultLat = -6.8732;
+        const defaultLng = 107.5401;
+        
+        const startLat = this.addressLat || defaultLat;
+        const startLng = this.addressLng || defaultLng;
+
+        mapObj = L.map('address-map').setView([startLat, startLng], 14);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(mapObj);
+
+        if (this.addressLat && this.addressLng) {
+          markerObj = L.marker([this.addressLat, this.addressLng]).addTo(mapObj);
+        }
+
+        mapObj.on('click', (e) => {
+          const { lat, lng } = e.latlng;
+          this.addressLat = lat;
+          this.addressLng = lng;
+
+          if (markerObj) {
+            markerObj.setLatLng([lat, lng]);
+          } else {
+            markerObj = L.marker([lat, lng]).addTo(mapObj);
+          }
+          
+          this.saveCustomerInfo();
+        });
+      } catch (e) {
+        console.error("Map init error:", e);
+      }
+    },
+
+    clearMap() {
+      this.addressLat = null;
+      this.addressLng = null;
+      if (markerObj && mapObj) {
+        mapObj.removeLayer(markerObj);
+        markerObj = null;
+      }
+      this.saveCustomerInfo();
     },
 
     get minDate() {
@@ -96,6 +161,13 @@ function checkoutPage() {
       this.showStatusModal = true;
     },
 
+    get isFormValid() {
+      const name = (this.customerName || '').trim();
+      const phone = (this.customerPhone || '').trim();
+      const addr = (this.customerAddress || '').trim();
+      return !!(name && phone && addr && this.deliveryDate && this.deliveryTime);
+    },
+
     saveCustomerInfo() {
       const info = {
         name: this.customerName,
@@ -103,7 +175,9 @@ function checkoutPage() {
         address: this.customerAddress,
         note: this.customerNote,
         deliveryDate: this.deliveryDate,
-        deliveryTime: this.deliveryTime
+        deliveryTime: this.deliveryTime,
+        lat: this.addressLat,
+        lng: this.addressLng
       };
       localStorage.setItem('customerInfo', JSON.stringify(info));
     },
@@ -116,7 +190,7 @@ function checkoutPage() {
     backToShop() {
       // Determine where to go back based on order type
       if (this.order && this.order.type === 'package') {
-        window.location.href = 'package.html';
+        window.location.href = 'package_detail.html?code=' + encodeURIComponent(this.order.package.code);
       } else {
         window.location.href = 'custom.html';
       }
@@ -127,8 +201,8 @@ function checkoutPage() {
         this.triggerModal("Pesanan Kosong", "Anda belum memiliki pesanan untuk dicheckout.", "error");
         return;
       }
-      if (!this.customerName || !this.customerPhone || !this.customerAddress || !this.deliveryDate || !this.deliveryTime) {
-        this.triggerModal("Data Belum Lengkap", "Mohon lengkapi Nama, Nomor HP, Alamat, serta Waktu Pengiriman.", "info");
+      if (!this.isFormValid) {
+        this.triggerModal("Data Belum Lengkap", "Mohon lengkapi data pemesan dan pastikan Jam Pengiriman sudah dipilih.", "info");
         return;
       }
       this.showConfirmModal = true;
@@ -139,13 +213,18 @@ function checkoutPage() {
       this.isLoading = true;
       this.saveCustomerInfo();
 
+      let finalAddress = this.customerAddress;
+      if (this.addressLat && this.addressLng) {
+        finalAddress += ` (Lat: ${this.addressLat.toFixed(5)}, Lng: ${this.addressLng.toFixed(5)})`;
+      }
+
       const payload = {
         orderId: this.orderId,
         ...this.order,
         customer: {
           name: this.customerName,
           phone: this.customerPhone,
-          address: this.customerAddress,
+          address: finalAddress,
           note: this.customerNote,
           deliveryDate: this.deliveryDate,
           deliveryTime: this.deliveryTime
@@ -153,7 +232,12 @@ function checkoutPage() {
         totalPrice: this.order.totalPrice || 0
       };
 
-      const scriptURL = "https://script.google.com/macros/s/AKfycbyMNbyuuN5Ux1yjdGpg8TGrJI9j8I6QbhpzOdCV91z7yP8gM3dN8BX8H9j-yFKlG9ve/exec";
+      let scriptURL = "https://script.google.com/macros/s/AKfycbyMNbyuuN5Ux1yjdGpg8TGrJI9j8I6QbhpzOdCV91z7yP8gM3dN8BX8H9j-yFKlG9ve/exec";
+
+      if (this.order && this.order.type === 'package') {
+        scriptURL = "https://script.google.com/macros/s/AKfycbyFOsAH5tF7pS7z79NFCFL-yXzp6lPvd1zw4bY-I_Ez_SRGEqGg1Ra_weRD2Yad1ErImA/exec";
+        payload.packageQty = this.order.boxQty;
+      }
 
       fetch(scriptURL, {
         method: "POST",
@@ -170,6 +254,7 @@ function checkoutPage() {
         // cleanup
         localStorage.removeItem("order");
         localStorage.removeItem("customOrderProgress");
+        localStorage.removeItem("packageOrderProgress");
       })
       .catch(err => {
         console.error("Submit Error:", err);
@@ -195,14 +280,19 @@ function checkoutPage() {
       const waNumber = "6281313264584";
       
       let message = `*HALO SAJIBOX! SAYA INGIN PESAN*%0A%0A`;
+      let finalAddress = this.customerAddress;
+      if (this.addressLat && this.addressLng) {
+        finalAddress += ` (Lat: ${this.addressLat.toFixed(5)}, Lng: ${this.addressLng.toFixed(5)})`;
+      }
+
       message += `*Nomor Pesanan:* ${this.orderId}%0A`;
       message += `*Nama:* ${this.customerName}%0A`;
       message += `*No. HP:* ${this.customerPhone}%0A`;
-      message += `*Alamat:* ${this.customerAddress}%0A`;
+      message += `*Alamat:* ${finalAddress}%0A`;
       message += `*Waktu Kirim:* ${this.deliveryDate}, jam ${this.deliveryTime}%0A%0A`;
       
       message += `*DETAIL PESANAN:*%0A`;
-      message += `- Tipe: ${this.order.type === 'custom' ? 'Custom Snackbox' : 'Paket Jadi'}%0A`;
+      message += `- Tipe: ${this.order.type === 'custom' ? 'Custom Snackbox' : 'Paketan'}%0A`;
       
       if (this.order.type === 'custom') {
         message += `- Box: ${this.order.box.name}%0A`;
@@ -211,12 +301,26 @@ function checkoutPage() {
           message += `- Card: ${this.order.card.name}%0A`;
           if (this.order.card.message) message += `  "${this.order.card.message}"%0A`;
         }
-      }
+        
+        message += `%0A*DAFTAR MAKANAN:*%0A`;
+        (this.order.foods || []).forEach(f => {
+          message += `- ${f.name} (x${f.qty})%0A`;
+        });
+      } else {
+        // Package order
+        message += `- Paket: ${this.order.package.name}%0A`;
+        message += `- Box: ${this.order.package.box}%0A`;
+        message += `- Design: ${this.order.design.name}%0A`;
+        if (this.order.card.name) {
+          message += `- Card: ${this.order.card.name}%0A`;
+          if (this.order.card.message) message += `  "${this.order.card.message}"%0A`;
+        }
 
-      message += `%0A*DAFTAR MAKANAN:*%0A`;
-      this.order.foods.forEach(f => {
-        message += `- ${f.name} (x${f.qty})%0A`;
-      });
+        message += `%0A*DAFTAR MAKANAN:*%0A`;
+        (this.order.package.items || []).forEach(item => {
+          message += `- ${item}%0A`;
+        });
+      }
 
       message += `%0A*JUMLAH:* ${this.order.boxQty} Box%0A`;
       message += `*TOTAL ESTIMASI:* ${this.formatPrice(this.order.totalPrice)}%0A`;
