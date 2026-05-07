@@ -73,10 +73,11 @@ function snackbox() {
       { quote: 'Paket custom-nya menarik banget. Tim SnackBox sangat membantu dan sabar. Hasilnya melebihi ekspektasi!', name: 'Dewi Lestari', role: 'Wedding Organizer, Cimahi', avatar: 'assets/images/face23.jpg' },
     ],
     faqs: [
-      { q: 'Berapa minimum pemesanan?', a: 'Minimum pemesanan adalah 10 box untuk paket reguler. Untuk paket corporate, minimum 50 box dengan harga lebih terjangkau.', open: false },
-      { q: 'Berapa lama proses pembuatan?', a: 'Proses pembuatan membutuhkan 2–3 hari kerja. Untuk pemesanan mendadak (H-1), harap hubungi kami terlebih dahulu untuk ketersediaan.', open: false },
-      { q: 'Apakah bisa request isi atau kemasan custom?', a: 'Tentu! Kami menerima custom order untuk isi, kemasan, ribbon, kartu ucapan, hingga stiker nama. Hubungi kami untuk konsultasi gratis.', open: false },
-      { q: 'Apakah ada garansi jika produk rusak saat pengiriman?', a: 'Ya, kami memberikan garansi penuh. Jika produk rusak akibat proses pengiriman, kami akan mengganti atau melakukan refund sesuai kebijakan.', open: false },
+      { q: 'Berapa minimum pemesanan di SajiBox?', a: 'Tidak ada minimum pesanan, pesan satu pun boleh. Kami juga melayani pesanan partai besar untuk acara kantor atau pernikahan dengan harga khusus.', open: false },
+      { q: 'Apakah saya bisa memilih isi snack dan desain box sendiri?', a: 'Tentu saja! Anda bisa menggunakan fitur "Custom Pesanan" untuk memilih kombinasi snack, desain box, hingga isi pesan di kartu ucapan sesuai keinginan Anda.', open: false },
+      { q: 'Kapan waktu paling lambat untuk melakukan pemesanan?', a: 'Kami menyarankan pemesanan dilakukan H-3 acara. Namun, kami juga menerima pemesanan kilat (H-1) untuk paket tertentu selama slot produksi masih tersedia.', open: false },
+      { q: 'Bagaimana cara memantau status pesanan saya?', a: 'SajiBox menyediakan fitur "Tracking" real-time. Cukup masukkan Order ID Anda (contoh: SBXC-12345) untuk melihat progres pesanan mulai dari dapur hingga pengiriman.', open: false },
+      { q: 'Area mana saja yang dijangkau oleh pengiriman SajiBox?', a: 'Saat ini kami fokus melayani area Cimahi, Bandung, dan sekitarnya untuk menjaga kesegaran produk. Kami menggunakan kurir khusus agar snackbox sampai dalam kondisi sempurna.', open: false },
     ],
 
     scrollToSection(id) {
