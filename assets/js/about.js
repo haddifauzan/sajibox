@@ -4,7 +4,6 @@ function aboutPage() {
     mobileOpen: false,
     isLoading: true,
 
-
     pageNav: [
       { label: 'Beranda', href: 'index.html', active: false },
       { label: 'List Paket', href: 'package.html', active: false },

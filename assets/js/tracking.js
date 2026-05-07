@@ -20,7 +20,7 @@ function trackingPage() {
       { label: 'List Paket', href: 'package.html', active: false },
       { label: 'Custom Pesanan', href: 'custom.html', active: false },
       { label: 'Tracking', href: 'tracking.html', active: true },
-      { label: 'Tentang', href: 'index.html#faq', active: false },
+      { label: 'Tentang', href: 'about.html', active: false },
     ],
 
     // ── Lifecycle ──
