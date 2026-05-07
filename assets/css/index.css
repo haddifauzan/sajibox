@@ -177,9 +177,15 @@ body {
 
 .badge-hot {
   position: absolute; top: 12px; left: 12px;
-  background: var(--primary);
-  color: #fff; font-size: .72rem; font-weight: 700;
-  padding: 4px 12px; border-radius: 100px;
+  background: #fff;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+  font-size: .65rem; font-weight: 800;
+  padding: 3px 12px; border-radius: 100px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  z-index: 10;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 /* ── CTA Banner ── */
