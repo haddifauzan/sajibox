@@ -192,7 +192,7 @@
                   <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl translate-y-4 group-hover:translate-y-0 transition-transform"></i>
                 </div>
 
-                <div class="absolute bottom-6 left-6 bg-white/90 backdrop-blur px-5 py-2 rounded-2xl text-[10px] font-black tracking-widest text-primary shadow-lg uppercase z-20" x-text="'Box: ' + pkg?.box"></div>
+                <div class="absolute bottom-6 left-6 bg-white/90 backdrop-blur px-5 py-2 rounded-2xl text-[10px] font-black tracking-widest text-primary shadow-lg uppercase z-20" x-text="pkg?.box"></div>
               </div>
 
               <!-- Description Card -->
@@ -247,6 +247,15 @@
                 </div>
               </div>
             </div>
+
+            <!-- Mobile Next Step Button -->
+            <div class="lg:hidden pt-4">
+              <button @click="nextStep()" 
+                      class="w-full btn-primary py-4 px-6 rounded-3xl flex items-center justify-center gap-3 shadow-xl shadow-primary/20 font-black tracking-widest text-[11px]">
+                Lanjut Pilih Desain
+                <i class="fa-solid fa-arrow-right text-sm"></i>
+              </button>
+            </div>
           </div>
 
           <!-- STEP 2: Box Design -->
@@ -291,6 +300,20 @@
                   </div>
                 </div>
               </template>
+            </div>
+
+            <!-- Mobile Next Step Button -->
+            <div class="lg:hidden pt-4 flex gap-3">
+              <button @click="prevStep()" 
+                      class="flex-1 btn-secondary py-4 px-6 rounded-3xl flex items-center justify-center gap-2 font-black tracking-widest text-[11px] border-2">
+                <i class="fa-solid fa-arrow-left text-xs"></i>
+                Kembali
+              </button>
+              <button @click="nextStep()" 
+                      class="flex-1 btn-primary py-4 px-6 rounded-3xl flex items-center justify-center gap-2 shadow-xl shadow-primary/20 font-black tracking-widest text-[11px]">
+                Lanjut
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+              </button>
             </div>
           </div>
 
@@ -362,6 +385,23 @@
                 <span>Pesan personal Anda</span>
                 <span :class="cardMessageCount >= 90 ? 'text-primary' : ''" x-text="cardMessageCount + ' / 100'"></span>
               </div>
+            </div>
+
+            <!-- Mobile Step Navigation -->
+            <div class="lg:hidden pt-8 flex flex-row gap-4">
+              <div class="flex gap-3">
+                <button @click="prevStep()" 
+                        class="flex-1 btn-secondary py-4 px-6 rounded-3xl flex items-center justify-center gap-2 font-black tracking-widest text-[11px] border-2">
+                  <i class="fa-solid fa-arrow-left text-xs"></i>
+                  Kembali
+                </button>
+                <div class="flex-1"></div> <!-- Spacer for symmetry or more room -->
+              </div>
+              <button @click="checkout()" 
+                      class="w-full btn-primary py-4 px-6 rounded-3xl flex items-center justify-center gap-3 shadow-2xl shadow-primary/30 font-black tracking-widest text-[13px]">
+                Checkout
+                <i class="fa-solid fa-cart-shopping text-base"></i>
+              </button>
             </div>
           </div>
         </div>
