@@ -273,6 +273,7 @@ function checkoutPage() {
       this.showStatusModal = false;
       if (this.modalType === 'success') {
         this.sendToWhatsApp();
+        this.order = null; // Clear data after sending to WA
       }
     },
 
