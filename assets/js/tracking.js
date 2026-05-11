@@ -21,9 +21,9 @@ const TRACKING_CONSTANTS = {
   // Status Styling Map
   statusConfigs: {
     'dipesan': { class: 'bg-yellow-100 text-yellow-700 border-yellow-200', index: 0 },
-    'pending': { class: 'bg-yellow-100 text-yellow-700 border-yellow-200', index: 0 },
     'diproses': { class: 'bg-blue-100 text-blue-700 border-blue-200', index: 1 },
     'dikirim': { class: 'bg-orange-100 text-orange-700 border-orange-200', index: 2 },
+    'siap diambil': { class: 'bg-orange-100 text-orange-700 border-orange-200', index: 2 },
     'selesai': { class: 'bg-green-100 text-green-700 border-green-200', index: 3 },
     'dibatalkan': { class: 'bg-red-100 text-red-700 border-red-200', index: -1 },
     'default': { class: 'bg-gray-100 text-gray-700 border-gray-200', index: 0 }
