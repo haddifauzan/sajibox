@@ -1,4 +1,6 @@
-// assets/js/custom.js
+/**
+ * SajiBox - Custom Pesanan Page Logic (Alpine.js)
+ */
 
 function customPage() {
   return {

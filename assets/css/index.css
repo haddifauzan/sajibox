@@ -3,6 +3,7 @@
   --primary-light: #EA580C;
   --secondary: #F59E0B;
   --brown: #5A3E2B;
+  --brown-light: #92601A;
   --accent: #FDE68A;
   --cream: #FFFBF5;
   --cream-dark: #FEF3C7;
@@ -20,6 +21,7 @@ body {
 }
 
 .font-display { font-family: 'Playfair Display', serif; }
+.font-sans { font-family: 'Plus Jakarta Sans', sans-serif; }
 
 /* ── Blob decorative shapes ── */
 .blob-1 {
@@ -85,8 +87,43 @@ body {
   object-fit: cover; aspect-ratio: 4/3;
 }
 @keyframes float {
-  0%,100% { transform: translateY(0px); }
+  0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-14px); }
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+/* ── About Hero ── */
+.about-hero {
+  background: linear-gradient(180deg, #FFFBF5 0%, #FFF7ED 60%, #FDE68A33 100%);
+  position: relative;
+  overflow: hidden;
+  padding-top: 8rem; /* pt-32 */
+  padding-bottom: 5rem; /* pb-20 */
+}
+.about-blob-1 { top: -60px; right: -150px; opacity: 0.5; }
+.about-blob-2 { bottom: -40px; left: -100px; opacity: 0.4; }
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--brown);
+}
+.hero-title span.highlight { color: var(--primary); }
+.hero-title span.gradient {
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-desc {
+  color: var(--brown-light);
+  font-weight: 500;
+  line-height: 1.6;
 }
 
 /* ── Badge ── */
@@ -126,6 +163,12 @@ body {
   text-transform: uppercase; color: var(--primary);
 }
 
+.price-display {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 900;
+  color: var(--primary);
+}
+
 /* ── Feature cards ── */
 .feat-card {
   background: #fff;
@@ -143,6 +186,20 @@ body {
   display: flex; align-items: center; justify-content: center;
   font-size: 1.6rem;
   margin-bottom: 18px;
+}
+
+.feat-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--brown);
+  margin-bottom: 8px;
+}
+.feat-desc {
+  color: var(--brown-light);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  font-weight: 500;
 }
 
 /* ── Trust strip ── */
@@ -203,6 +260,39 @@ body {
   background: #ffffff12;
   top: -80px; left: -60px;
 }
+
+.cta-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.15;
+  margin-bottom: 20px;
+}
+.cta-desc {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 36px;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.btn-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 1rem;
+  padding: 16px 36px;
+  border-radius: 100px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+.btn-cta:hover { transform: translateY(-3px); }
 
 /* ── Footer ── */
 .footer { background: var(--brown); color: #FEF3C7; }

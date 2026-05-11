@@ -95,9 +95,9 @@
   </nav>
 
   <!-- ══════════════ BREADCRUMB ══════════════ -->
-  <div class="pt-24 pb-4 bg-gradient-to-b from-[#FFFBF5] to-[#FFF7ED]" x-show="pkg && !isLoading">
+  <div class="pt-24 pb-4 bg-gradient-to-b from-cream to-[#FFF7ED]" x-show="pkg && !isLoading">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
-      <div class="flex items-center gap-2 text-xs font-bold flex-wrap">
+      <nav class="flex items-center gap-2 text-xs font-bold flex-wrap">
         <a href="index.html" class="text-brown/60 hover:text-primary transition-colors">
           <i class="fa-solid fa-home text-[10px]"></i> Beranda
         </a>
@@ -105,7 +105,7 @@
         <a href="package.html" class="text-brown/60 hover:text-primary transition-colors">List Paket</a>
         <i class="fa-solid fa-chevron-right text-[8px] text-brown/20"></i>
         <span class="text-primary" x-text="pkg?.name"></span>
-      </div>
+      </nav>
     </div>
   </div>
 
@@ -290,15 +290,15 @@
                       </div>
                     </div>
                     <div class="absolute bottom-2 left-2">
-                      <span class="text-[9px] font-black px-2 py-1 rounded-md shadow-sm tracking-wider uppercase"
-                            :style="design.price > 0 ? 'background:#C2410C;color:#fff;' : 'background:#10B981;color:#fff;'"
+                      <span class="text-[9px] font-black px-2 py-1 rounded-md shadow-sm tracking-wider uppercase text-white"
+                            :class="design.price > 0 ? 'bg-primary' : 'bg-green-500'"
                             x-text="design.price > 0 ? '+' + formatPrice(design.price) : 'Gratis'">
                       </span>
                     </div>
                   </div>
                   <div class="flex-grow flex flex-col px-1">
                     <h5 class="font-bold text-s sm:text-xs text-brown mb-1" x-text="design.name"></h5>
-                    <p class="text-xs m:text-xs text-brown/60 leading-tight" x-text="design.description"></p>
+                    <p class="text-xs m:text-xs text-brown-light leading-tight" x-text="design.description"></p>
                   </div>
                 </div>
               </template>
@@ -366,28 +366,26 @@
                   <div class="text-center flex-grow flex flex-col px-1 justify-end">
                     <h5 class="font-bold text-s sm:text-s text-brown mb-1" x-text="card.name"></h5>
                     <p class="text-[9px] sm:text-[10px] font-black tracking-widest uppercase"
-                       :style="card.price > 0 ? 'color:#C2410C;' : 'color:#10B981;'"
+                       :class="card.price > 0 ? 'text-primary' : 'text-green-600'"
                        x-text="card.price > 0 ? '+' + formatPrice(card.price) : 'Gratis'"></p>
                   </div>
                 </div>
               </template>
             </div>
 
-            <!-- Message Area -->
-            <div x-show="selectedCard && selectedCard.id !== 'card-none'" x-transition 
-                 class="p-8 rounded-[3rem] bg-white border border-brown/5 shadow-sm space-y-6">
-              <div class="flex items-center gap-4 text-xs font-black text-brown uppercase tracking-[0.2em]">
-                <div class="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center text-sm">
-                  <i class="fa-solid fa-pen-nib"></i>
-                </div>
-                Tulis Pesan Ucapan
-              </div>
-              <textarea x-model="cardMessage" maxlength="100" rows="4"
-                        class="w-full bg-cream/30 border-2 border-brown/5 rounded-3xl p-6 text-sm font-medium focus:border-primary focus:outline-none transition-all resize-none shadow-inner"
-                        placeholder="Contoh: Selamat ulang tahun ke-20, SajiBox!"></textarea>
-              <div class="flex justify-between items-center text-[11px] font-black uppercase tracking-widest text-brown/30">
-                <span>Pesan personal Anda</span>
-                <span :class="cardMessageCount >= 90 ? 'text-primary' : ''" x-text="cardMessageCount + ' / 100'"></span>
+            <!-- Message Input (shown only when card is selected) -->
+            <div x-show="selectedCard && selectedCard.id !== 'card-none'"
+                 x-transition class="shadow-sm mt-6" style="background:#FFFFFF; border:1.5px solid #E5D5C5; padding: 16px; border-radius: 16px;">
+              <label class="block font-bold text-sm mb-2" style="color:#5A3E2B;">
+                <i class="fa-solid fa-pen-nib mr-2" style="color:#C2410C;"></i>Pesan Ucapan
+              </label>
+              <textarea x-model="cardMessage" maxlength="100" rows="3"
+                placeholder="Tuliskan pesan ucapan Anda di sini..." class="card-textarea"></textarea>
+              <div class="flex justify-between mt-1.5">
+                <p class="text-xs" style="color:#B09080;">Maksimal 100 karakter</p>
+                <p class="text-xs font-bold" :style="cardMessageCount >= 90 ? 'color:#C2410C;' : 'color:#B09080;'">
+                  <span x-text="cardMessageCount"></span>/100
+                </p>
               </div>
             </div>
 
@@ -429,7 +427,7 @@
                :class="summaryOpen ? 'bg-white rounded-t-3xl p-6 pb-6 max-h-[92vh] overflow-y-auto shadow-[0_-10px_40px_rgba(0,0,0,0.3)] z-[2001]' : ''">
             
             <div class="flex items-center justify-between mb-6">
-              <h3 style="font-family:'Playfair Display',serif; font-weight:900; font-size:1.2rem; color:#5A3E2B;" class="flex items-center gap-3">
+              <h3 class="font-display font-black text-lg text-brown flex items-center gap-3">
                 <span class="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                   <i class="fa-solid fa-receipt text-sm"></i>
                 </span>
@@ -517,10 +515,9 @@
                 </div>
                 <div class="text-right">
                   <span class="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-brown/50 block mb-1">Total Estimasi</span>
-                  <span style="font-family:'Plus Jakarta Sans',serif; font-weight:900; color:#C2410C;" 
-                        class="text-xl sm:text-[1.6rem] leading-none block"
-                        x-text="formatPrice(totalPrice)"></span>
-                  <p x-show="boxQty > 1" class="text-[9px] sm:text-[10px] text-brown/40 mt-1" x-text="formatPrice(pricePerBox) + ' / box'"></p>
+                  <span class="price-display text-xl sm:text-[1.6rem] leading-none block"
+                        x-text="formatPrice(priceBreakdown.total)"></span>
+                  <p x-show="boxQty > 1" class="text-[9px] sm:text-[10px] text-brown-light mt-1" x-text="formatPrice(priceBreakdown.perBox) + ' / box'"></p>
                 </div>
               </div>
 
@@ -597,13 +594,13 @@
       <div class="detail-not-found-icon">
         <i class="fa-solid fa-box-open"></i>
       </div>
-      <h2 style="font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:900; color:#5A3E2B; margin-bottom:12px;">
+      <h2 class="font-display text-3xl font-black text-brown mb-3">
         Paket Tidak Ditemukan
       </h2>
-      <p style="color:#92601A; font-weight:500; font-size:.95rem; margin-bottom:32px; line-height:1.7;">
+      <p class="text-brown-light font-medium text-sm mb-8 leading-relaxed">
         Maaf, paket yang Anda cari tidak tersedia atau link sudah tidak valid. Silakan kembali ke halaman list paket.
       </p>
-      <a href="package.html" class="btn-primary text-sm py-3 px-8" style="display:inline-flex;">
+      <a href="package.html" class="btn-primary text-sm py-3 px-8 flex items-center justify-center">
         <i class="fa-solid fa-arrow-left"></i>
         Kembali ke List Paket
       </a>

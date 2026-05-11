@@ -1,61 +1,93 @@
-// assets/js/package.js
-
-// PACKAGE_DATA is now loaded from assets/data/data_package.js
-
-
 /**
- * Alpine.js component for the Package List page
+ * SajiBox - Package Logic (Alpine.js)
+ * Handles both Package Listing and Package Detail pages.
  */
+
+const PACKAGE_CONSTANTS = {
+  // Navigation
+  pageNav: [
+    { label: 'Beranda', href: 'index.html', active: false },
+    { label: 'List Paket', href: 'package.html', active: true },
+    { label: 'Custom Pesanan', href: 'custom.html', active: false },
+    { label: 'Tracking', href: 'tracking.html', active: false },
+    { label: 'Tentang', href: 'about.html', active: false },
+  ],
+
+  // Categories & Icons
+  categories: [
+    'Semua',
+    'Saji Rapat',
+    'Saji Tradisi',
+    'Saji Manis-Gurih',
+    'Saji Hantaran',
+    'Saji Sehat',
+  ],
+
+  categoryIcons: {
+    'Semua': 'fa-solid fa-grip',
+    'Saji Rapat': 'fa-solid fa-briefcase',
+    'Saji Tradisi': 'fa-solid fa-mortar-pestle',
+    'Saji Manis-Gurih': 'fa-solid fa-scale-balanced',
+    'Saji Hantaran': 'fa-solid fa-gift',
+    'Saji Sehat': 'fa-solid fa-leaf',
+  },
+
+  categorySubtitles: {
+    'Saji Rapat': 'The Professional',
+    'Saji Tradisi': 'The Nostalgic',
+    'Saji Manis-Gurih': 'The Balanced',
+    'Saji Hantaran': 'The Gift',
+    'Saji Sehat': 'The Wellness',
+  },
+
+  // Box Size Mapping
+  boxConfigs: {
+    'Box S': { bg: '#10B981', shadow: 'rgba(16,185,129,0.25)', label: 'Small' },
+    'Box M': { bg: '#3B82F6', shadow: 'rgba(59,130,246,0.25)', label: 'Medium' },
+    'Box L': { bg: '#8B5CF6', shadow: 'rgba(139,92,246,0.25)', label: 'Large' },
+    'default': { bg: '#C2410C', shadow: 'rgba(194,65,12,0.25)', label: '' }
+  },
+
+  // Shared Data
+  designs: [
+    { id: 'design-1', name: 'Classic Kraft', price: 0, image: 'assets/images/design_box/design-1.png', description: 'Ceria dengan nuansa oranye khas SajiBox' },
+    { id: 'design-2', name: 'Playful Pattern', price: 1000, image: 'assets/images/design_box/design-2.png', description: 'Motif fun & ramai untuk kesan santai' },
+    { id: 'design-3', name: 'Modern Stripe', price: 1000, image: 'assets/images/design_box/design-3.png', description: 'Elegan dengan warna coklat premium' },
+    { id: 'design-4', name: 'Festive Party', price: 1000, image: 'assets/images/design_box/design-4.png', description: 'Kalem dan natural dengan sentuhan hijau' },
+    { id: 'design-5', name: 'Premium Gold', price: 1000, image: 'assets/images/design_box/design-5.png', description: 'Cerah & mencolok untuk acara spesial' },
+  ]
+};
+
+// ── COMPONENT: PACKAGE LIST PAGE ──
+
 function packagePage() {
   return {
-    // ── UI State ──
+    ...PACKAGE_CONSTANTS,
     isLoading: true,
     scrolled: false,
     mobileOpen: false,
     activeCategory: 'Semua',
+    packages: typeof PACKAGE_DATA !== 'undefined' ? PACKAGE_DATA : [],
 
-    // ── Data ──
-    packages: PACKAGE_DATA,
-
-    // ── Navigation ──
-    pageNav: [
-      { label: 'Beranda', href: 'index.html', active: false },
-      { label: 'List Paket', href: 'package.html', active: true },
-      { label: 'Custom Pesanan', href: 'custom.html', active: false },
-      { label: 'Tracking', href: 'tracking.html', active: false },
-      { label: 'Tentang', href: 'about.html', active: false },
-    ],
-
-    // ── Categories ──
-    categories: [
-      'Semua',
-      'Saji Rapat',
-      'Saji Tradisi',
-      'Saji Manis-Gurih',
-      'Saji Hantaran',
-      'Saji Sehat',
-    ],
-
-    // ── Category icon map ──
-    categoryIcons: {
-      'Semua': 'fa-solid fa-grip',
-      'Saji Rapat': 'fa-solid fa-briefcase',
-      'Saji Tradisi': 'fa-solid fa-mortar-pestle',
-      'Saji Manis-Gurih': 'fa-solid fa-scale-balanced',
-      'Saji Hantaran': 'fa-solid fa-gift',
-      'Saji Sehat': 'fa-solid fa-leaf',
-    },
-
-    // ── Init ──
+    // Init
     init() {
       setTimeout(() => { this.isLoading = false; }, 800);
     },
 
+    // UI Helpers
     onScroll() {
       this.scrolled = window.scrollY > 20;
     },
 
-    // ── Filter packages by category ──
+    formatPrice(n) {
+      return 'Rp ' + n.toLocaleString('id-ID');
+    },
+
+    boxStyle(box) {
+      return this.boxConfigs[box] || this.boxConfigs.default;
+    },
+
+    // Filtering
     filterPackages(category) {
       this.activeCategory = category;
     },
@@ -65,7 +97,7 @@ function packagePage() {
       return this.packages.filter(p => p.category === this.activeCategory);
     },
 
-    // ── Preview items (max 3) ──
+    // Preview Helpers
     previewItems(pkg) {
       return pkg.items.slice(0, 3);
     },
@@ -74,82 +106,40 @@ function packagePage() {
       return Math.max(0, pkg.items.length - 3);
     },
 
-    // ── Navigate to detail page ──
+    // Navigation
     viewDetail(pkg) {
       window.location.href = 'package_detail.html?code=' + encodeURIComponent(pkg.code);
-    },
-
-    // ── Box size color mapping ──
-    boxColor(box) {
-      if (box === 'Box S') return { bg: '#10B981', shadow: 'rgba(16,185,129,0.25)' };
-      if (box === 'Box M') return { bg: '#3B82F6', shadow: 'rgba(59,130,246,0.25)' };
-      if (box === 'Box L') return { bg: '#8B5CF6', shadow: 'rgba(139,92,246,0.25)' };
-      return { bg: '#C2410C', shadow: 'rgba(194,65,12,0.25)' };
-    },
-
-    formatPrice(n) {
-      return 'Rp ' + n.toLocaleString('id-ID');
-    },
+    }
   };
 }
 
+// ── COMPONENT: PACKAGE DETAIL PAGE ──
 
-/**
- * Alpine.js component for the Package Detail page
- */
 function packageDetailPage() {
   return {
-    // ── UI State ──
+    ...PACKAGE_CONSTANTS,
+    // UI State
     isLoading: true,
     scrolled: false,
     mobileOpen: false,
     showLightbox: false,
     lightboxImg: '',
     lightboxTitle: '',
+    lightboxCategory: '',
     currentStep: 1,
     totalSteps: 3,
+    summaryOpen: false,
 
-    // ── Data ──
+    // Order Data
     pkg: null,
     boxQty: 1,
     notFound: false,
-    summaryOpen: false,
-
-    // ── Design & Card ──
-    designs: [],
-    cards: [],
     selectedDesign: null,
     selectedCard: null,
     cardMessage: '',
+    cards: typeof CARDS_DATA !== 'undefined' ? CARDS_DATA : [],
 
-    // ── Navigation ──
-    pageNav: [
-      { label: 'Beranda', href: 'index.html', active: false },
-      { label: 'List Paket', href: 'package.html', active: true },
-      { label: 'Custom Pesanan', href: 'custom.html', active: false },
-      { label: 'Tracking', href: 'tracking.html', active: false },
-      { label: 'Tentang', href: 'about.html', active: false },
-    ],
-
-    // ── Category icon map ──
-    categoryIcons: {
-      'Saji Rapat': 'fa-solid fa-briefcase',
-      'Saji Tradisi': 'fa-solid fa-mortar-pestle',
-      'Saji Manis-Gurih': 'fa-solid fa-scale-balanced',
-      'Saji Hantaran': 'fa-solid fa-gift',
-      'Saji Sehat': 'fa-solid fa-leaf',
-    },
-
-    // ── Category subtitle map ──
-    categorySubtitle: {
-      'Saji Rapat': 'The Professional',
-      'Saji Tradisi': 'The Nostalgic',
-      'Saji Manis-Gurih': 'The Balanced',
-      'Saji Hantaran': 'The Gift',
-      'Saji Sehat': 'The Wellness',
-    },
-
-    // ── Init ──
+    // Lifecycle
     init() {
       const params = new URLSearchParams(window.location.search);
       const code = params.get('code');
@@ -162,78 +152,38 @@ function packageDetailPage() {
         this.notFound = true;
       }
 
-      // Load designs (same as custom page)
-      this.designs = [
-        { id: 'design-1', name: 'Classic Kraft', price: 0, image: 'assets/images/design_box/design-1.png', description: 'Ceria dengan nuansa oranye khas SajiBox' },
-        { id: 'design-2', name: 'Playful Pattern', price: 1000, image: 'assets/images/design_box/design-2.png', description: 'Motif fun & ramai untuk kesan santai' },
-        { id: 'design-3', name: 'Modern Stripe', price: 1000, image: 'assets/images/design_box/design-3.png', description: 'Elegan dengan warna coklat premium' },
-        { id: 'design-4', name: 'Festive Party', price: 1000, image: 'assets/images/design_box/design-4.png', description: 'Kalem dan natural dengan sentuhan hijau' },
-        { id: 'design-5', name: 'Premium Gold', price: 1000, image: 'assets/images/design_box/design-5.png', description: 'Cerah & mencolok untuk acara spesial' },
-      ];
-
-      // Load cards
-      this.cards = typeof CARDS_DATA !== 'undefined' ? CARDS_DATA : [];
-
-      // Default selections
-      this.selectedDesign = null;
-      this.selectedCard = null;
-
-      // Load progress if any
+      // Load progress from localStorage
       this.loadProgress();
 
-      // Setup watchers to save progress
-      this.$watch('currentStep', () => this.saveProgress());
-      this.$watch('boxQty', () => this.saveProgress());
-      this.$watch('selectedDesign', () => this.saveProgress());
-      this.$watch('selectedCard', () => this.saveProgress());
-      this.$watch('cardMessage', () => this.saveProgress());
+      // Setup watchers to save progress automatically
+      ['currentStep', 'boxQty', 'selectedDesign', 'selectedCard', 'cardMessage'].forEach(prop => {
+        this.$watch(prop, () => this.saveProgress());
+      });
 
       setTimeout(() => { this.isLoading = false; }, 600);
     },
 
-    saveProgress() {
-      if (!this.pkg) return;
-      const progress = {
-        code: this.pkg.code,
-        currentStep: this.currentStep,
-        boxQty: this.boxQty,
-        selectedDesignId: this.selectedDesign ? this.selectedDesign.id : null,
-        selectedCardId: this.selectedCard ? this.selectedCard.id : null,
-        cardMessage: this.cardMessage
-      };
-      localStorage.setItem('packageOrderProgress', JSON.stringify(progress));
-    },
-
-    loadProgress() {
-      const saved = localStorage.getItem('packageOrderProgress');
-      if (saved) {
-        try {
-          const progress = JSON.parse(saved);
-          // Only load if it's the same package
-          if (this.pkg && progress.code === this.pkg.code) {
-            this.currentStep = progress.currentStep || 1;
-            this.boxQty = progress.boxQty || 1;
-            if (progress.selectedDesignId) {
-              this.selectedDesign = this.designs.find(d => d.id === progress.selectedDesignId) || null;
-            }
-            if (progress.selectedCardId) {
-              this.selectedCard = this.cards.find(c => c.id === progress.selectedCardId) || null;
-            }
-            if (progress.cardMessage !== undefined) {
-              this.cardMessage = progress.cardMessage;
-            }
-          }
-        } catch (e) {
-          console.error("Failed to load package order progress", e);
-        }
-      }
-    },
-
+    // UI Helpers
     onScroll() {
       this.scrolled = window.scrollY > 20;
     },
 
-    // ── Wizard Navigation ──
+    formatPrice(n) {
+      return 'Rp ' + n.toLocaleString('id-ID');
+    },
+
+    boxStyle(box) {
+      return this.boxConfigs[box] || this.boxConfigs.default;
+    },
+
+    // Wizard Controls
+    setStep(step) {
+      if (this.canGoToStep(step)) {
+        this.currentStep = step;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    },
+
     nextStep() {
       if (this.currentStep < this.totalSteps) {
         this.currentStep++;
@@ -248,20 +198,9 @@ function packageDetailPage() {
       }
     },
 
-    setStep(step) {
-      if (this.canGoToStep(step)) {
-        this.currentStep = step;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    },
-
-    get isAllStepsComplete() {
-      return this.isStepComplete(2) && this.isStepComplete(3);
-    },
-
     isStepComplete(step) {
       if (step === 1) return true;
-      if (step === 2) return this.selectedDesign !== null;
+      if (step === 2) return !!this.selectedDesign;
       if (step === 3) {
         if (!this.selectedCard) return false;
         if (this.selectedCard.id === 'card-none') return true;
@@ -271,28 +210,54 @@ function packageDetailPage() {
     },
 
     canGoToStep(step) {
-      if (step === this.currentStep) return true;
-      if (step < this.currentStep) return true;
-      if (step === this.currentStep + 1) return this.isStepComplete(this.currentStep);
-      // Allow jumping to any step that is already complete
-      if (this.isStepComplete(step)) return true;
-      return false;
+      if (step <= this.currentStep) return true;
+      return this.isStepComplete(step - 1);
     },
 
-    lightboxCategory: '',
-    // ...
-    // ── Lightbox ──
+    // Persistence
+    saveProgress() {
+      if (!this.pkg) return;
+      const progress = {
+        code: this.pkg.code,
+        currentStep: this.currentStep,
+        boxQty: this.boxQty,
+        selectedDesignId: this.selectedDesign?.id || null,
+        selectedCardId: this.selectedCard?.id || null,
+        cardMessage: this.cardMessage
+      };
+      localStorage.setItem('packageOrderProgress', JSON.stringify(progress));
+    },
+
+    loadProgress() {
+      const saved = localStorage.getItem('packageOrderProgress');
+      if (!saved) return;
+
+      try {
+        const progress = JSON.parse(saved);
+        if (this.pkg && progress.code === this.pkg.code) {
+          this.currentStep = progress.currentStep || 1;
+          this.boxQty = progress.boxQty || 1;
+          this.selectedDesign = this.designs.find(d => d.id === progress.selectedDesignId) || null;
+          this.selectedCard = this.cards.find(c => c.id === progress.selectedCardId) || null;
+          this.cardMessage = progress.cardMessage || '';
+        }
+      } catch (e) {
+        console.error("Failed to load progress", e);
+      }
+    },
+
+    // Interactions
     openLightbox(img, title, category = 'Preview Desain Box') {
       this.lightboxImg = img;
       this.lightboxTitle = title;
       this.lightboxCategory = category;
       this.showLightbox = true;
     },
+
     closeLightbox() {
       this.showLightbox = false;
     },
 
-    // ── Qty controls ──
     increaseBoxQty() {
       if (this.boxQty < 999) this.boxQty++;
     },
@@ -301,7 +266,6 @@ function packageDetailPage() {
       if (this.boxQty > 1) this.boxQty--;
     },
 
-    // ── Design & Card selection ──
     selectDesign(design) {
       this.selectedDesign = design;
     },
@@ -311,93 +275,59 @@ function packageDetailPage() {
       if (card.id === 'card-none') this.cardMessage = '';
     },
 
-    get cardMessageCount() {
-      return this.cardMessage.length;
-    },
-
-    // ── Separate foods and drinks ──
+    // Computed / Getters
     get foodItems() {
-      if (!this.pkg) return [];
-      return this.pkg.items.filter(item => !item.toLowerCase().includes('air mineral'));
+      return this.pkg?.items.filter(item => !item.toLowerCase().includes('air mineral')) || [];
     },
 
     get drinkItems() {
-      if (!this.pkg) return [];
-      return this.pkg.items.filter(item => item.toLowerCase().includes('air mineral'));
+      return this.pkg?.items.filter(item => item.toLowerCase().includes('air mineral')) || [];
     },
 
-    // ── Pricing ──
-    get designPrice() {
-      return this.selectedDesign ? this.selectedDesign.price : 0;
+    get priceBreakdown() {
+      const designPrice = this.selectedDesign?.price || 0;
+      const cardPrice = this.selectedCard?.price || 0;
+      const basePrice = this.pkg?.price || 0;
+      const perBox = basePrice + designPrice + cardPrice;
+      
+      return {
+        base: basePrice,
+        design: designPrice,
+        card: cardPrice,
+        perBox: perBox,
+        total: perBox * this.boxQty
+      };
     },
 
-    get cardPrice() {
-      return this.selectedCard ? this.selectedCard.price : 0;
-    },
-
-    get pkgPrice() {
-      return this.pkg ? this.pkg.price : 0;
-    },
-
-    get pricePerBox() {
-      return this.pkgPrice + this.designPrice + this.cardPrice;
-    },
-
-    get totalPrice() {
-      return this.pricePerBox * this.boxQty;
-    },
-
-    // ── Related packages (same category, excluding current) ──
     get relatedPackages() {
       if (!this.pkg) return [];
       return PACKAGE_DATA.filter(p => p.category === this.pkg.category && p.code !== this.pkg.code);
     },
 
-    // ── Box size color mapping ──
-    boxColor(box) {
-      if (box === 'Box S') return { bg: '#10B981', shadow: 'rgba(16,185,129,0.25)', label: 'Small' };
-      if (box === 'Box M') return { bg: '#3B82F6', shadow: 'rgba(59,130,246,0.25)', label: 'Medium' };
-      if (box === 'Box L') return { bg: '#8B5CF6', shadow: 'rgba(139,92,246,0.25)', label: 'Large' };
-      return { bg: '#C2410C', shadow: 'rgba(194,65,12,0.25)', label: '' };
-    },
-
-    // ── Helpers ──
-    formatPrice(n) {
-      return 'Rp ' + n.toLocaleString('id-ID');
-    },
-
-    // ── Checkout ──
+    // Checkout
     checkout() {
       if (!this.pkg) return;
 
+      const breakdown = this.priceBreakdown;
       const order = {
         type: 'package',
-        package: {
-          code: this.pkg.code,
-          name: this.pkg.name,
-          items: this.pkg.items,
-          box: this.pkg.box,
-          image: this.pkg.image,
-          price: this.pkg.price
-        },
+        package: { ...this.pkg },
         boxQty: this.boxQty,
         design: {
           name: this.selectedDesign?.name || null,
-          price: this.designPrice
+          price: breakdown.design
         },
         card: {
           name: this.selectedCard?.id !== 'card-none' ? this.selectedCard?.name : null,
           message: this.cardMessage || null,
-          price: this.cardPrice
+          price: breakdown.card
         },
-        pricePerBox: this.pricePerBox,
-        totalPrice: this.totalPrice
+        pricePerBox: breakdown.perBox,
+        totalPrice: breakdown.total
       };
 
       localStorage.setItem('order', JSON.stringify(order));
       window.location.href = 'checkout.html';
-    },
+    }
   };
 }
-
-

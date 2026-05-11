@@ -21,9 +21,10 @@
 
 <body x-data="checkoutPage()" 
       x-init="init()"
-      class="bg-cream transition-all duration-700"
+      @scroll.window="onScroll()"
+      class="bg-[#FFFBF5] transition-all duration-700"
       :class="{ 'overflow-hidden': isLoading }"
-      style="scrollbar-gutter: stable;">
+      style="scrollbar-gutter: stable; font-family: 'Plus Jakarta Sans', sans-serif;">
 
   <!-- ══════════════ PRELOADER ══════════════ -->
   <div x-show="isLoading" 
@@ -46,40 +47,77 @@
   </div>
 
   <!-- ══════════════ NAVBAR ══════════════ -->
-  <nav class="navbar scrolled">
-    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-20">
+  <nav class="navbar z-[999] fixed w-full top-0 transition-all duration-300" 
+       :class="{ 'bg-white shadow-md py-2': scrolled, 'bg-transparent py-4': !scrolled || true }"> <!-- forced transparent or background for checkout -->
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-16 md:h-20">
+      <!-- Logo -->
       <a href="index.html" class="flex items-center">
-        <img src="assets/images/logo/full_logo_tr.png" alt="SajiBox Logo" class="h-16 md:h-20 w-auto object-contain">
+        <img src="assets/images/logo/full_logo_tr.png" alt="SajiBox Logo" class="h-12 md:h-16 w-auto object-contain">
       </a>
+
+      <!-- Desktop page nav -->
       <ul class="hidden md:flex items-center gap-4 lg:gap-6">
-        <li><a href="index.html" class="text-sm font-semibold text-brown hover:text-primary transition-colors duration-200">Beranda</a></li>
+        <template x-for="item in pageNav" :key="item.label">
+          <li>
+            <a :href="item.href"
+               class="text-sm transition-colors duration-200 whitespace-nowrap"
+               :class="item.active
+                 ? 'text-primary font-bold border-b-2 border-primary pb-0.5'
+                 : 'text-brown font-semibold hover:text-primary'"
+               x-text="item.label">
+            </a>
+          </li>
+        </template>
       </ul>
+
       <div class="flex items-center gap-4">
-        <a href="package.html" class="max-lg:hidden btn-primary text-sm py-2 px-4 lg:py-3 lg:px-6 whitespace-nowrap">
-          Pesan Paketan <i class="fa-solid fa-arrow-right ml-2"></i>
+        <a href="package.html" class="hidden md:inline-flex btn-primary text-sm py-2 px-4 lg:py-3 lg:px-6 whitespace-nowrap">
+          Pesan Sekarang
+          <i class="fa-solid fa-arrow-right"></i>
         </a>
+
+        <!-- Mobile burger -->
+        <button @click="mobileOpen = !mobileOpen" class="md:hidden p-2 rounded-xl text-primary transition-colors">
+          <i class="fa-solid fa-bars text-xl" x-show="!mobileOpen"></i>
+          <i class="fa-solid fa-xmark text-xl" x-show="mobileOpen"></i>
+        </button>
       </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div x-show="mobileOpen" x-transition x-cloak class="md:hidden px-6 pb-6 pt-2 bg-white absolute w-full shadow-lg">
+      <div class="mb-3 pb-3 border-b border-brown/5">
+        <p class="text-[10px] font-bold uppercase tracking-widest mb-2 text-primary">Halaman</p>
+        <template x-for="item in pageNav" :key="item.label">
+          <a :href="item.href" @click="mobileOpen=false"
+             class="block py-3 text-sm font-semibold transition-colors"
+             :class="item.active ? 'text-primary' : 'text-brown hover:text-primary'"
+             x-text="item.label">
+          </a>
+        </template>
+      </div>
+      <a href="package.html" class="btn-primary w-full flex items-center justify-center gap-2 mt-4 py-3">Pesan Sekarang <i class="fa-solid fa-arrow-right"></i></a>
     </div>
   </nav>
 
   <!-- ══════════════ MAIN CONTENT ══════════════ -->
-  <section class="py-24 pt-32" style="background:#FFFBF5; min-height: 80vh;">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+  <section class="checkout-content py-24 pt-32">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 relative z-10">
 
       <div class="mb-8 text-center">
-        <h1 style="font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,2.8rem); font-weight:900; color:#5A3E2B; line-height:1.15;" class="mb-3">
-          Checkout <span style="color:#C2410C;">Pesanan</span>
+        <h1 class="hero-title mb-3">
+          Checkout <span class="text-primary">Pesanan</span>
         </h1>
-        <p style="color:#92601A; font-weight:500;">Periksa kembali detail pesanan Anda sebelum melakukan pembayaran.</p>
+        <p class="hero-desc">Periksa kembali detail pesanan Anda sebelum melakukan pembayaran.</p>
       </div>
 
       <!-- Jika tidak ada order -->
       <template x-if="!order && !isLoading">
-        <div class="text-center py-16 bg-white rounded-3xl border" style="border-color:#FDE68A99;">
+        <div class="text-center py-16 bg-white rounded-3xl border border-amber-100 shadow-sm">
           <i class="fa-solid fa-basket-shopping text-6xl mb-4 text-primary/30"></i>
-          <h2 style="font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:#5A3E2B;">Pesanan Kosong</h2>
-          <p style="color:#92601A; font-weight:500; margin-bottom:20px;">Anda belum memiliki pesanan untuk dicheckout.</p>
-          <button @click="window.location.href='package.html'" class="nav-btn-next">Mulai Pesan <i class="fa-solid fa-arrow-right"></i></button>
+          <h2 class="font-display font-bold text-2xl text-brown">Pesanan Kosong</h2>
+          <p class="text-brown-light mb-6">Anda belum memiliki pesanan untuk dicheckout.</p>
+          <button @click="window.location.href='package.html'" class="nav-btn-next mx-auto">Mulai Pesan <i class="fa-solid fa-arrow-right ml-2"></i></button>
         </div>
       </template>
 
@@ -88,7 +126,7 @@
         <div>
           <!-- ── SECTION: Data Pemesan ── -->
           <div class="bg-white rounded-2xl p-6 mb-8 shadow-sm border border-brown/10">
-            <h3 style="font-family:'Playfair Display',serif; font-weight:900; font-size:1.2rem; color:#5A3E2B;" class="flex items-center gap-3 mb-6">
+            <h3 class="font-display font-black text-xl text-brown flex items-center gap-3 mb-6">
               <span class="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                 <i class="fa-solid fa-user-tag text-sm"></i>
               </span>
@@ -122,14 +160,40 @@
                 </select>
               </div>
               <div class="space-y-2 md:col-span-2">
+                <label class="text-[11px] font-black uppercase tracking-widest text-brown/60 ml-1">Metode Pengiriman *</label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <label class="relative cursor-pointer h-full">
+                    <input type="radio" name="deliveryMethod" value="pickup" x-model="deliveryMethod" class="peer sr-only">
+                    <div class="p-4 rounded-xl border-2 border-brown/10 peer-checked:border-primary peer-checked:bg-primary/5 transition-all flex flex-col items-center justify-center text-center gap-2 h-full">
+                      <i class="fa-solid fa-store text-2xl text-brown/50 peer-checked:text-primary transition-colors"></i>
+                      <div>
+                        <div class="font-bold text-brown text-sm">Pickup / Ambil Sendiri</div>
+                        <div class="text-xs text-brown-light mt-1">Pesanan akan diambil langsung ke lokasi SajiBox</div>
+                      </div>
+                    </div>
+                  </label>
+                  <label class="relative cursor-pointer h-full">
+                    <input type="radio" name="deliveryMethod" value="delivery" x-model="deliveryMethod" class="peer sr-only">
+                    <div class="p-4 rounded-xl border-2 border-brown/10 peer-checked:border-primary peer-checked:bg-primary/5 transition-all flex flex-col items-center justify-center text-center gap-2 h-full">
+                      <i class="fa-solid fa-motorcycle text-2xl text-brown/50 peer-checked:text-primary transition-colors"></i>
+                      <div>
+                        <div class="font-bold text-brown text-sm">Delivery / Pengiriman</div>
+                        <div class="text-xs text-brown-light mt-1">Pesanan akan diantar ke lokasi Anda (Ongkir menyesuaikan)</div>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="space-y-2 md:col-span-2" x-show="deliveryMethod === 'delivery'" x-transition>
                 <label class="text-[11px] font-black uppercase tracking-widest text-brown/60 ml-1">Alamat Pengiriman *</label>
-                <textarea x-model="customerAddress" @input="saveCustomerInfo()" rows="3" placeholder="Masukkan alamat lengkap pengiriman" required
+                <textarea x-model="customerAddress" @input="saveCustomerInfo()" rows="3" placeholder="Masukkan alamat lengkap pengiriman" :required="deliveryMethod === 'delivery'"
                           class="w-full px-4 py-3 rounded-xl border-2 border-brown/10 focus:border-primary outline-none transition-all text-sm font-semibold text-brown placeholder:text-brown/30 resize-none"></textarea>
                 
                 <div class="mt-4 border-2 border-brown/10 rounded-xl overflow-hidden relative">
                   <div class="bg-brown/5 px-3 py-2 flex items-center gap-2 border-b border-brown/10">
                     <i class="fa-solid fa-map-location-dot text-primary"></i>
-                    <span class="text-[11px] font-bold text-brown/70">Pilih lokasi di peta agar kurir lebih mudah menemukan alamat Anda (Opsional)</span>
+                    <span class="text-[11px] font-bold text-brown/70">Pilih lokasi di peta untuk menghitung ongkos kirim *Wajib</span>
                   </div>
                   <div id="address-map" class="w-full h-[250px] z-10 relative"></div>
                   
@@ -142,9 +206,12 @@
                         <i class="fa-solid fa-trash-can"></i> Hapus
                      </button>
                   </div>
+                  <div class="bg-red-50 px-3 py-2 border-t border-red-100" x-show="!shippingAvailable && addressLat && addressLng">
+                    <p class="text-xs text-red-600 font-bold"><i class="fa-solid fa-circle-exclamation mr-1"></i> Jarak pengiriman lebih dari 15 km tidak tersedia.</p>
+                  </div>
                 </div>
               </div>
-              <div class="space-y-2 md:col-span-2">
+              <div class="space-y-2 md:col-span-2" x-show="deliveryMethod === 'delivery'" x-transition>
                 <label class="text-[11px] font-black uppercase tracking-widest text-brown/60 ml-1">Catatan Tambahan (Opsional)</label>
                 <input type="text" x-model="customerNote" @input="saveCustomerInfo()" placeholder="Contoh: Titip di satpam, kirim sebelum jam 10 pagi, dll." 
                        class="w-full px-4 py-3 rounded-xl border-2 border-brown/10 focus:border-primary outline-none transition-all text-sm font-semibold text-brown placeholder:text-brown/30">
@@ -152,67 +219,68 @@
             </div>
           </div>
 
-          <div class="rounded-2xl overflow-hidden shadow-lg" style="border:1px solid #FDE68A99; background:#fff;">
+          <!-- ── SECTION: Ringkasan Pesanan ── -->
+          <div class="rounded-2xl overflow-hidden shadow-lg border border-amber-100 bg-white">
             
-            <div class="p-5" style="background:#FFF7ED; border-bottom:1px solid #FDE68A99;">
+            <div class="p-5 bg-cream/30 border-b border-amber-100">
               <div class="flex items-center gap-2">
                 <i class="fa-solid fa-receipt text-primary"></i>
-                <span class="font-bold text-sm uppercase tracking-wider" style="color:#5A3E2B;">Tipe Pesanan: <span x-text="order.type === 'custom' ? 'Custom Snackbox' : 'Paket Jadi'" class="text-primary"></span></span>
+                <span class="font-bold text-sm uppercase tracking-wider text-brown">Tipe Pesanan: <span x-text="order.type === 'custom' ? 'Custom Snackbox' : 'Paket Jadi'" class="text-primary"></span></span>
               </div>
             </div>
 
             <!-- Box (Hanya Custom) -->
             <template x-if="order.type === 'custom' && order.box">
-              <div class="p-5 border-b" style="border-color:#F3E8D5;">
+              <div class="p-5 border-b border-brown/5">
                 <div class="flex items-center gap-2 mb-3">
                   <i class="fa-solid fa-box text-primary"></i>
-                  <span class="font-bold text-sm uppercase tracking-wider" style="color:#C2410C;">Ukuran Box</span>
+                  <span class="font-bold text-sm uppercase tracking-wider text-primary">Ukuran Box</span>
                 </div>
                 <div class="review-row">
                   <div>
-                    <span style="color:#5A3E2B; font-weight:600;" x-text="order.box.name"></span>
-                    <p class="text-xs mt-0.5" style="color:#B09080;" x-text="formatPrice(order.box.price) + ' × ' + order.boxQty + ' box'"></p>
+                    <span class="font-bold text-brown" x-text="order.box.name"></span>
+                    <p class="text-xs mt-0.5 text-brown-light" x-text="formatPrice(order.box.price) + ' × ' + order.boxQty + ' box'"></p>
                   </div>
-                  <span class="font-bold" style="color:#C2410C;" x-text="formatPrice(order.box.price * order.boxQty)"></span>
+                  <span class="font-bold text-primary" x-text="formatPrice(order.box.price * order.boxQty)"></span>
                 </div>
               </div>
             </template>
 
             <!-- Paket Detail (Hanya Package) -->
             <template x-if="order.type === 'package' && order.package">
-              <div class="p-5 border-b" style="border-color:#F3E8D5;">
+              <div class="p-5 border-b border-brown/5">
                 <div class="flex items-center gap-2 mb-3">
                   <i class="fa-solid fa-gift text-primary"></i>
-                  <span class="font-bold text-sm uppercase tracking-wider" style="color:#C2410C;">Paket Pilihan</span>
+                  <span class="font-bold text-sm uppercase tracking-wider text-primary">Paket Pilihan</span>
                 </div>
                 <div class="review-row">
                   <div>
-                    <span style="color:#5A3E2B; font-weight:600;" x-text="order.package.name"></span>
-                    <p class="text-xs mt-0.5" style="color:#B09080;" x-text="formatPrice(order.package.price) + ' × ' + order.boxQty + ' box'"></p>
+                    <span class="font-bold text-brown" x-text="order.package.name"></span>
+                    <p class="text-xs mt-0.5 text-brown-light" x-text="formatPrice(order.package.price) + ' × ' + order.boxQty + ' box'"></p>
                   </div>
-                  <span class="font-bold" style="color:#C2410C;" x-text="formatPrice(order.package.price * order.boxQty)"></span>
+                  <span class="font-bold text-primary" x-text="formatPrice(order.package.price * order.boxQty)"></span>
                 </div>
               </div>
             </template>
 
             <!-- Foods (Hanya Custom) -->
             <template x-if="order.type === 'custom' && order.foods">
-              <div class="p-5 border-b" style="border-color:#F3E8D5;">
+              <div class="p-5 border-b border-brown/5">
                 <div class="flex items-center gap-2 mb-3">
                   <i class="fa-solid fa-utensils text-primary"></i>
-                  <span class="font-bold text-sm uppercase tracking-wider" style="color:#C2410C;">Isi Makanan</span>
+                  <span class="font-bold text-sm uppercase tracking-wider text-primary">Isi Makanan</span>
                 </div>
                 <template x-for="food in order.foods" :key="food.name">
                   <div class="review-row">
-                    <span style="color:#5A3E2B;">
+                    <span class="text-brown">
                       <span x-text="food.name"></span>
-                      <span class="ml-2 text-xs font-bold px-2 py-0.5 rounded-full" style="background:#FDE68A55; color:#92400E;" x-text="'×' + (food.qty * order.boxQty)"></span>
+                      <span class="ml-2 text-xs font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800" x-text="'×' + (food.qty * order.boxQty)"></span>
                     </span>
-                    <span class="font-bold text-sm" style="color:#5A3E2B;" x-text="formatPrice(food.price * food.qty * order.boxQty)"></span>
+                    <span class="font-bold text-sm text-brown" x-text="formatPrice(food.price * food.qty * order.boxQty)"></span>
                   </div>
                 </template>
                 <div class="review-row mt-2 pt-2 border-t border-dashed border-brown/10">
-                  <span class="text-m font-bold text-brown/50">Total Makanan</span>
+                  <span class="text-m font-bold text-brown-light">Total Makanan</span>
                   <span class="text-m font-black text-primary" x-text="formatPrice(order.foods.reduce((sum, f) => sum + (f.price * f.qty), 0) * order.boxQty)"></span>
                 </div>
               </div>
@@ -220,17 +288,17 @@
 
             <!-- Design -->
             <template x-if="order.design">
-              <div class="p-5 border-b" style="border-color:#F3E8D5;">
+              <div class="p-5 border-b border-brown/5">
                 <div class="flex items-center gap-2 mb-3">
                   <i class="fa-solid fa-palette text-primary"></i>
-                  <span class="font-bold text-sm uppercase tracking-wider" style="color:#C2410C;">Desain Box</span>
+                  <span class="font-bold text-sm uppercase tracking-wider text-primary">Desain Box</span>
                 </div>
                 <div class="review-row">
                   <div>
-                    <span style="color:#5A3E2B; font-weight:600;" x-text="order.design.name"></span>
-                    <p class="text-xs mt-0.5" style="color:#B09080;" x-text="formatPrice(order.design.price) + ' × ' + order.boxQty + ' box'"></p>
+                    <span class="font-bold text-brown" x-text="order.design.name"></span>
+                    <p class="text-xs mt-0.5 text-brown-light" x-text="formatPrice(order.design.price) + ' × ' + order.boxQty + ' box'"></p>
                   </div>
-                  <span class="font-bold" style="color:#C2410C;"
+                  <span class="font-bold text-primary"
                         x-text="order.design.price > 0 ? formatPrice(order.design.price * order.boxQty) : 'Gratis'"></span>
                 </div>
               </div>
@@ -238,44 +306,89 @@
 
             <!-- Card -->
             <template x-if="order.card">
-              <div class="p-5 border-b" style="border-color:#F3E8D5;">
+              <div class="p-5 border-b border-brown/5">
                 <div class="flex items-center gap-2 mb-3">
                   <i class="fa-solid fa-envelope-open-text text-primary"></i>
-                  <span class="font-bold text-sm uppercase tracking-wider" style="color:#C2410C;">Kartu Ucapan</span>
+                  <span class="font-bold text-sm uppercase tracking-wider text-primary">Kartu Ucapan</span>
                 </div>
                 <div class="review-row">
                   <div>
-                    <p style="color:#5A3E2B; font-weight:600;" x-text="!order.card.name ? 'Tanpa kartu' : order.card.name"></p>
-                    <p x-show="order.card.price > 0" class="text-xs mt-0.5" style="color:#B09080;" x-text="formatPrice(order.card.price) + ' × ' + order.boxQty + ' box'"></p>
-                    <p x-show="order.card.message" class="text-sm mt-1 italic" style="color:#92601A;">"<span x-text="order.card.message"></span>"</p>
+                    <p class="font-bold text-brown" x-text="!order.card.name ? 'Tanpa kartu' : order.card.name"></p>
+                    <p x-show="order.card.price > 0" class="text-xs mt-0.5 text-brown-light" x-text="formatPrice(order.card.price) + ' × ' + order.boxQty + ' box'"></p>
+                    <p x-show="order.card.message" class="text-sm mt-1 italic text-brown-light">"<span x-text="order.card.message"></span>"</p>
                   </div>
-                  <span class="font-bold" style="color:#C2410C;"
+                  <span class="font-bold text-primary"
                         x-text="order.card.price > 0 ? formatPrice(order.card.price * order.boxQty) : 'Gratis'"></span>
                 </div>
               </div>
             </template>
 
             <!-- Jumlah Box -->
-            <div class="p-5 border-b">
+            <div class="p-5 border-b border-brown/5">
               <div class="flex justify-between items-center">
                 <div>
-                  <span class="font-bold" style="color:#5A3E2B;">Jumlah Box</span>
-                  <p class="text-xs mt-0.5" style="color:#B09080;" x-text="'@ ' + formatPrice(order.pricePerBox || 0) + ' / box'"></p>
+                  <span class="font-bold text-brown">Jumlah Box</span>
+                  <p class="text-xs mt-0.5 text-brown-light" x-text="'@ ' + formatPrice(order.pricePerBox || 0) + ' / box'"></p>
                 </div>
-                <span style="color:#5A3E2B; font-weight:bold;" x-text="(order.boxQty || 1) + ' Box'"></span>
+                <span class="font-bold text-brown" x-text="(order.boxQty || 1) + ' Box'"></span>
+              </div>
+            </div>
+
+            <!-- Subtotal -->
+            <div class="p-5 border-b border-brown/5 bg-cream/10">
+              <div class="flex justify-between items-center">
+                <div>
+                  <p class="font-bold text-brown">Subtotal</p>
+                </div>
+                <div>
+                  <div class="font-bold text-brown" x-text="formatPrice(order.totalPrice)"></div>
+                  <p x-show="order.boxQty > 1" class="text-[10px] text-right text-brown-light" x-text="'(' + (order.boxQty || 1) + ' box × ' + formatPrice(order.pricePerBox || 0) + ')'"></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ongkos Kirim -->
+            <div class="p-5 border-b border-brown/5 bg-cream/10">
+              <div class="flex justify-between items-center">
+                <div>
+                  <span class="font-bold text-brown">Ongkos Kirim</span>
+                  <p class="text-[10px] mt-0.5 text-brown-light" x-show="deliveryMethod === 'pickup'">Pickup (Ambil di Toko)</p>
+                  <p class="text-[10px] mt-0.5 text-brown-light" x-show="deliveryMethod === 'delivery'">
+                    <span x-text="customerDistance ? `Jarak: ${customerDistance} km` : 'Belum pilih lokasi'"></span>
+                  </p>
+                </div>
+                <div class="text-right">
+                  <template x-if="deliveryMethod === 'pickup'">
+                    <span class="font-bold text-primary text-sm">Gratis</span>
+                  </template>
+                  <template x-if="deliveryMethod === 'delivery'">
+                    <div>
+                      <template x-if="isFreeShipping && shippingCost > 0">
+                        <div class="text-right">
+                          <div>
+                            <span class="text-xs text-brown-light line-through mr-1" x-text="formatPrice(shippingCost)"></span>
+                            <span class="font-bold text-primary text-[10px] px-2 py-0.5 bg-green-100 rounded-full">GRATIS ONGKIR</span>
+                          </div>
+                          <p class="text-[9px] text-primary/80 mt-1 italic font-medium">*Promo pesanan &ge; 50 box</p>
+                        </div>
+                      </template>
+                      <template x-if="!isFreeShipping || shippingCost === 0">
+                        <span class="font-bold text-brown text-sm" x-text="shippingAvailable ? (shippingCost === 0 && (!addressLat || !addressLng) ? '-' : formatPrice(shippingCost)) : '-'"></span>
+                      </template>
+                    </div>
+                  </template>
+                </div>
               </div>
             </div>
 
             <!-- Total -->
-            <div class="p-5" style="background-color: #fffdf3;">
+            <div class="p-5 bg-cream/30">
               <div class="flex justify-between items-center">
                 <div>
-                  <p class="font-bold text-lg" style="color:#5A3E2B;">Total Harga</p>
-                  <p class="text-xs" style="color:#B09080;">Belum termasuk ongkos kirim</p>
+                  <p class="font-bold text-lg text-brown">Grand Total</p>
                 </div>
                 <div>
-                  <div style="font-family:'Plus Jakarta Sans', sans-serif; font-size:1.6rem; font-weight:900; color:#C2410C;" x-text="formatPrice(order.totalPrice)"></div>
-                  <p x-show="order.boxQty > 1" class="text-[10px] text-right" style="color:#B09080;" x-text="'(' + (order.boxQty || 1) + ' box × ' + formatPrice(order.pricePerBox || 0) + ')'"></p>
+                  <div class="price-display text-2xl" x-text="formatPrice(grandTotal)"></div>
                 </div>
               </div>
             </div>
@@ -315,8 +428,8 @@
                 <div class="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl">
                   <i class="fa-solid fa-circle-check"></i>
                 </div>
-                <h3 style="font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; color:#5A3E2B;">Konfirmasi Pesanan</h3>
-                <p class="text-sm text-brown/60 mt-1">Apakah data pesanan sudah sesuai?</p>
+                <h3 class="font-display font-black text-xl text-brown">Konfirmasi Pesanan</h3>
+                <p class="text-sm text-brown-light mt-1">Apakah data pesanan sudah sesuai?</p>
               </div>
               
               <div class="p-6 space-y-4">
@@ -331,7 +444,7 @@
                   </div>
                   <div class="flex justify-between text-xs">
                     <span class="text-brown/40 font-bold uppercase tracking-wider">Total Pembayaran</span>
-                    <span class="text-primary font-black" x-text="formatPrice(order.totalPrice)"></span>
+                    <span class="text-primary font-black" x-text="formatPrice(grandTotal)"></span>
                   </div>
                 </div>
                 
@@ -387,8 +500,8 @@
                 </template>
               </div>
 
-              <h3 style="font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:900; color:#5A3E2B;" x-text="modalTitle"></h3>
-              <p class="text-sm text-brown/60 mt-3 leading-relaxed" x-text="modalMessage"></p>
+              <h3 class="font-display font-black text-2xl text-brown" x-text="modalTitle"></h3>
+              <p class="text-sm text-brown-light mt-3 leading-relaxed" x-text="modalMessage"></p>
               
               <button @click="handleModalClose()" 
                       class="w-full mt-8 py-3.5 rounded-xl font-bold text-sm text-white transition-all active:scale-95"

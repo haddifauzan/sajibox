@@ -83,17 +83,17 @@
   </nav>
 
   <!-- ══════════════════════════ HERO ══════════════════════════ -->
-  <section class="relative overflow-hidden pt-32 pb-20" style="background:linear-gradient(180deg,#FFFBF5 0%,#FFF7ED 60%,#FDE68A33 100%);">
-    <div class="blob-1" style="top:-60px; right:-150px; opacity:.5;"></div>
-    <div class="blob-2" style="bottom:-40px; left:-100px; opacity:.4;"></div>
+  <section class="about-hero">
+    <div class="blob-1 about-blob-1"></div>
+    <div class="blob-2 about-blob-2"></div>
     <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
       <div class="badge inline-flex mb-6">
         <i class="fa-solid fa-heart mr-2"></i> Kenali Kami Lebih Dekat
       </div>
-      <h1 class="font-display text-4xl sm:text-5xl md:text-6xl font-black text-brown leading-tight mb-6">
-        Tentang <span class="text-primary">SajiBox</span>
+      <h1 class="hero-title mb-6">
+        Tentang <span class="highlight">SajiBox</span>
       </h1>
-      <p class="text-base sm:text-lg text-brown-light font-medium leading-relaxed max-w-2xl mx-auto">
+      <p class="hero-desc text-base sm:text-lg max-w-2xl mx-auto">
         Hadir untuk menghadirkan camilan lezat di setiap momen spesial Anda — dari pernikahan hingga acara kantor, kami selalu siap menyajikan yang terbaik.
       </p>
     </div>
@@ -109,7 +109,7 @@
             <div class="absolute -top-8 -left-8 w-40 h-40 bg-accent/20 rounded-full blur-2xl -z-10 animate-pulse"></div>
             <img src="assets/images/about-img.png"
                  alt="Tim SajiBox"
-                 class="relative z-10 rounded-3xl shadow-2xl object-cover w-full aspect-[4/3] transform hover:scale-[1.02] transition-transform duration-500" 
+                 class="relative z-10 rounded-3xl shadow-2xl object-cover w-full aspect-[4/3] transform hover:scale-[1.02] transition-transform duration-500 animate-float" 
                  loading="lazy" />
             <div class="absolute bottom-6 -right-4 bg-accent text-amber-900 px-6 py-3 rounded-2xl shadow-xl font-bold text-sm flex items-center gap-3 z-20 border border-white/50">
               <i class="fa-solid fa-cake-candles text-primary"></i> Sejak 2020
@@ -189,13 +189,13 @@
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
         <template x-for="(v, i) in values" :key="v.title">
-          <div class="feat-card p-8 text-center flex flex-col items-center group hover:-translate-y-2 transition-all duration-300" data-aos="fade-up" :data-aos-delay="i*100">
-            <div class="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center text-primary text-xl mb-6 group-hover:scale-110 transition-transform duration-300" 
+          <div class="feat-card p-8 text-center flex flex-col items-center group" data-aos="fade-up" :data-aos-delay="i*100">
+            <div class="feat-icon group-hover:scale-110 transition-transform duration-300" 
                  :style="`background: ${v.bg}`">
               <i :class="v.icon"></i>
             </div>
-            <h3 class="font-display text-xl font-bold text-brown mb-3" x-text="v.title"></h3>
-            <p class="text-xs sm:text-sm text-brown-light leading-relaxed font-medium" x-text="v.desc"></p>
+            <h3 class="feat-title" x-text="v.title"></h3>
+            <p class="feat-desc" x-text="v.desc"></p>
           </div>
         </template>
       </div>

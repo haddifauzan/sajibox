@@ -1,144 +1,96 @@
-// assets/js/tracking.js
+/**
+ * SajiBox - Tracking Page Logic (Alpine.js)
+ */
+
+const TRACKING_CONSTANTS = {
+  // Navigation
+  pageNav: [
+    { label: 'Beranda', href: 'index.html', active: false },
+    { label: 'List Paket', href: 'package.html', active: false },
+    { label: 'Custom Pesanan', href: 'custom.html', active: false },
+    { label: 'Tracking', href: 'tracking.html', active: true },
+    { label: 'Tentang', href: 'about.html', active: false },
+  ],
+
+  // Google Script URLs for Tracking
+  endpoints: {
+    custom: "https://script.google.com/macros/s/AKfycbzSz_DinGTyRfmhy9cVx6qHX0adSUHMxCHDXNqIk45N_MFrTqxncqVDGfmSGYp4nIGGXg/exec",
+    package: "https://script.google.com/macros/s/AKfycbz9XxmgUiWAHSN7-JvnZNuvQ1Li-0rK70qntVGcVpwA_ScqfNQ4pGWoYvZNbor9YB7tTA/exec"
+  },
+
+  // Status Styling Map
+  statusConfigs: {
+    'dipesan': { class: 'bg-yellow-100 text-yellow-700 border-yellow-200', index: 0 },
+    'pending': { class: 'bg-yellow-100 text-yellow-700 border-yellow-200', index: 0 },
+    'diproses': { class: 'bg-blue-100 text-blue-700 border-blue-200', index: 1 },
+    'dikirim': { class: 'bg-orange-100 text-orange-700 border-orange-200', index: 2 },
+    'selesai': { class: 'bg-green-100 text-green-700 border-green-200', index: 3 },
+    'dibatalkan': { class: 'bg-red-100 text-red-700 border-red-200', index: -1 },
+    'default': { class: 'bg-gray-100 text-gray-700 border-gray-200', index: 0 }
+  }
+};
+
+// ── COMPONENT: TRACKING PAGE ──
 
 function trackingPage() {
   return {
-    // ── UI State ──
+    ...TRACKING_CONSTANTS,
+    // UI State
     isLoading: true,
     scrolled: false,
     mobileOpen: false,
     
-    // ── Tracking State ──
+    // Tracking State
     searchQuery: '',
     isSearching: false,
     hasSearched: false,
     notFound: false,
     orderData: null,
 
-    // ── Navigation ──
-    pageNav: [
-      { label: 'Beranda', href: 'index.html', active: false },
-      { label: 'List Paket', href: 'package.html', active: false },
-      { label: 'Custom Pesanan', href: 'custom.html', active: false },
-      { label: 'Tracking', href: 'tracking.html', active: true },
-      { label: 'Tentang', href: 'about.html', active: false },
-    ],
-
-    // ── Lifecycle ──
+    // Lifecycle
     init() {
-      // Check for saved order data for instant display
-      const savedData = localStorage.getItem('sajibox_last_order_data');
-      if (savedData) {
+      // Load saved order data for instant feedback
+      const saved = localStorage.getItem('sajibox_last_order_data');
+      if (saved) {
         try {
-          const parsed = JSON.parse(savedData);
+          const parsed = JSON.parse(saved);
           this.orderData = parsed;
           this.hasSearched = true;
           this.searchQuery = parsed.orderId;
           
-          // Silently refresh data in background
+          // Silently refresh in background
           this.fetchTracking(true);
         } catch (e) {
           localStorage.removeItem('sajibox_last_order_data');
         }
       }
 
-      // Simulate initial page load
-      setTimeout(() => {
-        this.isLoading = false;
-      }, 800);
+      setTimeout(() => { this.isLoading = false; }, 800);
     },
 
+    // UI Helpers
     onScroll() {
       this.scrolled = window.scrollY > 20;
     },
 
-    // ── Actions ──
-    async fetchTracking(isSilent = false) {
-      const query = this.searchQuery.trim().toUpperCase();
-      if (!query) return;
-
-      if (!isSilent) {
-        this.isSearching = true;
-        this.hasSearched = true;
-        this.notFound = false;
-        // Don't clear orderData if it's silent to avoid flickers
-        this.orderData = null;
-      }
-
-      try {
-        let scriptURL = "";
-        let isPackage = false;
-
-        if (query.startsWith('SBXC-')) {
-          scriptURL = "https://script.google.com/macros/s/AKfycbwyb1JpPdgbt1XzA4KaL0NZ4CpLXJOKvIJP_4nfmuCdn-lE_UlEV_ZvtdU5eoPrZRw/exec";
-        } else if (query.startsWith('SBXP-')) {
-          scriptURL = "https://script.google.com/macros/s/AKfycbyFYQchOW-TKPgXD-UxLCG2XXXQ3syZOonT1Dj7xEo6RBZBjUHu1XFtWS9ZGItwkhtSLQ/exec";
-          isPackage = true;
-        } else {
-          this.notFound = true;
-          this.isSearching = false;
-          return;
-        }
-
-        const response = await fetch(`${scriptURL}?orderId=${encodeURIComponent(query)}`);
-        const data = await response.json();
-
-        if (data && data.status === 'success' && data.order) {
-          const o = data.order;
-          let normalizedData = null;
-          
-          if (isPackage) {
-            normalizedData = {
-              orderId: o.orderId,
-              orderDate: o.date,
-              customer: {
-                name: o.customer,
-                phone: o.phone,
-                address: o.address,
-                note: o.note
-              },
-              delivery: {
-                date: o.deliveryDate,
-                time: o.deliveryTime
-              },
-              type: 'package',
-              packageName: o.packageName,
-              qty: o.qty,
-              foods: [],
-              design: o.design,
-              card: {
-                name: o.card,
-                message: o.cardMessage
-              },
-              total: o.total,
-              trackingStatus: o.trackingStatus || 'Dipesan'
-            };
-          } else {
-            if (typeof o.foods === 'string') {
-              o.foods = o.foods.split(',').map(f => f.trim()).filter(f => f);
-            } else if (!o.foods) {
-              o.foods = [];
-            }
-            if (!o.trackingStatus || o.trackingStatus === 'Pending') {
-              o.trackingStatus = 'Dipesan';
-            }
-            normalizedData = o;
-          }
-
-          this.orderData = normalizedData;
-          // Save the full normalized data for instant next load
-          localStorage.setItem('sajibox_last_order_data', JSON.stringify(normalizedData));
-        } else {
-          this.notFound = true;
-          if (isSilent) this.hasSearched = false;
-        }
-      } catch (error) {
-        console.error("Error fetching tracking data:", error);
-        if (!isSilent) this.notFound = true;
-      } finally {
-        this.isSearching = false;
-      }
+    formatPrice(n) {
+      return 'Rp ' + Number(n).toLocaleString('id-ID');
     },
 
+    getStatusConfig(status) {
+      const s = (status || '').toLowerCase();
+      return this.statusConfigs[s] || this.statusConfigs.default;
+    },
+
+    getTimelineIndex(status) {
+      return this.getStatusConfig(status).index;
+    },
+
+    getStatusColor(status) {
+      return this.getStatusConfig(status).class;
+    },
+
+    // Actions
     resetSearch() {
       this.searchQuery = '';
       this.hasSearched = false;
@@ -147,36 +99,76 @@ function trackingPage() {
       localStorage.removeItem('sajibox_last_order_data');
     },
 
-    // ── Helpers ──
-    formatPrice(amount) {
-      if (typeof amount !== 'number') amount = parseInt(amount);
-      if (isNaN(amount)) return 'Rp 0';
-      return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-      }).format(amount);
+    async fetchTracking(isSilent = false) {
+      const query = this.searchQuery.trim().toUpperCase();
+      if (!query) return;
+
+      if (!isSilent) {
+        this.isSearching = true;
+        this.hasSearched = true;
+        this.notFound = false;
+        this.orderData = null;
+      }
+
+      try {
+        const isPackage = query.startsWith('SBXP-');
+        const scriptURL = isPackage ? this.endpoints.package : (query.startsWith('SBXC-') ? this.endpoints.custom : null);
+
+        if (!scriptURL) {
+          this.notFound = true;
+          this.isSearching = false;
+          return;
+        }
+
+        const response = await fetch(`${scriptURL}?orderId=${encodeURIComponent(query)}`);
+        const data = await response.json();
+
+        if (data?.status === 'success' && data.order) {
+          const normalized = this.normalizeOrderData(data.order, isPackage);
+          this.orderData = normalized;
+          localStorage.setItem('sajibox_last_order_data', JSON.stringify(normalized));
+        } else {
+          this.notFound = true;
+          if (isSilent) this.hasSearched = false;
+        }
+      } catch (error) {
+        console.error("Tracking Error:", error);
+        if (!isSilent) this.notFound = true;
+      } finally {
+        this.isSearching = false;
+      }
     },
 
-    getStatusColor(status) {
-      const s = (status || '').toLowerCase();
-      if (s === 'dipesan' || s === 'pending') return 'bg-yellow-100 text-yellow-700 border-yellow-200';
-      if (s === 'diproses') return 'bg-blue-100 text-blue-700 border-blue-200';
-      if (s === 'dikirim') return 'bg-orange-100 text-orange-700 border-orange-200';
-      if (s === 'selesai') return 'bg-green-100 text-green-700 border-green-200';
-      if (s === 'dibatalkan') return 'bg-red-100 text-red-700 border-red-200';
-      return 'bg-gray-100 text-gray-700 border-gray-200';
-    },
+    normalizeOrderData(o, isPackage) {
+      let parsedFoods = [];
+      if (!isPackage && o.foods) {
+        if (typeof o.foods === 'string') {
+          parsedFoods = o.foods.split(',').map(f => f.trim()).filter(f => f);
+        } else if (Array.isArray(o.foods)) {
+          parsedFoods = o.foods;
+        }
+      }
 
-    getTimelineIndex(status) {
-      const s = (status || '').toLowerCase();
-      if (s === 'dibatalkan') return -1;
-      if (s === 'dipesan' || s === 'pending') return 0;
-      if (s === 'diproses') return 1;
-      if (s === 'dikirim') return 2;
-      if (s === 'selesai') return 3;
-      return 0;
+      return {
+        orderId: o.orderId,
+        orderDate: o.orderDate || o.date,
+        customer: o.customer || {},
+        delivery: {
+          date: o.delivery?.date || '',
+          time: o.delivery?.time || '',
+          method: o.deliveryMethod || 'pickup',
+          distance: o.distance || 0,
+          cost: o.shippingCost || 0
+        },
+        type: isPackage ? 'package' : 'custom',
+        packageName: isPackage ? o.packageName : (o.boxName || 'Custom Snackbox'),
+        qty: o.qty || 0,
+        foods: parsedFoods,
+        design: o.design || '-',
+        card: o.card || { name: '-', message: '-' },
+        total: o.total || 0,
+        trackingStatus: (!o.trackingStatus || o.trackingStatus === 'Pending') ? 'Dipesan' : o.trackingStatus
+      };
     }
   };
 }

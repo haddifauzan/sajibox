@@ -98,17 +98,17 @@
   </nav>
 
   <!-- ══════════════ HERO ══════════════ -->
-  <section class="relative overflow-hidden pt-32 pb-12" style="background:linear-gradient(180deg,#FFFBF5 0%,#FFF7ED 60%,#FDE68A33 100%);">
-    <div class="blob-1" style="top:-60px; right:-150px; opacity:.4;"></div>
-    <div class="blob-2" style="bottom:-40px; left:-100px; opacity:.3;"></div>
+  <section class="about-hero pt-32 pb-12">
+    <div class="blob-1 about-blob-1"></div>
+    <div class="blob-2 about-blob-2"></div>
     <div class="max-w-3xl mx-auto px-6 text-center relative z-10">
       <div class="badge inline-flex mb-5">
         <i class="fa-solid fa-boxes-stacked"></i> Pilih Paket Siap Pesan
       </div>
-      <h1 style="font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; color:#5A3E2B; line-height:1.15;" class="mb-4">
-        List <span style="color:#C2410C;">Paketan</span>
+      <h1 class="hero-title mb-4">
+        List <span class="highlight">Paketan</span>
       </h1>
-      <p style="color:#92601A; font-weight:500;" class="text-base lg:text-lg leading-relaxed max-w-xl mx-auto">
+      <p class="hero-desc text-base lg:text-lg max-w-xl mx-auto">
         Paket snackbox siap pesan dengan tema beragam — dari rapat kantor, acara tradisi, hingga hampers spesial. Tinggal pilih, langsung checkout!
       </p>
     </div>
@@ -154,7 +154,7 @@
               <div class="absolute top-2 left-2 sm:top-4 sm:left-4 bg-white/90 backdrop-blur px-2 py-0.5 sm:px-3 sm:py-1 rounded-lg text-[8px] sm:text-[10px] font-black tracking-wider text-primary shadow-sm" x-text="pkg.code"></div>
               
               <div class="absolute top-2 right-2 sm:top-4 sm:right-4 text-white text-[8px] sm:text-[10px] font-black px-2 py-1 sm:px-3 sm:py-1.5 rounded-full flex items-center shadow-lg"
-                   :style="'background:' + boxColor(pkg.box).bg + '; box-shadow:0 4px 12px ' + boxColor(pkg.box).shadow">
+                   :style="`background: ${boxStyle(pkg.box).bg}; box-shadow: 0 4px 12px ${boxStyle(pkg.box).shadow}`">
                 <i class="fa-solid fa-cube mr-1 sm:mr-1.5 opacity-80"></i>
                 <span x-text="pkg.box"></span>
               </div>

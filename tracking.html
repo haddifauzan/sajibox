@@ -104,19 +104,19 @@
   </nav>
 
   <!-- ══════════════ HERO & SEARCH SECTION ══════════════ -->
-  <section class="pt-32 md:pt-40 pb-16 relative overflow-hidden" style="background:linear-gradient(180deg,#FFFBF5 0%,#FFF7ED 100%);">
-    <div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
-    <div class="absolute bottom-0 left-0 w-80 h-80 bg-orange-200/20 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
+  <section class="about-hero pt-32 md:pt-40 pb-16">
+    <div class="blob-1 about-blob-1"></div>
+    <div class="blob-2 about-blob-2"></div>
     
     <div class="max-w-3xl mx-auto px-4 sm:px-6 relative z-10 text-center">
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-[10px] sm:text-xs font-black uppercase tracking-widest mb-6">
+      <div class="badge inline-flex mb-6">
         <i class="fa-solid fa-truck-fast"></i> Tracking SajiBox
       </div>
       
-      <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-brown font-display leading-tight mb-4">
+      <h1 class="hero-title mb-4">
         Lacak Pesanan Anda
       </h1>
-      <p class="text-sm sm:text-base text-brown/60 font-medium mb-10 max-w-xl mx-auto leading-relaxed">
+      <p class="hero-desc text-sm sm:text-base max-w-xl mx-auto mb-10">
         Pantau status pesanan snackbox Anda secara realtime. Masukkan nomor pesanan yang Anda dapatkan saat checkout.
       </p>
 
@@ -323,16 +323,30 @@
             <!-- Delivery Details -->
             <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-brown/5">
               <h3 class="text-sm font-black text-brown uppercase tracking-widest mb-5 flex items-center gap-2">
-                <i class="fa-regular fa-clock text-primary/60"></i> Waktu Pengiriman
+                <i class="fa-solid fa-truck text-primary/60"></i> Info Pengiriman
               </h3>
-              <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
-                <div class="flex-1 bg-primary/5 p-4 rounded-2xl border border-primary/20">
-                  <p class="text-[10px] uppercase font-bold text-primary/60 tracking-wider mb-1">Tanggal</p>
-                  <p class="text-sm font-bold text-primary" x-text="orderData?.delivery?.date"></p>
+              <div class="flex flex-col gap-4">
+                <div class="flex items-center justify-between border-b border-brown/5 pb-3">
+                  <span class="text-[10px] uppercase font-bold text-brown/40 tracking-wider">Metode</span>
+                  <span class="text-sm font-bold text-brown" x-text="orderData?.delivery?.method === 'delivery' ? 'Delivery (Diantar)' : 'Pickup (Ambil Sendiri)'"></span>
                 </div>
-                <div class="flex-1 bg-blue-50 border-blue-200 p-4 rounded-2xl border">
-                  <p class="text-[10px] uppercase font-bold text-blue-400 tracking-wider mb-1">Jam Tiba</p>
-                  <p class="text-sm font-bold text-blue-700" x-text="orderData?.delivery?.time"></p>
+                
+                <template x-if="orderData?.delivery?.method === 'delivery'">
+                  <div class="flex items-center justify-between border-b border-brown/5 pb-3">
+                    <span class="text-[10px] uppercase font-bold text-brown/40 tracking-wider">Jarak Pengiriman</span>
+                    <span class="text-sm font-bold text-brown" x-text="orderData?.delivery?.distance + ' km'"></span>
+                  </div>
+                </template>
+
+                <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 mt-2">
+                  <div class="flex-1 bg-primary/5 p-4 rounded-2xl border border-primary/20">
+                    <p class="text-[10px] uppercase font-bold text-primary/60 tracking-wider mb-1">Tanggal</p>
+                    <p class="text-sm font-bold text-primary" x-text="orderData?.delivery?.date"></p>
+                  </div>
+                  <div class="flex-1 bg-blue-50 border-blue-200 p-4 rounded-2xl border">
+                    <p class="text-[10px] uppercase font-bold text-blue-400 tracking-wider mb-1">Jam Tiba</p>
+                    <p class="text-sm font-bold text-blue-700" x-text="orderData?.delivery?.time"></p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -393,12 +407,18 @@
             </div>
 
             <!-- Total Price -->
-            <div class="mt-8 pt-6 border-t-2 border-dashed border-brown/10 flex items-end justify-between">
-              <div>
-                <p class="text-[10px] sm:text-[12px] uppercase font-black tracking-widest text-brown/40 mb-1">Total Biaya</p>
+            <div class="mt-8 pt-6 border-t-2 border-dashed border-brown/10 flex flex-col gap-3">
+              <div class="flex items-center justify-between" x-show="orderData?.delivery?.method === 'delivery'">
+                <p class="text-[10px] sm:text-[12px] uppercase font-bold tracking-widest text-brown/40">Ongkos Kirim</p>
+                <span class="text-sm font-bold text-brown" x-text="orderData?.delivery?.cost > 0 ? formatPrice(orderData?.delivery?.cost) : 'Gratis'"></span>
               </div>
-              <div class="text-right">
-                <span class="text-2xl sm:text-3xl font-black text-primary leading-none" x-text="formatPrice(orderData?.total)"></span>
+              <div class="flex items-end justify-between">
+                <div>
+                  <p class="text-[10px] sm:text-[12px] uppercase font-black tracking-widest text-brown/40 mb-1">Total Biaya</p>
+                </div>
+                <div class="text-right">
+                  <span class="text-2xl sm:text-3xl font-black text-primary leading-none" x-text="formatPrice(orderData?.total || orderData?.totalPrice)"></span>
+                </div>
               </div>
             </div>
 
@@ -410,7 +430,7 @@
   </section>
 
   <!-- ══════════════ FOOTER ══════════════ -->
-  <footer id="kontak" class="footer pt-16 pb-8" style="margin-bottom:0;">
+  <footer id="kontak" class="footer pt-16 pb-8">
     <div class="max-w-7xl mx-auto px-5 sm:px-8">
       <div class="grid md:grid-cols-4 gap-10 pb-12 border-b border-white/10">
         <div class="md:col-span-1">
@@ -446,7 +466,7 @@
           <h4 class="font-display font-700 text-white text-lg mb-4">Newsletter</h4>
           <p class="text-sm mb-3">Dapatkan promo & menu baru langsung di email Anda.</p>
           <div class="flex flex-col gap-2">
-            <input type="email" placeholder="Email Anda" class="w-full px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-accent text-sm" style="color:white;"/>
+            <input type="email" placeholder="Email Anda" class="w-full px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-accent text-sm text-white placeholder-white/50">
             <button class="btn-primary w-full py-2.5 text-sm">Berlangganan</button>
           </div>
         </div>

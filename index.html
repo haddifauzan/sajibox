@@ -131,7 +131,7 @@
         </a>
 
         <!-- Mobile burger -->
-        <button @click="mobileOpen = !mobileOpen" class="md:hidden p-2 rounded-xl" style="color:#C2410C;">
+        <button @click="mobileOpen = !mobileOpen" class="md:hidden p-2 rounded-xl text-primary">
           <i class="fa-solid fa-bars text-xl" x-show="!mobileOpen"></i>
           <i class="fa-solid fa-xmark text-xl" x-show="mobileOpen"></i>
         </button>
@@ -141,8 +141,8 @@
     <!-- Mobile menu -->
     <div x-show="mobileOpen" x-transition style="display: none;" class="mobile-menu md:hidden px-6 pb-6 pt-2">
       <!-- Mobile page links -->
-      <div class="mb-3 pb-3 border-b-2" style="border-color:#ff51009a;">
-        <p class="text-xs font-bold uppercase tracking-widest mb-2" style="color:#C2410C;">Halaman</p>
+      <div class="mb-3 pb-3 border-b-2 border-primary/40">
+        <p class="text-xs font-bold uppercase tracking-widest mb-2 text-primary">Halaman</p>
         <template x-for="item in pageNav" :key="item.label">
           <a :href="item.href" @click="mobileOpen=false"
              class="block py-2 text-sm font-semibold"
@@ -152,12 +152,11 @@
         </template>
       </div>
       <!-- Mobile section links -->
-      <p class="text-xs font-bold uppercase tracking-widest mb-2" style="color:#C2410C;">Scroll Menu</p>
+      <p class="text-xs font-bold uppercase tracking-widest mb-2 text-primary">Scroll Menu</p>
       <template x-for="item in sideNav" :key="item.id">
         <a :href="'#' + item.id" @click="mobileOpen=false"
-           class="block py-2.5 border-b text-sm font-semibold"
+           class="block py-2.5 border-b border-accent/40 text-sm font-semibold"
            :class="activeSection === item.id ? 'text-primary' : 'text-brown'"
-           style="border-color:#FDE68A66;"
            x-text="item.label">
         </a>
       </template>
@@ -174,42 +173,41 @@
     <div class="max-w-7xl mx-auto px-6 py-20 w-full">
       <div class="flex flex-col lg:flex-row items-center gap-16">
 
-        <!-- Left -->
+        <!-- Left Content -->
         <div class="flex-1 z-10 text-center lg:text-left" data-aos="fade-right">
           <div class="badge inline-flex mb-5">
             <span><i class="fa-solid fa-cookie-bite"></i></span>
             Camilan enak, momen jadi berkesan
           </div>
 
-          <h1 style="font-family:'Playfair Display',serif; font-size:clamp(2.4rem,5vw,3.8rem); font-weight:900; line-height:1.1; color:#5A3E2B;" class="mb-6">
+          <h1 class="hero-title mb-6">
             Snackbox
-            <span style="color:#C2410C;">Lezat,</span><br/>
+            <span class="highlight">Lezat,</span><br/>
             Pesan Online,<br/>
-            <span style="background:linear-gradient(90deg,#C2410C,#F59E0B); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">Praktis & Cepat!</span>
+            <span class="gradient">Praktis & Cepat!</span>
           </h1>
 
-          <p class="text-base lg:text-lg mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0"
-             style="color:#92601A; font-weight:500;">
+          <p class="hero-desc text-base lg:text-lg mb-8 max-w-xl mx-auto lg:mx-0">
             Hadirkan kesan spesial di setiap acara Anda — pernikahan, ulang tahun, arisan, hingga event kantor — dengan snackbox premium kami yang dikemas eksklusif dan dikirim tepat waktu.
           </p>
 
           <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-            <a href="package.html" class="btn-primary text-base py-4 px-8">
+            <a href="package.html" class="btn-primary text-base py-4 px-8 flex items-center justify-center">
               Pesan Sekarang
               <i class="fa-solid fa-arrow-right ml-1"></i>
             </a>
-            <a href="#paket" class="btn-secondary text-base py-4 px-8">
+            <a href="#paket" class="btn-secondary text-base py-4 px-8 flex items-center justify-center">
               Lihat Paket
               <i class="fa-solid fa-arrow-down ml-1"></i>
             </a>
           </div>
 
-          <!-- Stats -->
+          <!-- Quick Stats -->
           <div class="flex items-center gap-8 mt-12 justify-center lg:justify-start">
             <template x-for="stat in stats" :key="stat.label">
               <div class="text-center lg:text-left">
-                <div style="font-family:'Playfair Display',serif; font-size:1.7rem; font-weight:900; color:#C2410C;" x-text="stat.value"></div>
-                <div class="text-xs font-600" style="color:#92601A; font-weight:600;" x-text="stat.label"></div>
+                <div class="font-display text-3xl font-black text-primary" x-text="stat.value"></div>
+                <div class="text-xs font-bold text-brown-light uppercase tracking-wider" x-text="stat.label"></div>
               </div>
             </template>
           </div>
@@ -254,8 +252,8 @@
         <template x-for="(feat, i) in features" :key="feat.title">
           <div class="feat-card" data-aos="flip-up" :data-aos-delay="i*100">
             <div class="feat-icon" :style="`background: ${feat.bg};`"><i :class="feat.icon"></i></div>
-            <h3 style="font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:700; color:#5A3E2B; margin-bottom:8px;" x-text="feat.title"></h3>
-            <p style="color:#92601A; font-size:.88rem; line-height:1.6; font-weight:500;" x-text="feat.desc"></p>
+            <h3 class="feat-title" x-text="feat.title"></h3>
+            <p class="feat-desc" x-text="feat.desc"></p>
           </div>
         </template>
       </div>
@@ -265,13 +263,13 @@
   <!-- ══════════════════════════ TRUST STRIP ══════════════════════════ -->
   <section class="trust-strip py-14">
     <div class="max-w-7xl mx-auto px-6">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 ">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
         <template x-for="trust in trusts" :key="trust.label">
           <div class="trust-item" data-aos="fade-down">
             <div class="trust-icon"><i :class="trust.icon"></i></div>
-            <div>
-              <div style="font-weight:700; font-size:.95rem; color:#5A3E2B;" x-text="trust.label"></div>
-              <div style="font-size:.8rem; color:#92601A; font-weight:500; margin-top:2px;" x-text="trust.sub"></div>
+            <div class="flex flex-col">
+              <span class="font-bold text-sm sm:text-base text-brown" x-text="trust.label"></span>
+              <span class="text-xs text-brown-light font-medium" x-text="trust.sub"></span>
             </div>
           </div>
         </template>
@@ -341,11 +339,12 @@
 
         <template x-for="(step, i) in steps" :key="step.title">
           <div class="text-center relative z-10" data-aos="flip-down" :data-aos-delay="i*100">
-            <div style="width:80px; height:80px; border-radius:50%; margin:0 auto 16px; display:flex; align-items:center; justify-content:center; font-size:1.8rem; background:#fff; box-shadow:0 8px 24px #C2410C22; border:3px solid #FDE68A;">
-                 <i :class="step.icon"></i></div>
-            <div style="font-size:.72rem; font-weight:800; letter-spacing:.1em; color:#C2410C; text-transform:uppercase; margin-bottom:6px;" x-text="`Langkah ${i+1}`"></div>
-            <h4 style="font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:#5A3E2B; margin-bottom:6px;" x-text="step.title"></h4>
-            <p style="font-size:.83rem; color:#92601A; font-weight:500; line-height:1.55;" x-text="step.desc"></p>
+            <div class="w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl bg-white shadow-lg border-4 border-accent">
+               <i :class="step.icon" class="text-primary"></i>
+            </div>
+            <div class="text-[10px] font-extrabold tracking-widest text-primary uppercase mb-1" x-text="`Langkah ${i+1}`"></div>
+            <h4 class="font-display text-base font-bold text-brown mb-1.5" x-text="step.title"></h4>
+            <p class="text-sm text-brown-light font-medium leading-relaxed" x-text="step.desc"></p>
           </div>
         </template>
       </div>
@@ -364,22 +363,20 @@
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <template x-for="(t, i) in testimonials" :key="t.name">
-          <div class="feat-card" data-aos="fade-up" :data-aos-delay="i*100">
+          <div class="feat-card flex flex-col" data-aos="fade-up" :data-aos-delay="i*100">
             <div class="flex gap-1 mb-4">
               <template x-for="s in 5" :key="s">
-                <span style="color:#F59E0B; font-size:1rem;">★</span>
+                <span class="text-secondary text-base">★</span>
               </template>
             </div>
             
-            <p style="font-size:.92rem; color:#5A3E2B; line-height:1.7; font-weight:500; font-style:italic; margin-bottom:18px;" x-text="`&quot;${t.quote}&quot;`"></p>
+            <p class="text-sm text-brown leading-relaxed font-medium italic mb-6" x-text="`&quot;${t.quote}&quot;`"></p>
             
-            <div class="flex items-center gap-3">
-              <div style="width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#FDE68A,#F59E0B); display:flex; align-items:center; justify-content:center; font-size:1.1rem;">         
-                <img style="width:44px; height:44px; border-radius:50%; object-fit:cover;" :src="t.avatar" :alt="t.name" loading="lazy">
-              </div>
+            <div class="mt-auto flex items-center gap-3">
+              <img :src="t.avatar" :alt="t.name" class="w-11 h-11 rounded-full object-cover border-2 border-accent" loading="lazy">
               <div>
-                <div style="font-weight:700; font-size:.9rem; color:#5A3E2B;" x-text="t.name"></div>
-                <div style="font-size:.78rem; color:#92601A; font-weight:500;" x-text="t.role"></div>
+                <div class="font-bold text-sm text-brown" x-text="t.name"></div>
+                <div class="text-xs text-brown-light font-semibold" x-text="t.role"></div>
               </div>
             </div>
           </div>
@@ -400,14 +397,14 @@
 
       <div class="space-y-4">
         <template x-for="(faq, i) in faqs" :key="i">
-          <div class="feat-card cursor-pointer" data-aos="fade-down" :data-aos-delay="i*50"
+          <div class="feat-card cursor-pointer group" data-aos="fade-down" :data-aos-delay="i*50"
                @click="faq.open = !faq.open">
             <div class="flex items-center justify-between">
-              <h4 style="font-weight:700; font-size:.95rem; color:#5A3E2B;" x-text="faq.q"></h4>
-              <span style="color:#C2410C; font-size:1.3rem; transition:transform .3s; display:block;"
-                    :style="faq.open ? 'transform:rotate(45deg)' : ''">+</span>
+              <h4 class="font-bold text-sm sm:text-base text-brown group-hover:text-primary transition-colors" x-text="faq.q"></h4>
+              <span class="text-primary text-xl transition-transform duration-300"
+                    :class="faq.open ? 'rotate-45' : ''">+</span>
             </div>
-            <div x-show="faq.open" x-collapse style="margin-top:12px; font-size:.88rem; color:#92601A; font-weight:500; line-height:1.65;" x-text="faq.a"></div>
+            <div x-show="faq.open" x-collapse class="mt-3 text-sm text-brown-light font-medium leading-relaxed" x-text="faq.a"></div>
           </div>
         </template>
       </div>
@@ -417,17 +414,16 @@
   <!-- ══════════════════════════ CTA BANNER ═══════════════════════════ -->
   <section class="cta-banner py-24 px-6 text-center">
     <div class="max-w-3xl mx-auto relative z-10">
-      <div class="badge inline-flex mb-6" style="background: rgba(255,255,255,.25); color:#fff;">
+      <div class="badge inline-flex mb-6 bg-white/25 text-white">
         <i class="fa-solid fa-gift"></i> Promo Spesial Bulan Ini
       </div>
-      <h2 style="font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; color:#fff; line-height:1.15; margin-bottom:20px;">
-        Pesan Snackbox Sekarang dan Buat Acara Anda Makin Berkesan!
+      <h2 class="cta-title">
+        Nikmati Kelezatan SajiBox dengan <span class="text-accent">Gratis Ongkir!</span>
       </h2>
-      <p style="color:rgba(255,255,255,.85); font-size:1rem; font-weight:500; margin-bottom:36px; max-width:520px; margin-left:auto; margin-right:auto;">
-        Dapatkan diskon 15% untuk pemesanan pertama Anda. Gunakan kode <strong>SNACK15</strong> saat checkout.
+      <p class="cta-desc">
+        Dapatkan pengiriman gratis untuk setiap pemesanan di atas <strong>50 box</strong>. Pesan sekarang untuk acara spesial Anda!
       </p>
-      <a href="package.html" style="display:inline-flex; align-items:center; gap:10px; background:#fff; color:#C2410C; font-weight:800; font-size:1rem; padding:16px 36px; border-radius:100px; box-shadow:0 12px 40px rgba(0,0,0,.2); text-decoration:none; transition:transform .2s;"
-         onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+      <a href="package.html" class="btn-cta">
         Pesan Sekarang
         <i class="fa-solid fa-arrow-right"></i>
       </a>
