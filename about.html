@@ -216,6 +216,59 @@
     </div>
   </section>
 
+  <!-- ══════════════════════════ LOKASI & JANGKAUAN ══════════════════════════ -->
+  <section class="py-24 bg-gradient-to-b from-cream to-orange-50/50">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <p class="section-tag mb-4">Area Layanan</p>
+        <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-black text-brown leading-tight">
+          Lokasi & <span class="text-primary">Jangkauan</span> Kami
+        </h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+        <!-- Lokasi -->
+        <div class="feat-card p-10" data-aos="fade-up">
+          <div class="w-16 h-16 rounded-2xl bg-accent/30 flex items-center justify-center text-primary text-2xl mb-6 mx-auto md:mx-0">
+            <i class="fa-solid fa-map-location-dot"></i>
+          </div>
+          <h3 class="font-display text-2xl font-bold text-brown mb-4 text-center md:text-left">Lokasi SajiBox</h3>
+          <p class="text-brown-light font-medium leading-relaxed text-center md:text-left">
+            Dapur SajiBox berpusat di Cimahi. Anda dapat mengambil pesanan (pickup) langsung ke lokasi kami yang beralamat di:
+          </p>
+          <div class="mt-6 p-4 bg-white rounded-xl border border-brown/10 flex items-start gap-4">
+            <i class="fa-solid fa-location-dot text-primary mt-1"></i>
+            <span class="text-brown font-bold text-sm">Jl.Abdul Halim No.82, Kel.Cigugur Tengah, Kec.Cimahi Tengah, Cimahi - 40522</span>
+          </div>
+          <iframe src="https://maps.google.com/maps?q=Jl.Abdul%20Halim%20No.82,%20Kel.Cigugur%20Tengah,%20Kec.Cimahi%20Tengah,%20Cimahi%20-%2040522&t=&z=15&ie=UTF8&iwloc=&output=embed" width="100%" height="200" style="border:0; border-radius: 0.75rem; margin-top: 1rem;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <!-- Jangkauan -->
+        <div class="feat-card p-10" data-aos="fade-up" data-aos-delay="100">
+          <div class="w-16 h-16 rounded-2xl bg-orange-100/50 flex items-center justify-center text-primary text-2xl mb-6 mx-auto md:mx-0">
+            <i class="fa-solid fa-motorcycle"></i>
+          </div>
+          <h3 class="font-display text-2xl font-bold text-brown mb-4 text-center md:text-left">Jangkauan Layanan</h3>
+          <p class="text-brown-light font-medium leading-relaxed text-center md:text-left">
+            Saat ini, pengiriman (delivery) kami mencakup area <strong class="text-primary">Cimahi, Bandung, dan sekitarnya</strong>. Untuk menjaga kualitas produk dan ketepatan waktu, jarak maksimal pengiriman adalah 15 km dari lokasi SajiBox.
+          </p>
+          <div class="space-y-3 mt-6">
+            <div class="p-4 bg-white rounded-xl border border-brown/10 flex items-start gap-4 transition-all hover:border-primary/30 hover:shadow-md">
+              <i class="fa-solid fa-circle-check text-primary mt-1 text-lg"></i>
+              <span class="text-brown font-bold text-sm">Pengiriman aman dengan kurir terpercaya</span>
+            </div>
+            <div class="p-4 bg-white rounded-xl border border-brown/10 flex items-start gap-4 transition-all hover:border-primary/30 hover:shadow-md">
+              <i class="fa-solid fa-truck-fast text-primary mt-1 text-lg"></i>
+              <span class="text-brown font-bold text-sm">Gratis ongkir untuk pesanan minimal 50 box</span>
+            </div>
+            <div class="p-4 bg-white rounded-xl border border-brown/10 flex items-start gap-4 transition-all hover:border-primary/30 hover:shadow-md">
+              <i class="fa-solid fa-clock text-primary mt-1 text-lg"></i>
+              <span class="text-brown font-bold text-sm">Jaminan pengiriman tepat waktu di hari H</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ══════════════════════════ CTA ══════════════════════════ -->
   <section class="cta-banner py-24 px-6 text-center relative overflow-hidden">
     <div class="max-w-3xl mx-auto relative z-10">
@@ -251,17 +304,19 @@
         <div class="lg:pl-10">
           <h4 class="font-display font-bold text-xl text-white mb-6">Menu</h4>
           <ul class="space-y-4 text-sm font-medium">
-            <template x-for="m in ['Beranda', 'List Paket', 'Custom Pesanan', 'Tracking', 'FAQ']" :key="m">
-              <li><a href="#" class="opacity-70 hover:opacity-100 hover:text-accent transition-all duration-200" x-text="m"></a></li>
-            </template>
+            <li><a href="index.html" class="opacity-70 hover:opacity-100 hover:text-accent transition-all duration-200">Beranda</a></li>
+            <li><a href="package.html" class="opacity-70 hover:opacity-100 hover:text-accent transition-all duration-200">List Paket</a></li>
+            <li><a href="custom.html" class="opacity-70 hover:opacity-100 hover:text-accent transition-all duration-200">Custom Pesanan</a></li>
+            <li><a href="tracking.html" class="opacity-70 hover:opacity-100 hover:text-accent transition-all duration-200">Tracking</a></li>
+            <li><a href="about.html" class="opacity-70 hover:opacity-100 hover:text-accent transition-all duration-200">Tentang</a></li>
           </ul>
         </div>
         <!-- Contact -->
         <div>
           <h4 class="font-display font-bold text-xl text-white mb-6">Kontak</h4>
           <ul class="space-y-4 text-sm font-medium opacity-80">
-            <li class="flex items-start gap-3"><i class="fa-solid fa-location-dot mt-1 text-accent"></i> <span>Jl. Abdul Halim No. 82, Cimahi 50220</span></li>
-            <li class="flex items-center gap-3"><i class="fa-solid fa-phone text-accent"></i> <span>+62 813-3924-4834</span></li>
+            <li class="flex items-start gap-3"><i class="fa-solid fa-location-dot mt-1 text-accent"></i> <span>Jl.Abdul Halim No.82, Kel.Cigugur Tengah, Kec.Cimahi Tengah, Cimahi - 40522</span></li>
+            <li class="flex items-center gap-3"><i class="fa-solid fa-phone text-accent"></i> <span>+62 813-1326-4584</span></li>
             <li class="flex items-center gap-3"><i class="fa-solid fa-envelope text-accent"></i> <span>sajibox@gmail.com</span></li>
           </ul>
         </div>
